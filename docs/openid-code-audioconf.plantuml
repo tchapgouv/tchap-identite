@@ -1,0 +1,34 @@
+@startuml
+
+actor browser
+participant audioconf as "Audioconf"
+participant tchap_id
+participant email_server
+participant tchap_server
+
+browser -> audioconf : submit meeting info (email,..)
+activate audioconf
+audioconf --> browser : redirect with login_hint=email
+browser -> tchap_id : redirect with login_hint=email
+activate tchap_id
+tchap_id -> tchap_id : authenticate user
+activate tchap_id #DarkSalmon
+tchap_id -> tchap_server : email exists?
+tchap_id <-- tchap_server : ok
+tchap_id -> tchap_server : send otp to user (dm tchap)
+tchap_id -> email_server : send otp to user (email)
+browser <-- tchap_id : display otp login form
+browser -> tchap_id : input otp
+tchap_id -> tchap_id : validate otp
+tchap_id -> tchap_id : user authenticated
+deactivate tchap_id #DarkSalmon
+browser <-- tchap_id : redirect with parameter "code"
+browser -> audioconf : redirect audioconf with parameter "code"
+audioconf -> tchap_id : exchange "code"
+audioconf <-- tchap_id : return "access_token"
+deactivate tchap_id
+audioconf -> audioconf : create session from "access_token"
+audioconf -> browser : display page with session
+deactivate audioconf
+browser -> browser : set session in cookie
+@enduml
