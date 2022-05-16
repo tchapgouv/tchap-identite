@@ -5,6 +5,7 @@ participant audioconf as "Audioconf"
 participant tchap_id
 participant email_server
 participant tchap_server
+autonumber
 
 browser -> audioconf : submit meeting info (email,..)
 activate audioconf
@@ -13,7 +14,7 @@ browser -> tchap_id : redirect with login_hint=email
 activate tchap_id
 tchap_id -> tchap_id : authenticate user
 activate tchap_id #DarkSalmon
-tchap_id -> tchap_server : email exists?
+tchap_id -> tchap_server : user exists in tchap?
 tchap_id <-- tchap_server : ok
 tchap_id -> tchap_server : send otp to user (dm tchap)
 tchap_id -> email_server : send otp to user (email)
