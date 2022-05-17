@@ -19,7 +19,7 @@
 `docker compose up`
 
 4. Connect to 
-- keycloak admin http://localhost:18080 with admin/password
+- keycloak admin http://localhost:8080 with admin/password
 - email client : http://localhost:1080
 
 4. install a openId client 
