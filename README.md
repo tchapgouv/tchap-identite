@@ -6,6 +6,8 @@
 
 # docker image
 
+0. copy env.sample -> env, fill in passwords
+
 1. from project https://github.com/MTES-MCT/keycloak-buildpack, install keycloak scalingo image
 
 ` docker build -t keycloak-scalingo . `
