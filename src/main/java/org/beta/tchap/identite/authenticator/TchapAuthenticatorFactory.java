@@ -15,6 +15,11 @@ import java.util.List;
 
 public class TchapAuthenticatorFactory implements AuthenticatorFactory {
 
+    public static final String ID = "tchap-user-exists";
+    public static final String DISPLAY_TYPE = "Tchap Send OTP";
+    public static final String HELP_TEXT = DISPLAY_TYPE;
+    public static final String CATEGORY = "tchap";
+
     private static final AuthenticationExecutionModel.Requirement[] REQUIREMENT_CHOICES = {
             AuthenticationExecutionModel.Requirement.REQUIRED,
             AuthenticationExecutionModel.Requirement.ALTERNATIVE,
@@ -24,7 +29,7 @@ public class TchapAuthenticatorFactory implements AuthenticatorFactory {
 
     @Override
     public String getDisplayType() {
-        return "TchapAuthenticatorFactory";
+        return DISPLAY_TYPE;
     }
 
     @Override
@@ -50,7 +55,7 @@ public class TchapAuthenticatorFactory implements AuthenticatorFactory {
 
     @Override
     public String getHelpText() {
-        return "TchapAuthenticatorFactory";
+        return HELP_TEXT;
     }
 
     @Override
@@ -80,6 +85,6 @@ public class TchapAuthenticatorFactory implements AuthenticatorFactory {
 
     @Override
     public String getId() {
-        return "TchapAuthenticator";
+        return ID;
     }
 }

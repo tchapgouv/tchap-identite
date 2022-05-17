@@ -1,0 +1,2 @@
+org.beta.tchap.identite.authenticator.OtpLoginAuthenticatorFactory
+org.beta.tchap.identite.authenticator.TchapAuthenticatorFactory

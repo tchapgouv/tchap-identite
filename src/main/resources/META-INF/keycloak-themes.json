@@ -1,0 +1,6 @@
+{
+    "themes": [{
+        "name" : "tchap-otp-login",
+        "types": [ "email" ,"login"]
+    }]
+}

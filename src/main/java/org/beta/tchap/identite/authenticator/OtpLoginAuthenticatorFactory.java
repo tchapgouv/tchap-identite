@@ -17,7 +17,10 @@ public class OtpLoginAuthenticatorFactory
     implements AuthenticatorFactory
 {
 
-    public static final String ID = "keycloak-otp-login";
+    public static final String ID = "tchap-otp-login";
+    public static final String DISPLAY_TYPE = "Tchap Login OTP";
+    public static final String HELP_TEXT = DISPLAY_TYPE;
+    public static final String CATEGORY = "tchap";
 
     private static final AuthenticationExecutionModel.Requirement[] REQUIREMENT_CHOICES = {
             AuthenticationExecutionModel.Requirement.REQUIRED,
@@ -41,7 +44,7 @@ public class OtpLoginAuthenticatorFactory
     @Override
     public String getReferenceCategory()
     {
-        return "OtpLogin";
+        return CATEGORY;
     }
 
     @Override
@@ -65,13 +68,13 @@ public class OtpLoginAuthenticatorFactory
     @Override
     public String getDisplayType()
     {
-        return "OTP Login";
+        return DISPLAY_TYPE;
     }
 
     @Override
     public String getHelpText()
     {
-        return "OTP Login";
+        return HELP_TEXT;
     }
 
     @Override

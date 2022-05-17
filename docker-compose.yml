@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+    postgres:
+        image: postgres
+        networks:
+            - keycloak_network
+        env_file: .env
+        restart: 'always'
+        volumes:
+            - db_volume:/var/lib/postgresql/data
+            - ./postgresql/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh:ro
+
+    maildev:
+        container_name: maildev
+        image: djfarrelly/maildev:1.0.0
+        ports:
+            - "1080:80"
+            - "1234:25"
+        networks:
+            - keycloak_network
+
+    keycloak:
+        image: keycloak-scalingo
+        networks:
+            - keycloak_network
+        volumes:
+            - .:/buildpack
+            - ./dev/providers:/app/keycloak/providers
+            - ./dev/import:/app/keycloak/data/import
+            - cache:/cache
+            - build:/build
+            - env:/env
+            - app:/app
+        env_file: .env
+        entrypoint:
+            - "/bin/sh"
+            - -ecx
+            - |
+                 /app/keycloak/bin/kc.sh start-dev --import-realm
+
+        ports:
+            - 8080:8080
+            - 8443:8443
+        depends_on:
+            - postgres
+volumes:
+    db_volume:
+    cache:
+    build:
+    env:
+    app:
+networks:
+    keycloak_network:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.18.0.0/16
