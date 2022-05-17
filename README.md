@@ -1,12 +1,12 @@
 # tchap-identite
 
-keycloak : 18.0
-quarkus : 2.7.5
-java : 11
+- keycloak : 18.0
+- quarkus : 2.7.5
+- java : 11
 
 # docker image
 
-1. from project https://github.com/MTES-MCT/keycloak-buildpack install keyclaok scalingo image
+1. from project https://github.com/MTES-MCT/keycloak-buildpack, install keycloak scalingo image
 
 ` docker build -t keycloak-scalingo . `
 

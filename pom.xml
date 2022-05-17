@@ -6,14 +6,14 @@
 
   <version>${revision}${changelist}</version>
 
-  <artifactId>tchap-id</artifactId>
+  <artifactId>tchap-identite</artifactId>
   <packaging>jar</packaging>
 
   <name>Tchap identite</name>
   <description>Tchap identite extensions</description>
 
   <properties>
-    <revision>1.0.0</revision>
+    <revision>0.0.1</revision>
     <changelist>-SNAPSHOT</changelist>
     <keycloak.version>18.0.0</keycloak.version>
 <!--
@@ -89,7 +89,7 @@
   </dependencies>
 
   <build>
-    <finalName>${project.artifactId}</finalName>
+    <finalName>${project.artifactId}-${revision}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -105,6 +105,7 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.2.2</version>
         <configuration>
+
           <outputDirectory>./dev/providers</outputDirectory>
         </configuration>
       </plugin>
