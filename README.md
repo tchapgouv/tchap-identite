@@ -6,9 +6,12 @@
 
 # docker image
 
-0. copy env.sample -> env, fill in passwords
+0. copy env.sample -> env, fill in passwords with any value you want
+- POSTGRES_PASSWORD= 
+- KEYCLOAK_ADMIN_PASSWORD=
+- KC_DB_PASSWORD=
 
-1. from project https://github.com/MTES-MCT/keycloak-buildpack, install keycloak scalingo image
+2. from project https://github.com/MTES-MCT/keycloak-buildpack, install keycloak scalingo image
 
 ` docker build -t keycloak-scalingo . `
 
