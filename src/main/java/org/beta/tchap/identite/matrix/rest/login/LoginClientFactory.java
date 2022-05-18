@@ -7,6 +7,7 @@ import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import feign.okhttp.OkHttpClient;
 import feign.slf4j.Slf4jLogger;
+import org.beta.tchap.identite.matrix.rest.OkHttpClientFactory;
 
 import static org.beta.tchap.identite.matrix.rest.MatrixService.MATRIX_BASE_URL;
 
@@ -14,7 +15,7 @@ public class LoginClientFactory {
 
     public static LoginClient build(Gson gson) {
         return Feign.builder()
-                .client(new OkHttpClient())
+                .client(new OkHttpClient(OkHttpClientFactory.getUnsafeOkHttpClient()))
                 .encoder(new GsonEncoder(gson))
                 .decoder(new GsonDecoder(gson))
                 .logger(new Slf4jLogger(LoginClient.class))
