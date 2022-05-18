@@ -1,6 +1,7 @@
 package org.beta.tchap.identite.authenticator;
 
 import org.beta.tchap.identite.email.EmailSender;
+import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.utils.SecureCode;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
@@ -18,12 +19,14 @@ public class TchapAuthenticator implements Authenticator {
 
     private SecureCode secureCode;
     private EmailSender emailSender;
+    private final MatrixService matrixService;
 
     private static final Logger LOG = Logger.getLogger(TchapAuthenticator.class);
 
-    TchapAuthenticator(EmailSender emailSender, SecureCode secureCode){
+    TchapAuthenticator(EmailSender emailSender, SecureCode secureCode, MatrixService matrixService){
         this.secureCode = secureCode;
         this.emailSender = emailSender;
+        this.matrixService = matrixService;
     }
 
     @Override
@@ -38,12 +41,10 @@ public class TchapAuthenticator implements Authenticator {
             if (user == null || !user.isEnabled()) {
                 context.failure(AuthenticationFlowError.INVALID_USER);
             }
+            else if (!matrixService.isUserValid(user.getEmail())){
+                context.failure(AuthenticationFlowError.INVALID_USER);
+            }
             else {
-
-                /*
-                 Checks user exists
-                 */
-
                 generateAndSendCode(context);
             }
             context.success();

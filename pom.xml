@@ -16,6 +16,7 @@
     <revision>0.0.1</revision>
     <changelist>-SNAPSHOT</changelist>
     <keycloak.version>18.0.0</keycloak.version>
+    <feign.version>11.8</feign.version>
 <!--
     <keycloak.version>16.1.1</keycloak.version>
 -->
@@ -58,6 +59,22 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>io.github.openfeign</groupId>
+      <artifactId>feign-okhttp</artifactId>
+      <version>${feign.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.openfeign</groupId>
+      <artifactId>feign-gson</artifactId>
+      <version>${feign.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.openfeign</groupId>
+      <artifactId>feign-slf4j</artifactId>
+      <version>${feign.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
