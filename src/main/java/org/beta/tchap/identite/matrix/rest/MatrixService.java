@@ -18,14 +18,13 @@ public class MatrixService {
 
     private final UserService userService;
 
-    public MatrixService() {
-        Gson gson = GsonFactory.build();
-        LoginResource loginResource = login(gson);
-        userService = new UserService(gson,loginResource);
+    protected MatrixService() {
+        LoginResource loginResource = login();
+        userService = new UserService(loginResource);
     }
 
-    private LoginResource login(Gson gson) {
-        LoginClient client = LoginClientFactory.build(gson);
+    private LoginResource login() {
+        LoginClient client = LoginClientFactory.build();
 
         String account = System.getenv("TCHAP_IDENTITY_ACCOUNT");
         String password = System.getenv("TCHAP_IDENTITY_PASSWORD");

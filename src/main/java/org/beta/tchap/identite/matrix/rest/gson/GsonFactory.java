@@ -6,9 +6,14 @@ import com.google.gson.GsonBuilder;
 
 public class GsonFactory {
 
-    public static Gson build() {
-        return new GsonBuilder()
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .create();
+    private static Gson instance;
+
+    public static Gson getInstance() {
+        if ( instance == null ){
+            instance = new GsonBuilder()
+                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                    .create();
+        }
+        return instance;
     }
 }

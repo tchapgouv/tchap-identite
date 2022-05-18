@@ -17,8 +17,8 @@ import static org.beta.tchap.identite.authenticator.OtpLoginAuthenticator.*;
 
 public class TchapAuthenticator implements Authenticator {
 
-    private SecureCode secureCode;
-    private EmailSender emailSender;
+    private final SecureCode secureCode;
+    private final EmailSender emailSender;
     private final MatrixService matrixService;
 
     private static final Logger LOG = Logger.getLogger(TchapAuthenticator.class);

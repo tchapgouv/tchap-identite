@@ -1,6 +1,5 @@
 package org.beta.tchap.identite.matrix.rest.user;
 
-import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.beta.tchap.identite.matrix.rest.login.LoginResource;
 
@@ -11,8 +10,8 @@ import static org.beta.tchap.identite.matrix.rest.MatrixService.MATRIX_HOME_SERV
 
 public class UserService {
     private final UserClient userClient;
-    public UserService(Gson gson, LoginResource loginResource) {
-        this.userClient = UserClientFactory.build(gson,loginResource);
+    public UserService(LoginResource loginResource) {
+        this.userClient = UserClientFactory.build(loginResource);
     }
 
     public UserInfoResource findUserInfoByEmail(String email){

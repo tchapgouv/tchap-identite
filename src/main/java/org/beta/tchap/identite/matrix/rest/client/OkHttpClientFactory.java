@@ -1,9 +1,11 @@
-package org.beta.tchap.identite.matrix.rest;
+package org.beta.tchap.identite.matrix.rest.client;
 
 import okhttp3.OkHttpClient;
 
-import javax.net.ssl.*;
-import java.security.cert.CertificateException;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 
 /**

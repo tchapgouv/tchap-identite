@@ -1,6 +1,5 @@
 package org.beta.tchap.identite.matrix.rest.user;
 
-import org.beta.tchap.identite.matrix.rest.gson.GsonFactory;
 import org.beta.tchap.identite.matrix.rest.login.LoginResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,7 +13,7 @@ class UserServiceTest {
     public static void setup(){
         LoginResource loginResource = new LoginResource();
         loginResource.setAccessToken("fakeToken");
-        userService = new UserService(GsonFactory.build(), loginResource);
+        userService = new UserService(loginResource);
     }
 
 
