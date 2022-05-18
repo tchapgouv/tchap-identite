@@ -28,6 +28,8 @@ services:
             - .:/buildpack
             - ./dev/providers:/app/keycloak/providers
             - ./dev/import:/app/keycloak/data/import
+            - ./themes/:/app/keycloak/themes
+            - ./themes/templates/enter-code.ftl:/app/keycloak/providers/enter-code.ftl
             - cache:/cache
             - build:/build
             - env:/env
@@ -37,7 +39,7 @@ services:
             - "/bin/sh"
             - -ecx
             - |
-                 /app/keycloak/bin/kc.sh start-dev --import-realm
+                 /app/keycloak/bin/kc.sh start-dev --import-realm --spi-theme-static-max-age=-1 --spi-theme-cache-themes=false --spi-theme-cache-templates=false
 
         ports:
             - 8080:8080

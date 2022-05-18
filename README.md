@@ -6,18 +6,20 @@
 
 # docker image
 
-0. copy env.sample -> env, fill in passwords with any value you want
-- POSTGRES_PASSWORD= 
-- KEYCLOAK_ADMIN_PASSWORD=
-- KC_DB_PASSWORD=
+0. copy env.sample -> env, fill in passwords with (any value you want..)
+- POSTGRES_PASSWORD=password
+- KEYCLOAK_ADMIN_PASSWORD=password
+- KC_DB_PASSWORD=password
 
-2. from project https://github.com/MTES-MCT/keycloak-buildpack, install keycloak scalingo image
+2. from project https://github.com/MTES-MCT/keycloak-buildpack, install keycloak scalingo image locally
 
 ` docker build -t keycloak-scalingo . `
 
-3. build custom providers
+3. build extension with maven goal. A jar is produced with the custom providers and the custom view.  
 
 `mvn install`
+
+For local development, the jar is copied to /dev/providers
 
 3. launch containers
 

@@ -243,12 +243,12 @@
     },
     {
       "id": "55eda8da-f3e0-40d1-8190-1897c721c1ef",
-      "clientId": "audioconf_test",
+      "clientId": "tchap-identite-client",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "Jsheryrc78sdjdb09",
       "redirectUris": [
         "http://localhost:3000/auth/callback"
       ],
