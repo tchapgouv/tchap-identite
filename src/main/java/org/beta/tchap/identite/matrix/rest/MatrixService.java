@@ -27,8 +27,8 @@ public class MatrixService {
     private LoginResource login(Gson gson) {
         LoginClient client = LoginClientFactory.build(gson);
 
-        String account = System.getProperty("TCHAP_IDENTITY_ACCOUNT");
-        String password = System.getProperty("TCHAP_IDENTITY_PASSWORD");
+        String account = System.getenv("TCHAP_IDENTITY_ACCOUNT");
+        String password = System.getenv("TCHAP_IDENTITY_PASSWORD");
 
         if (StringUtils.isEmpty(account) || StringUtils.isEmpty(password)){
             throw new IllegalArgumentException("No account or password has been set. Please define the following" +
