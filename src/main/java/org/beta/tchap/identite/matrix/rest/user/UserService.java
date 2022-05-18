@@ -9,7 +9,9 @@ import java.util.Map;
 import static org.beta.tchap.identite.matrix.rest.MatrixService.MATRIX_HOME_SERVER;
 
 public class UserService {
+
     private final UserClient userClient;
+
     public UserService(LoginResource loginResource) {
         this.userClient = UserClientFactory.build(loginResource);
     }

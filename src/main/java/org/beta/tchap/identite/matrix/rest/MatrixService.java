@@ -1,16 +1,17 @@
 package org.beta.tchap.identite.matrix.rest;
 
-import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
-import org.beta.tchap.identite.matrix.rest.gson.GsonFactory;
 import org.beta.tchap.identite.matrix.rest.login.LoginBody;
 import org.beta.tchap.identite.matrix.rest.login.LoginClient;
 import org.beta.tchap.identite.matrix.rest.login.LoginClientFactory;
 import org.beta.tchap.identite.matrix.rest.login.LoginResource;
 import org.beta.tchap.identite.matrix.rest.user.UserInfoResource;
 import org.beta.tchap.identite.matrix.rest.user.UserService;
+import org.jboss.logging.Logger;
 
 public class MatrixService {
+
+    private static final Logger LOG = Logger.getLogger(MatrixService.class);
 
     // check if we need to incorporate other servers
     public static final String MATRIX_HOME_SERVER = "i.tchap.gouv.fr";
@@ -43,11 +44,14 @@ public class MatrixService {
     }
 
     public boolean isUserValid(String email) {
+        LOG.debugf("Check if email is valid in tchap : %s", email);
         if (StringUtils.isEmpty(email)){
             return false;
         }
         UserInfoResource userInfoByEmail = userService.findUserInfoByEmail(email);
-        return userInfoByEmail != null && !userInfoByEmail.isDeactivated() && !userInfoByEmail.isExpired();
+        boolean result = userInfoByEmail != null && !userInfoByEmail.isDeactivated() && !userInfoByEmail.isExpired();
+        LOG.infof("Email[%s] is valid in tchap : %s", email, result);
+        return result;
     }
 
 }
