@@ -27,6 +27,8 @@ For local development, the jar is copied to /dev/providers
 
 4. Connect to 
 - keycloak admin http://localhost:8080 with admin/password
+  - in realm Tchap-identite, go to Clients>tchap-identite-client>credentials> "Regenerate Secret"
+  - copy this secret in your open id client (see -4-)
 - email client : http://localhost:1080
 
 4. install a openId client sample 
