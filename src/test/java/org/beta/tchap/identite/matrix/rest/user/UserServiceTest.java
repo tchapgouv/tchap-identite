@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 class UserServiceTest {
 
     private static UserService userService;
@@ -15,13 +13,13 @@ class UserServiceTest {
     public static void setup(){
         LoginResource loginResource = new LoginResource();
         loginResource.setAccessToken("fakeToken");
-        userService = new UserService(loginResource, Arrays.asList("https://matrix.i.tchap.gouv.fr"));
+        userService = new UserService("i.tchap.gouv.fr", loginResource.getAccessToken());
     }
 
 
     @Test
     void emailToUserId() {
-        String userId = userService.emailToUserId("clark.kent@beta.gouv.fr");
+        String userId = userService.emailToUserId("clark.kent@beta.gouv.fr", "i.tchap.gouv.fr");
         Assertions.assertEquals("@clark.kent-beta.gouv.fr:i.tchap.gouv.fr",userId);
     }
 }

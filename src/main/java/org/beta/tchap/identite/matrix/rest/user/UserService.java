@@ -1,27 +1,20 @@
 package org.beta.tchap.identite.matrix.rest.user;
 
 import org.apache.commons.lang.StringUtils;
-import org.beta.tchap.identite.matrix.rest.login.LoginResource;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public class UserService {
+    private final UserClient userClient;
 
-    private final List<String> homeServerList;
-    private final LoginResource loginResource;
-
-    public UserService(LoginResource loginResource, List<String> homeServerList) {
-        this.loginResource = loginResource;
-        this.homeServerList = homeServerList;
+    public UserService(String homeServerUrl, String accessToken) {
+        userClient = UserClientFactory.build(homeServerUrl, accessToken);
     }
 
-    public UserInfoResource findUserInfoByEmail(String email){
-        //todo : fixme
-        UserClient userClient = UserClientFactory.build(loginResource, homeServerList.get(new Random().nextInt(homeServerList.size())));
+    public UserInfoResource findUserInfoByEmail(String email, String homeServer){
         UserInfoBody userInfoBody = new UserInfoBody();
-        List<String> userIds = List.of(emailToUserId(email));
+        List<String> userIds = List.of(emailToUserId(email, homeServer));
         userInfoBody.setUserIds(userIds);
         Map<String, Object> rawResponse = userClient.findByUsers(userInfoBody);
         return toUserInfoResource(userIds, rawResponse);
@@ -56,10 +49,10 @@ public class UserService {
         return null;
     }
 
-    public String emailToUserId(String email) {
+    public String emailToUserId(String email, String homeServer) {
         if (StringUtils.isEmpty(email)){
             return email;
         }
-        return "@" + email.replace("@", "-") + ":" + MATRIX_HOME_SERVER;
+        return "@" + email.replace("@", "-") + ":" + homeServer;
     }
 }
