@@ -27,4 +27,6 @@
 - keycloak admin http://localhost:8080 with admin/password
 - email client : http://localhost:1080
 
-4. install a openId client 
+4. install a openId client sample 
+
+https://github.com/tchapgouv/oidc-client-example
