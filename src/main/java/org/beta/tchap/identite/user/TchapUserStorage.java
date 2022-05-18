@@ -1,6 +1,8 @@
 package org.beta.tchap.identite.user;
 
+import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.jboss.logging.Logger;
+import org.keycloak.authentication.AuthenticationFlowError;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.models.*;
 import org.keycloak.storage.StorageId;
@@ -17,13 +19,15 @@ public class TchapUserStorage implements UserStorageProvider,
     protected KeycloakSession session;
     protected ComponentModel model;
     protected Map<String, UserModel> loadedUsers = new HashMap<>();
+    private MatrixService matrixService;
 
     /**
      * Public constructor
      */
-    public TchapUserStorage(KeycloakSession session, ComponentModel model) {
+    public TchapUserStorage(KeycloakSession session, ComponentModel model, MatrixService matrixService) {
         this.session = session;
         this.model = model;
+        this.matrixService = matrixService;
     }
 
 
@@ -39,10 +43,7 @@ public class TchapUserStorage implements UserStorageProvider,
     public UserModel getUserByUsername(RealmModel realm, String username) {
         LOG.infof("Checking username : %s", username);
         UserModel adapter = loadedUsers.get(username);
-        if (adapter == null) {
-            /*
-             * APPELER SYNAPSE
-             */
+        if (adapter == null && !matrixService.isUserValid(username)) {
             adapter = new TchapUserModel(session, realm, model, username);
             loadedUsers.put(username, adapter);
         }

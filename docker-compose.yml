@@ -38,7 +38,8 @@ services:
             - "/bin/sh"
             - -ecx
             - |
-                 /app/keycloak/bin/kc.sh start-dev --import-realm --spi-theme-static-max-age=-1 --spi-theme-cache-themes=false --spi-theme-cache-templates=false
+                 /app/keycloak/bin/kc.sh start-dev --import-realm --spi-theme-static-max-age=-1 --spi-theme-cache-themes=false --spi-theme-cache-templates=false --log-level=INFO,org.beta:debug
+
 
         ports:
             - 8080:8080

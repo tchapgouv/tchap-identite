@@ -9,26 +9,34 @@ import org.beta.tchap.identite.matrix.rest.user.UserInfoResource;
 import org.beta.tchap.identite.matrix.rest.user.UserService;
 import org.jboss.logging.Logger;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 public class MatrixService {
 
     private static final Logger LOG = Logger.getLogger(MatrixService.class);
 
     // check if we need to incorporate other servers
-    public static final String MATRIX_HOME_SERVER = "i.tchap.gouv.fr";
+    /*public static final String MATRIX_HOME_SERVER = "i.tchap.gouv.fr";
     public static final String MATRIX_BASE_URL = "https://matrix." + MATRIX_HOME_SERVER;
+*/
 
     private final UserService userService;
+    private String account;
+    private String password;
+    private List<String> homeServerList;
 
     protected MatrixService() {
         LoginResource loginResource = login();
-        userService = new UserService(loginResource);
+        userService = new UserService(loginResource, homeServerList);
+        account = System.getenv("TCHAP_IDENTITY_ACCOUNT");
+        password = System.getenv("TCHAP_IDENTITY_PASSWORD");
+        homeServerList = Arrays.asList(System.getenv("TCHAP_HOME_SERVER_LIST").split(","));
     }
 
     private LoginResource login() {
-        LoginClient client = LoginClientFactory.build();
-
-        String account = System.getenv("TCHAP_IDENTITY_ACCOUNT");
-        String password = System.getenv("TCHAP_IDENTITY_PASSWORD");
+        LoginClient client = LoginClientFactory.build(homeServerList.get(new Random().nextInt(homeServerList.size())));
 
         if (StringUtils.isEmpty(account) || StringUtils.isEmpty(password)){
             throw new IllegalArgumentException("No account or password has been set. Please define the following" +
@@ -44,7 +52,7 @@ public class MatrixService {
     }
 
     public boolean isUserValid(String email) {
-        LOG.debugf("Check if email is valid in tchap : %s", email);
+        LOG.infof("Check if email is valid in tchap : %s", email);
         if (StringUtils.isEmpty(email)){
             return false;
         }
@@ -53,5 +61,4 @@ public class MatrixService {
         LOG.infof("Email[%s] is valid in tchap : %s", email, result);
         return result;
     }
-
 }

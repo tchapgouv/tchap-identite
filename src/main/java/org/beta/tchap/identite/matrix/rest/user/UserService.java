@@ -5,18 +5,21 @@ import org.beta.tchap.identite.matrix.rest.login.LoginResource;
 
 import java.util.List;
 import java.util.Map;
-
-import static org.beta.tchap.identite.matrix.rest.MatrixService.MATRIX_HOME_SERVER;
+import java.util.Random;
 
 public class UserService {
 
-    private final UserClient userClient;
+    private final List<String> homeServerList;
+    private final LoginResource loginResource;
 
-    public UserService(LoginResource loginResource) {
-        this.userClient = UserClientFactory.build(loginResource);
+    public UserService(LoginResource loginResource, List<String> homeServerList) {
+        this.loginResource = loginResource;
+        this.homeServerList = homeServerList;
     }
 
     public UserInfoResource findUserInfoByEmail(String email){
+        //todo : fixme
+        UserClient userClient = UserClientFactory.build(loginResource, homeServerList.get(new Random().nextInt(homeServerList.size())));
         UserInfoBody userInfoBody = new UserInfoBody();
         List<String> userIds = List.of(emailToUserId(email));
         userInfoBody.setUserIds(userIds);

@@ -68,8 +68,8 @@ public class TchapAuthenticatorFactory implements AuthenticatorFactory {
     public Authenticator create(KeycloakSession session) {
         return new TchapAuthenticator(
                 EmailSenderFactory.getInstance(),
-                SecureCodeFactory.getInstance(),
-                MatrixServiceFactory.getInstance());
+                SecureCodeFactory.getInstance()
+                );
     }
 
     @Override

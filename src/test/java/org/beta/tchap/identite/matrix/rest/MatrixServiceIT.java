@@ -5,9 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.beta.tchap.identite.TestUtils.updateEnv;
 
@@ -17,10 +15,10 @@ class MatrixServiceIntTest {
 
     @BeforeAll
     public static void setup() throws Exception {
-        updateEnv("TCHAP_IDENTITY_ACCOUNT","<replace here with the appropriate service email account>");
-        updateEnv("TCHAP_IDENTITY_PASSWORD","<get the password>");
-        Map map = new HashMap();
-        //setEnv(map);
+        updateEnv("TCHAP_IDENTITY_ACCOUNT","tchap-identite@tchap.beta.gouv.fr");
+        updateEnv("TCHAP_IDENTITY_PASSWORD","TCLJsspN5A@6N@G3");
+        updateEnv("TCHAP_HOME_SERVER_LIST", "https://matrix.i.tchap.gouv.fr,https://matrix.i.tchap.gouv.fr");
+
         matrixService = new MatrixService();
     }
 
