@@ -19,7 +19,7 @@
 
 3. build extension with maven goal. A jar is produced with the custom providers and the custom view.  
 
-`mvn install`
+`mvn package`
 
 For local development, the jar is copied to /dev/providers
 
