@@ -28,7 +28,7 @@ services:
             - .:/buildpack
             - ./dev/providers:/app/keycloak/providers
             - ./dev/import:/app/keycloak/data/import
-            - ./themes/:/app/keycloak/themes
+            - ./themes/tchap-otp-login:/app/keycloak/themes/tchap-otp-login
             - ./themes/templates/enter-code.ftl:/app/keycloak/providers/enter-code.ftl
             - cache:/cache
             - build:/build
