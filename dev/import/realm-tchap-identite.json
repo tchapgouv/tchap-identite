@@ -248,7 +248,6 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "Jsheryrc78sdjdb09",
       "redirectUris": [
         "http://localhost:3000/auth/callback"
       ],
