@@ -12,9 +12,12 @@ import org.beta.tchap.identite.matrix.rest.user.UserService;
 
 public class MatrixService {
 
+    // check if we need to incorporate other servers
     public static final String MATRIX_HOME_SERVER = "i.tchap.gouv.fr";
     public static final String MATRIX_BASE_URL = "https://matrix." + MATRIX_HOME_SERVER;
+
     private final UserService userService;
+
     public MatrixService() {
         Gson gson = GsonFactory.build();
         LoginResource loginResource = login(gson);
@@ -29,7 +32,7 @@ public class MatrixService {
 
         if (StringUtils.isEmpty(account) || StringUtils.isEmpty(password)){
             throw new IllegalArgumentException("No account or password has been set. Please define the following" +
-                    " environment variables : TCHAP_IDENTITY_ACCOUNT and  TCHAP_IDENTITY_PASSWORD");
+                    " environment variables : TCHAP_IDENTITY_ACCOUNT and TCHAP_IDENTITY_PASSWORD");
         }
 
         LoginBody body = new LoginBody();
