@@ -20,6 +20,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: false
+        id: tag_version
 
   build-jar:
     needs: [tag-version]
@@ -45,11 +46,11 @@ jobs:
         with:
           fetch-depth: 0
       - name: Get release version
-        run: echo "The new release is ${{needs.tag-version.outputs.new_tag}}"
+        run: echo "The new release is ${{steps.tag_version.outputs.new_tag}}"
       - name: Create tchap-identite release
         uses: ncipollo/release-action@v1
         with:
-          name: ${{needs.tag-version.outputs.new_tag}}
-          tag: ${{needs.tag-version.outputs.new_tag}}
+          name: ${{steps.tag_version.outputs.new_tag}}
+          tag: ${{steps.tag_version.outputs.new_tag}}
           generateReleaseNotes: true
           token: ${{ secrets.GITHUB_TOKEN }}
