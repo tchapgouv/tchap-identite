@@ -1,6 +1,7 @@
 package org.beta.tchap.identite.authenticator;
 
 import org.beta.tchap.identite.email.EmailSender;
+import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.utils.SecureCode;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
@@ -16,8 +17,8 @@ import static org.beta.tchap.identite.authenticator.OtpLoginAuthenticator.*;
 
 public class TchapAuthenticator implements Authenticator {
 
-    private SecureCode secureCode;
-    private EmailSender emailSender;
+    private final SecureCode secureCode;
+    private final EmailSender emailSender;
 
     private static final Logger LOG = Logger.getLogger(TchapAuthenticator.class);
 
@@ -32,21 +33,16 @@ public class TchapAuthenticator implements Authenticator {
         String loginHint = session.getClientNote(OIDCLoginProtocol.LOGIN_HINT_PARAM);
 
         if(loginHint !=null){
+            LOG.infof("Authenticate login : %s", loginHint);
             context.getAuthenticationSession().setAuthNote(AUTH_NOTE_USER_EMAIL, loginHint);
             UserModel user = getUser(context);
 
             if (user == null || !user.isEnabled()) {
                 context.failure(AuthenticationFlowError.INVALID_USER);
-            }
-            else {
-
-                /*
-                 Checks user exists
-                 */
-
+            } else {
                 generateAndSendCode(context);
+                context.success();
             }
-            context.success();
         }else{
             context.failure(AuthenticationFlowError.INVALID_USER);
         }
@@ -59,12 +55,13 @@ public class TchapAuthenticator implements Authenticator {
         context.getAuthenticationSession().setAuthNote(AUTH_NOTE_TIMESTAMP,
                 Long.toString(System.currentTimeMillis()));
 
-        emailSender.sendEmail(context.getSession(), context.getRealm(),
-                              getUser(context), secureCode.makeCodeUserFriendly(code));
-
         String friendlyCode = secureCode.makeCodeUserFriendly(code);
-
         LOG.infof("Sending OTP : %s", friendlyCode);
+
+        emailSender.sendEmail(context.getSession(), context.getRealm(),
+                              getUser(context), friendlyCode);
+
+
         /*
          * SEND DM TCHAP OTP IF TCHAP ACCOUNT
          */

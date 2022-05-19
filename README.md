@@ -10,6 +10,9 @@
 - POSTGRES_PASSWORD=password
 - KEYCLOAK_ADMIN_PASSWORD=password
 - KC_DB_PASSWORD=password
+- TCHAP_ACCOUNT=service account for Tchap Identity created on Tchap Server side
+- TCHAP_PASSWORD=password for the service account
+- TCHAP_HOME_SERVER_LIST=list of home servers
 
 2. from project https://github.com/MTES-MCT/keycloak-buildpack, install keycloak scalingo image locally
 
@@ -17,7 +20,7 @@
 
 3. build extension with maven goal. A jar is produced with the custom providers and the custom view.  
 
-`mvn install`
+`mvn package`
 
 For local development, the jar is copied to /dev/providers
 
@@ -34,3 +37,4 @@ For local development, the jar is copied to /dev/providers
 4. install a openId client sample 
 
 https://github.com/tchapgouv/oidc-client-example
+
