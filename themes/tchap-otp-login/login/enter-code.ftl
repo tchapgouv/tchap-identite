@@ -9,11 +9,13 @@
               action="${url.loginAction}" method="post">
             <div class="${properties.kcFormGroupClass!}">
                 <div class="${properties.kcLabelWrapperClass!}">
-                    <label for="codeInput" class="${properties.kcLabelClass!}">Renseignez le code que vous avez recu sur Tchap et à votre adresse mail TODO</label>
+                    <label for="codeInput" class="${properties.kcLabelClass!}">Renseignez le code que vous avez recu sur Tchap
+                        et à votre adresse mail <strong>${userEmail!}</strong>
+                        </label>
                 </div>
 
                 <div class="${properties.kcInputWrapperClass!}">
-                    <input tabindex="1" id="codeInput" class="${properties.kcInputClass!}" name="codeInput" type="text"
+                    <input tabindex="1" id="codeInput" class="${properties.kcInputClass!} code-input" name="codeInput" type="text"
                            autofocus autocomplete="off"/>
                 </div>
             </div>
