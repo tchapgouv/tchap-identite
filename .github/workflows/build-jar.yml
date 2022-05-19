@@ -45,3 +45,5 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ncipollo/release-action@v1
+        with:
+          tag: ${{jobs.tag-version.outputs.new_tag}}
