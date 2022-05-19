@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: '0'
+          fetch-depth: 0
       - name: Auto tag version of tchap-identite
         uses: anothrNick/github-tag-action@1.36.0
         env:
@@ -43,5 +43,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: '0'
+          fetch-depth: 0
       - uses: ncipollo/release-action@v1
