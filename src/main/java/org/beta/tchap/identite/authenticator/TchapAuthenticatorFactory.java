@@ -35,7 +35,7 @@ public class TchapAuthenticatorFactory implements AuthenticatorFactory {
 
     @Override
     public String getReferenceCategory() {
-        return "beta";
+        return CATEGORY;
     }
 
     @Override
