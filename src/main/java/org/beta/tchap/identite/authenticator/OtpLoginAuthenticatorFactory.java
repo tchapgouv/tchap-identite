@@ -1,7 +1,7 @@
 package org.beta.tchap.identite.authenticator;
 
-import org.beta.tchap.identite.email.EmailSender;
-import org.beta.tchap.identite.utils.SecureCode;
+import org.beta.tchap.identite.email.EmailSenderFactory;
+import org.beta.tchap.identite.utils.SecureCodeFactory;
 import org.keycloak.Config;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.authentication.AuthenticatorFactory;
@@ -32,7 +32,9 @@ public class OtpLoginAuthenticatorFactory
     @Override
     public Authenticator create(KeycloakSession session)
     {
-        return new OtpLoginAuthenticator(new EmailSender(), new SecureCode());
+        return new OtpLoginAuthenticator(
+                EmailSenderFactory.getInstance(),
+                SecureCodeFactory.getInstance());
     }
 
     @Override

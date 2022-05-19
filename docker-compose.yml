@@ -26,7 +26,7 @@ services:
             - keycloak_network
         volumes:
             - .:/buildpack
-            - ./dev/providers:/app/keycloak/providers
+            - ./target/tchap-identite-0.0.1-jar-with-dependencies.jar:/app/keycloak/providers/tchap-identite-0.0.1-jar-with-dependencies.jar
             - ./dev/import:/app/keycloak/data/import
             - ./themes/tchap-otp-login:/app/keycloak/themes/tchap-otp-login
             - ./themes/templates/enter-code.ftl:/app/keycloak/providers/enter-code.ftl
@@ -39,7 +39,8 @@ services:
             - "/bin/sh"
             - -ecx
             - |
-                 /app/keycloak/bin/kc.sh start-dev --import-realm --spi-theme-static-max-age=-1 --spi-theme-cache-themes=false --spi-theme-cache-templates=false
+                 /app/keycloak/bin/kc.sh start-dev --import-realm --spi-theme-static-max-age=-1 --spi-theme-cache-themes=false --spi-theme-cache-templates=false --log-level=INFO,org.beta:debug
+
 
         ports:
             - 8080:8080
