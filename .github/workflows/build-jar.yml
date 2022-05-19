@@ -36,7 +36,7 @@ jobs:
         run: mvn -B package --file pom.xml
 
   create-release:
-    needs: [build-jar]
+    needs: [tag-version, build-jar]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -46,4 +46,4 @@ jobs:
           fetch-depth: 0
       - uses: ncipollo/release-action@v1
         with:
-          tag: ${{jobs.tag-version.outputs.new_tag}}
+          tag: ${{needs.tag-version.outputs.new_tag}}
