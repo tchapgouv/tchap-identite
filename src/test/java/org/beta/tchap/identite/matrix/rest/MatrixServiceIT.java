@@ -19,13 +19,13 @@ class MatrixServiceIntTest {
     }
 
     @Test
-    void shouldUserBeValid() {
+    void shouldInternalUserBeValid() {
         boolean userValid = matrixService.isUserValid("maghen.calinghee@beta.gouv.fr");
         Assertions.assertTrue(userValid);
     }
 
     @Test
-    void shouldUserNotBeValid() {
+    void shouldInternalUserNotBeValid() {
         boolean userValid = matrixService.isUserValid("clark.kent@beta.gouv.fr");
         Assertions.assertFalse(userValid);
     }
@@ -33,6 +33,12 @@ class MatrixServiceIntTest {
     @Test
     void shouldExternalUserNotBeValid() {
         boolean userValid = matrixService.isUserValid("clark.kent@gmail.com");
+        Assertions.assertFalse(userValid);
+    }
+
+    @Test
+    void shouldExternalUserWithInvalidEmailNotBeValid() {
+        boolean userValid = matrixService.isUserValid("clark.kent");
         Assertions.assertFalse(userValid);
     }
 
