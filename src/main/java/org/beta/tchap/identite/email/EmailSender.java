@@ -17,6 +17,8 @@ public class EmailSender
 {
     private static final Logger LOG = Logger.getLogger(TchapUserStorage.class);
 
+    protected EmailSender(){}
+
     /**
      * Sends email with given code to user
      *
