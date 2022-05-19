@@ -51,7 +51,7 @@ public class TchapAuthenticator implements Authenticator {
     private void generateAndSendCode(AuthenticationFlowContext context)
     {
         String code = secureCode.generateCode(6);
-        context.getAuthenticationSession().setAuthNote(AUTH_NOTE_EMAIL_CODE, code);
+        context.getAuthenticationSession().setAuthNote(AUTH_NOTE_OTP, code);
         context.getAuthenticationSession().setAuthNote(AUTH_NOTE_TIMESTAMP,
                 Long.toString(System.currentTimeMillis()));
 

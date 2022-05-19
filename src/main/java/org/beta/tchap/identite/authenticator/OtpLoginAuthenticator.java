@@ -1,17 +1,19 @@
 package org.beta.tchap.identite.authenticator;
 
-import org.beta.tchap.identite.email.EmailSender;
 import org.beta.tchap.identite.utils.SecureCode;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.authentication.authenticators.browser.AbstractUsernameFormAuthenticator;
+import org.keycloak.forms.login.LoginFormsPages;
+import org.keycloak.forms.login.LoginFormsProvider;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 /**
  * If all conditions for the code validation are met he gets logged in
@@ -25,58 +27,52 @@ public class OtpLoginAuthenticator extends AbstractUsernameFormAuthenticator
 
     private static final String FTL_ENTER_CODE       = "enter-code.ftl";
     public static final String AUTH_NOTE_USER_EMAIL = "user-email";
-    public static final String AUTH_NOTE_EMAIL_CODE = "email-code";
+    public static final String AUTH_NOTE_OTP = "email-code";
     public static final String AUTH_NOTE_TIMESTAMP  = "timestamp";
+    public static final String FORM_ATTRIBUTE_USER_EMAIL  = "userEmail";
 
-    private EmailSender emailSender;
+    public static final int CODE_TIMEOUT_IN_MINUTES  = 20;
+    public static final int CODE_ACTIVATION_DELAY_IN_SECONDS  = 2;
+
+
     private SecureCode secureCode;
 
-    public OtpLoginAuthenticator(EmailSender emailSender, SecureCode secureCode)
+    public OtpLoginAuthenticator(SecureCode secureCode)
     {
-        this.emailSender = emailSender;
         this.secureCode = secureCode;
     }
 
     @Override
     public void action(AuthenticationFlowContext context)
     {
+        LOG.debugf("Authenticate action user by otp");
 
+        //prepareOtpForm(context);
+        /* retrieve formData*/
         MultivaluedMap<String, String> formData = context.getHttpRequest().getDecodedFormParameters();
-        context.challenge(context.form().createForm(FTL_ENTER_CODE));
-
-        //String email = formData.getFirst("email");
         String codeInput = formData.getFirst("codeInput");
-/*
-        if (email != null) {
 
-            context.getAuthenticationSession().setAuthNote(AUTH_NOTE_USER_EMAIL, email);
-            UserModel user = getUser(context);
-
-            if (user == null || !user.isEnabled()) {
-                context.failure(AuthenticationFlowError.INVALID_USER);
-            }
-            else {
-                generateAndSendCode(context);
-            }
-
+        if (codeInput == null || codeInput.isEmpty()) {
+            context.challenge(otpForm(context,"Veuillez renseignez un code"));
+            return;
         }
-        else */
 
-        if (codeInput != null && context.getAuthenticationSession().getAuthNote(AUTH_NOTE_EMAIL_CODE) != null) {
+        if (context.getAuthenticationSession().getAuthNote(AUTH_NOTE_OTP) == null) {
+            context.challenge(otpFormError(context,"Le code est invalide, veuillez redemander un code"));
+            return;
+        }
 
-            if (secureCode.isValid(codeInput, context.getAuthenticationSession().getAuthNote(AUTH_NOTE_EMAIL_CODE),
-                                   context.getAuthenticationSession().getAuthNote(AUTH_NOTE_TIMESTAMP), 20, 2)) {
-                context.setUser(getUser(context));
-                context.success();
-            }
-            else {
-                context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS,
-                                         context.form().createForm(redirectBasedOnProvidedUserInfo(context)));
-            }
+        if (!secureCode.isValid(codeInput, context.getAuthenticationSession().getAuthNote(AUTH_NOTE_OTP),
+                               context.getAuthenticationSession().getAuthNote(AUTH_NOTE_TIMESTAMP),
+                CODE_TIMEOUT_IN_MINUTES,
+                CODE_ACTIVATION_DELAY_IN_SECONDS)) {
+            //code validation has failed
+            context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS,otpFormError(context,"Le code n'est pas valide"));
+            return;
         }
-        else {
-            context.challenge(context.form().createForm(redirectBasedOnProvidedUserInfo(context)));
-        }
+
+        context.setUser(getUser(context));
+        context.success();
     }
 
     private UserModel getUser(AuthenticationFlowContext context)
@@ -87,32 +83,43 @@ public class OtpLoginAuthenticator extends AbstractUsernameFormAuthenticator
     @Override
     public void authenticate(AuthenticationFlowContext context)
     {
-        context.challenge(context.form().createForm(redirectBasedOnProvidedUserInfo(context)));
+        LOG.debugf("Authenticate user by otp");
 
+        context.challenge(otpForm(context,null));
     }
 
-    /**
-     * checks if there already is a user attached to the authentication flow to avoid asking for
-     * identity more than once
-     */
-    private String redirectBasedOnProvidedUserInfo(AuthenticationFlowContext context)
-    {
-        return FTL_ENTER_CODE;
-    }
-    /*
-    private String redirectBasedOnProvidedUserInfo(AuthenticationFlowContext context)
-    {
-        String redirect;
-        try {
-            context.getAuthenticationSession().setAuthNote(AUTH_NOTE_USER_EMAIL, context.getUser().getEmail());
-            generateAndSendCode(context);
-            redirect = FTL_ENTER_CODE;
-        } catch (NullPointerException e) {
-            redirect = FTL_ENTER_EMAIL;
+    private Response otpForm(AuthenticationFlowContext context, String info){
+        String userEmail = context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL);
+
+        /* if userEmail is not set in the authentication session, fails */
+        if(userEmail==null || userEmail.isEmpty()){
+            //TODO
         }
 
-        return redirect;
-    }*/
+        /* display otp form*/
+        LoginFormsProvider form =  context.form()
+                .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail);
+        if(info !=null){
+            form.setInfo(info);
+        }
+        return form.createForm(FTL_ENTER_CODE);
+    }
+
+    private Response otpFormError(AuthenticationFlowContext context, String error){
+        String userEmail = context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL);
+
+        /* if userEmail is not set in the authentication session, fails */
+        if(userEmail==null || userEmail.isEmpty()){
+            //TODO
+        }
+
+        /* display otp form*/
+        return context.form()
+                .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail)
+                .setError(error)
+                .createForm(FTL_ENTER_CODE);
+    }
+
 
     @Override
     public boolean requiresUser()

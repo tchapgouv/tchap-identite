@@ -28,7 +28,8 @@ services:
             - .:/buildpack
             - ./target/tchap-identite-0.0.1-jar-with-dependencies.jar:/app/keycloak/providers/tchap-identite-0.0.1-jar-with-dependencies.jar
             - ./dev/import:/app/keycloak/data/import
-            - ./themes/:/app/keycloak/themes
+            - ./themes/tchap-otp-login:/app/keycloak/themes/tchap-otp-login
+            - ./themes/templates/enter-code.ftl:/app/keycloak/providers/enter-code.ftl
             - cache:/cache
             - build:/build
             - env:/env

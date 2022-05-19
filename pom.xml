@@ -143,10 +143,10 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${basedir}/target/classes/META-INF</outputDirectory>
+              <outputDirectory>${basedir}/target/classes/META-INF/tchap-otp-login</outputDirectory>
               <resources>
                 <resource>
-                  <directory>themes</directory>
+                  <directory>themes/tchap-otp-login</directory>
                   <filtering>true</filtering>
                 </resource>
               </resources>
