@@ -33,7 +33,6 @@ public class OtpLoginAuthenticatorFactory
     public Authenticator create(KeycloakSession session)
     {
         return new OtpLoginAuthenticator(
-                EmailSenderFactory.getInstance(),
                 SecureCodeFactory.getInstance());
     }
 
