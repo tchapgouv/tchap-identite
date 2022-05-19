@@ -44,6 +44,12 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Get release version
+        run: echo "The new release is ${{needs.tag-version.outputs.new_tag}}"
+      - name: Create tchap-identite release
       - uses: ncipollo/release-action@v1
         with:
+          name: ${{needs.tag-version.outputs.new_tag}}
           tag: ${{needs.tag-version.outputs.new_tag}}
+          generateReleaseNotes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
