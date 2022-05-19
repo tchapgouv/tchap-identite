@@ -12,6 +12,7 @@
 - KC_DB_PASSWORD=password
 - TCHAP_ACCOUNT=service account for Tchap Identity created on Tchap Server side
 - TCHAP_PASSWORD=password for the service account
+- TCHAP_HOME_SERVER_LIST=list of home servers
 
 2. from project https://github.com/MTES-MCT/keycloak-buildpack, install keycloak scalingo image locally
 
