@@ -1,6 +1,5 @@
 package org.beta.tchap.identite.authenticator;
 
-import org.beta.tchap.identite.email.EmailSender;
 import org.beta.tchap.identite.utils.SecureCode;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
@@ -25,46 +24,43 @@ public class OtpLoginAuthenticator extends AbstractUsernameFormAuthenticator
 
     private static final String FTL_ENTER_CODE       = "enter-code.ftl";
     public static final String AUTH_NOTE_USER_EMAIL = "user-email";
-    public static final String AUTH_NOTE_EMAIL_CODE = "email-code";
+    public static final String AUTH_NOTE_OTP = "email-code";
     public static final String AUTH_NOTE_TIMESTAMP  = "timestamp";
+    public static final String FORM_ATTRIBUTE_USER_EMAIL  = "userEmail";
 
-    private EmailSender emailSender;
     private SecureCode secureCode;
 
-    public OtpLoginAuthenticator(EmailSender emailSender, SecureCode secureCode)
+    public OtpLoginAuthenticator(SecureCode secureCode)
     {
-        this.emailSender = emailSender;
         this.secureCode = secureCode;
     }
 
     @Override
     public void action(AuthenticationFlowContext context)
     {
+        LOG.debugf("Authenticate user by otp");
 
-        MultivaluedMap<String, String> formData = context.getHttpRequest().getDecodedFormParameters();
-        context.challenge(context.form().createForm(FTL_ENTER_CODE));
+        String userEmail = context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL);
 
-        //String email = formData.getFirst("email");
-        String codeInput = formData.getFirst("codeInput");
-/*
-        if (email != null) {
-
-            context.getAuthenticationSession().setAuthNote(AUTH_NOTE_USER_EMAIL, email);
-            UserModel user = getUser(context);
-
-            if (user == null || !user.isEnabled()) {
-                context.failure(AuthenticationFlowError.INVALID_USER);
-            }
-            else {
-                generateAndSendCode(context);
-            }
-
+        /* if userEmail is not set in the authentication session, fails */
+        if(userEmail==null || userEmail.isEmpty()){
+            context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS,
+                    context.form().createForm(redirectBasedOnProvidedUserInfo(context)));
+            return;
         }
-        else */
 
-        if (codeInput != null && context.getAuthenticationSession().getAuthNote(AUTH_NOTE_EMAIL_CODE) != null) {
+        /* display otp form*/
+        context.challenge(context.form()
+                .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail)
+                .createForm(FTL_ENTER_CODE));
 
-            if (secureCode.isValid(codeInput, context.getAuthenticationSession().getAuthNote(AUTH_NOTE_EMAIL_CODE),
+        /* retrieve formData*/
+        MultivaluedMap<String, String> formData = context.getHttpRequest().getDecodedFormParameters();
+        String codeInput = formData.getFirst("codeInput");
+
+        if (codeInput != null && context.getAuthenticationSession().getAuthNote(AUTH_NOTE_OTP) != null) {
+
+            if (secureCode.isValid(codeInput, context.getAuthenticationSession().getAuthNote(AUTH_NOTE_OTP),
                                    context.getAuthenticationSession().getAuthNote(AUTH_NOTE_TIMESTAMP), 20, 2)) {
                 context.setUser(getUser(context));
                 context.success();
@@ -88,7 +84,6 @@ public class OtpLoginAuthenticator extends AbstractUsernameFormAuthenticator
     public void authenticate(AuthenticationFlowContext context)
     {
         context.challenge(context.form().createForm(redirectBasedOnProvidedUserInfo(context)));
-
     }
 
     /**
@@ -99,20 +94,6 @@ public class OtpLoginAuthenticator extends AbstractUsernameFormAuthenticator
     {
         return FTL_ENTER_CODE;
     }
-    /*
-    private String redirectBasedOnProvidedUserInfo(AuthenticationFlowContext context)
-    {
-        String redirect;
-        try {
-            context.getAuthenticationSession().setAuthNote(AUTH_NOTE_USER_EMAIL, context.getUser().getEmail());
-            generateAndSendCode(context);
-            redirect = FTL_ENTER_CODE;
-        } catch (NullPointerException e) {
-            redirect = FTL_ENTER_EMAIL;
-        }
-
-        return redirect;
-    }*/
 
     @Override
     public boolean requiresUser()
