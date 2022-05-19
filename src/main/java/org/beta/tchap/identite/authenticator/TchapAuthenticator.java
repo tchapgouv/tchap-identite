@@ -63,7 +63,7 @@ public class TchapAuthenticator implements Authenticator {
 
 
         /*
-         * SEND DM TCHAP OTP IF TCHAP ACCOUNT
+         * TODO: SEND CODE TO TCHAP ALSO
          */
     }
 
