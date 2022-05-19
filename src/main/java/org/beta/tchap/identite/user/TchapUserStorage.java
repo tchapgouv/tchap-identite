@@ -43,7 +43,7 @@ public class TchapUserStorage implements UserStorageProvider,
     public UserModel getUserByUsername(RealmModel realm, String username) {
         LOG.infof("Checking username : %s", username);
         UserModel adapter = loadedUsers.get(username);
-        if (adapter == null && !matrixService.isUserValid(username)) {
+        if (adapter == null && matrixService.isUserValid(username)) {
             adapter = new TchapUserModel(session, realm, model, username);
             loadedUsers.put(username, adapter);
         }
