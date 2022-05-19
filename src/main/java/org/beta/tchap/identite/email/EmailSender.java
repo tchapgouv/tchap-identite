@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class EmailSender
 {
-    private static final Logger LOG = Logger.getLogger(TchapUserStorage.class);
+    private static final Logger LOG = Logger.getLogger(EmailSender.class);
 
     protected EmailSender(){}
 
