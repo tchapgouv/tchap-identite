@@ -8,6 +8,8 @@ public class SecureCode
 
     Random random = new SecureRandom();
 
+    protected SecureCode(){}
+
     /**
      * Generates an alphanumeric code of passed length
      */
