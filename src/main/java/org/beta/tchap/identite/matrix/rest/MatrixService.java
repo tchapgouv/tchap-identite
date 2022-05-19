@@ -29,8 +29,8 @@ public class MatrixService {
     private final List<String> homeServerList;
 
     protected MatrixService() {
-        account = Environment.getenv("TCHAP_IDENTITY_ACCOUNT");
-        password = Environment.getenv("TCHAP_IDENTITY_PASSWORD");
+        account = Environment.getenv("TCHAP_ACCOUNT");
+        password = Environment.getenv("TCHAP_PASSWORD");
         homeServerList = Arrays.asList(Environment.getenv("TCHAP_HOME_SERVER_LIST").split(","));
         homeServerClient = HomeServerClientFactory.build(getRandomHomeServerBaseUrl());
     }
@@ -72,7 +72,7 @@ public class MatrixService {
 
         if (StringUtils.isEmpty(account) || StringUtils.isEmpty(password)) {
             throw new IllegalArgumentException("No account or password has been set. Please define the following" +
-                    " environment variables : TCHAP_IDENTITY_ACCOUNT and TCHAP_IDENTITY_PASSWORD");
+                    " environment variables : TCHAP_ACCOUNT and TCHAP_PASSWORD");
         }
 
         LoginBody body = new LoginBody();

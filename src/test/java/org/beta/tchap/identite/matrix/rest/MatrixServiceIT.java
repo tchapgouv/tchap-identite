@@ -10,9 +10,9 @@ class MatrixServiceIntTest {
     private static MatrixService matrixService;
 
     @BeforeAll
-    public static void setup() throws Exception {
-        System.setProperty("TCHAP_IDENTITY_ACCOUNT","tchap-identite@tchap.beta.gouv.fr");
-        System.setProperty("TCHAP_IDENTITY_PASSWORD","TCLJsspN5A@6N@G3");
+    public static void setup() {
+        System.setProperty("TCHAP_ACCOUNT","tchap-identite@tchap.beta.gouv.fr");
+        System.setProperty("TCHAP_PASSWORD","TCLJsspN5A@6N@G3");
         System.setProperty("TCHAP_HOME_SERVER_LIST", "i.tchap.gouv.fr,e.tchap.gouv.fr");
 
         matrixService = new MatrixService();

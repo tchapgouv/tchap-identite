@@ -10,8 +10,8 @@
 - POSTGRES_PASSWORD=password
 - KEYCLOAK_ADMIN_PASSWORD=password
 - KC_DB_PASSWORD=password
-- TCHAP_IDENTITY_ACCOUNT=service account for Tchap Identity created on Tchap Server side
-- TCHAP_IDENTITY_PASSWORD=password
+- TCHAP_ACCOUNT=service account for Tchap Identity created on Tchap Server side
+- TCHAP_PASSWORD=password for the service account
 
 2. from project https://github.com/MTES-MCT/keycloak-buildpack, install keycloak scalingo image locally
 
