@@ -47,7 +47,7 @@ jobs:
       - name: Get release version
         run: echo "The new release is ${{needs.tag-version.outputs.new_tag}}"
       - name: Create tchap-identite release
-      - uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1
         with:
           name: ${{needs.tag-version.outputs.new_tag}}
           tag: ${{needs.tag-version.outputs.new_tag}}
