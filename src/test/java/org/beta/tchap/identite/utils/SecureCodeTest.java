@@ -19,9 +19,9 @@ class SecureCodeTest
     void should_create_new_code_each_time()
     {
         String firstCode = code.generateCode(25);
-
+        System.out.println(firstCode);
         String secondCode = code.generateCode(25);
-
+        System.out.println(secondCode);
         assertThat(firstCode, not(equalTo(secondCode)));
     }
 
