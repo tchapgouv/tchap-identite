@@ -1,2 +1,2 @@
 <#ftl output_format="plainText">
-${msg("loginCodeBody", code)}
+Bonjour, voici votre code secret pour compléter votre réservation sur AudioConf ${loginCode}

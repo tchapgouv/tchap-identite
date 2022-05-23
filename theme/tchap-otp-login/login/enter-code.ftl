@@ -1,5 +1,5 @@
 <#import "template.ftl" as layout>
-<@layout.registrationLayout displayInfo=social.displayInfo; section>
+<@layout.registrationLayout displayInfo=social.displayInfo pageTitle="AudioConf"; section>
     <#if section = "title">
         ${msg("loginTitle",(realm.displayName!''))}
     <#elseif section = "header">
@@ -9,19 +9,19 @@
               action="${url.loginAction}" method="post">
             <div class="${properties.kcFormGroupClass!}">
                 <div class="${properties.kcLabelWrapperClass!}">
-                    <label for="codeInput" class="${properties.kcLabelClass!}">Renseignez le code que vous avez recu sur Tchap
+                    <label for="codeInput" class="${properties.kcLabelClass!}">Renseignez le code que vous avez reçu sur <span style="text-decoration: underline;">Tchap</span>
                         et à votre adresse mail <strong>${userEmail!}</strong>
                         </label>
                 </div>
 
                 <div class="${properties.kcInputWrapperClass!}">
                     <input tabindex="1" id="codeInput" class="${properties.kcInputClass!} code-input" name="codeInput" type="text"
-                           autofocus autocomplete="off"/>
+                           autofocus autocomplete="off" minlength="6" maxlength="7" required pattern="[a-z]{3}-?[a-z]{3}" placeholder=""/>
                 </div>
             </div>
 
             <div class="${properties.kcLabelWrapperClass!}">
-                <label for="email" class="${properties.kcLabelClass!}">Je n'ai pas recu le code. <a href="">Me renvoyer le code</a></label>
+                <label for="email" class="${properties.kcLabelClass!}">Je n'ai pas reçu le code. <a href="">Me renvoyer le code</a></label>
             </div>
 
             <div class="${properties.kcFormGroupClass!}">
