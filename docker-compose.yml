@@ -25,14 +25,14 @@ services:
         networks:
             - keycloak_network
         volumes:
-            - .:/buildpack
             - ./target/tchap-identite-0.0.1-jar-with-dependencies.jar:/app/keycloak/providers/tchap-identite-0.0.1-jar-with-dependencies.jar
             - ./dev/import:/app/keycloak/data/import
-            - ./themes/tchap-otp-login:/app/keycloak/themes/tchap-otp-login
-            - cache:/cache
-            - build:/build
-            - env:/env
-            - app:/app
+            - ./theme/tchap-otp-login:/app/keycloak/themes/tchap-otp-login
+            #- .:/buildpack
+            #- cache:/cache
+            #- build:/build
+            #- env:/env
+            #- app:/app
         env_file: .env
         entrypoint:
             - "/bin/sh"

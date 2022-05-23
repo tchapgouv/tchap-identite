@@ -32,7 +32,7 @@ public class EmailSender
 
         var result = true;
         try {
-            LOG.infof("send email to user %s %s", user.getUsername(), user.getEmail());
+            LOG.infof("send email to user %s", user.getUsername());
             //todo: remove this workaround
             emailSender.setUser(new TchapUserModel(null,null,null,user.getUsername()));
             emailSender.send(code + " Login Code", "loginCode.ftl",
