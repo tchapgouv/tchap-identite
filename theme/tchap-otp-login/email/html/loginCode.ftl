@@ -1,7 +1,7 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>Tchap identité</title>
+    <title>AudioConf</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width"/>
     </style>
@@ -15,15 +15,12 @@
                     <td class="content">
 
                         <p>${kcSanitize("Bonjour,")?no_esc}</p>
-                        <p>${kcSanitize("voici votre code secret pour compléter votre reservation sur AudioConf")?no_esc}</p>
-                        <table>
-                            <tr>
-                                <td>
-                                    <h3>${kcSanitize(loginCode)?no_esc}</h3>
-                                </td>
-                            </tr>
-                        </table>
+                        <p>${kcSanitize("voici votre code secret pour compléter votre réservation sur AudioConf")?no_esc}</p>
+
+                        <p>${loginCode}</p>
+<#--
                         <p>${kcSanitize(msg("loginCodeInstruction2"))?no_esc}</p>
+-->
                     </td>
                 </tr>
             </table>

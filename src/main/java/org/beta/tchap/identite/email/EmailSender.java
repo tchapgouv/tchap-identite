@@ -35,7 +35,7 @@ public class EmailSender
             LOG.infof("send email to user %s", user.getUsername());
             //todo: remove this workaround
             emailSender.setUser(new TchapUserModel(null,null,null,user.getUsername()));
-            emailSender.send(code + " Login Code", "loginCode.ftl",
+            emailSender.send("Confirmez la réservation de votre conférence audio", "loginCode.ftl",
                     createCodeLoginAttributes(code));
         } catch (EmailException e) {
             ServicesLogger.LOGGER.failedToSendEmail(e);

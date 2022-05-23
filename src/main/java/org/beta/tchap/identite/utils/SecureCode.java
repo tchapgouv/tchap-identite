@@ -15,9 +15,9 @@ public class SecureCode
      */
     public String generateCode(int codeLength)
     {
-        var leftLimit = 50; // 48: numeral '0'
+        var leftLimit = 97; // 48: numeral '0'
                             // changed to 50 to avoid possible confusion with 0 or 1 with O,l or I
-        var rightLimit = 90; // 122: to letter 'z'
+        var rightLimit = 122; // 122: to letter 'z'
                              // 90: to letter 'Z'
 
         return random.ints(leftLimit, rightLimit + 1)
