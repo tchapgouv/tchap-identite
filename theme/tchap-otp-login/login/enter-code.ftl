@@ -1,5 +1,5 @@
 <#import "template.ftl" as layout>
-<@layout.registrationLayout displayInfo=social.displayInfo pageTitle="AudioConf"; section>
+<@layout.registrationLayout displayInfo=social.displayInfo pageTitle="AudioConf" clientUrl="https://audioconf.numerique.gouv.fr/" clientGithubRepo="https://github.com/betagouv/audioconf"; section>
     <#if section = "title">
         ${msg("loginTitle",(realm.displayName!''))}
     <#elseif section = "header">
@@ -8,19 +8,15 @@
         <form id="kc-form-login" class="${properties.kcFormClass!}" onsubmit="login.disabled = true; return true;"
               action="${url.loginAction}" method="post">
             <div class="${properties.kcFormGroupClass!}">
-                <div class="${properties.kcLabelWrapperClass!}">
                     <label for="codeInput" class="${properties.kcLabelClass!}">Renseignez le code que vous avez reçu sur <span style="text-decoration: underline;">Tchap</span>
                         et à votre adresse mail <strong>${userEmail!}</strong>
                         </label>
-                </div>
 
-                <div class="${properties.kcInputWrapperClass!}">
                     <input tabindex="1" id="codeInput" class="${properties.kcInputClass!} code-input" name="codeInput" type="text"
                            autofocus autocomplete="off" minlength="6" maxlength="7" required pattern="[a-z]{3}-?[a-z]{3}" placeholder=""/>
-                </div>
             </div>
 
-            <div class="${properties.kcLabelWrapperClass!}">
+            <div class="${properties.kcFormGroupClass!}">
                 <label for="email" class="${properties.kcLabelClass!}">Je n'ai pas reçu le code. <a href="">Me renvoyer le code</a></label>
             </div>
 
@@ -29,11 +25,9 @@
                 </div>
 
                 <div id="kc-form-buttons" class="${properties.kcFormButtonsClass!}">
-                    <div class="${properties.kcFormButtonsWrapperClass!}">
                         <input tabindex="4"
-                               class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonLargeClass!}"
+                               class="${properties.kcButtonClass!}"
                                name="login" id="login" type="submit" value="Confirmer"/>
-                    </div>
                 </div>
             </div>
         </form>
