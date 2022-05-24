@@ -14,11 +14,7 @@
 - TCHAP_PASSWORD=password for the service account
 - TCHAP_HOME_SERVER_LIST=list of home servers
 
-2. from project https://github.com/MTES-MCT/keycloak-buildpack, install keycloak scalingo image locally
-
-` docker build -t keycloak-scalingo . `
-
-3. build extension with maven goal. A jar is produced with the custom providers and the custom view.  
+2. build extension with maven goal. A jar is produced with the custom providers and the custom view.  
 
 `mvn package`
 
