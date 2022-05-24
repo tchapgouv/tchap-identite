@@ -109,6 +109,7 @@
 
   <build>
     <finalName>${project.artifactId}-${revision}</finalName>
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -132,6 +133,7 @@
           </excludes>
         </configuration>
       </plugin>
+      <!-- copy theme inside the artifact  -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.1.0</version>
@@ -154,11 +156,15 @@
           </execution>
         </executions>
       </plugin>
+      <!-- assembly a uber jar (contains all classes from dependencies) -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>3.3.0</version>
         <configuration>
+          <finalName>${project.artifactId}-${revision}</finalName>
+          <appendAssemblyId>false</appendAssemblyId>
+          <outputDirectory>./dev/providers</outputDirectory>
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>

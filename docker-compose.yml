@@ -21,11 +21,11 @@ services:
             - keycloak_network
 
     keycloak:
-        image: keycloak-scalingo
+        image: ghcr.io/pseudonyme21/keycloak-buildpack:master
         networks:
             - keycloak_network
         volumes:
-            - ./target/tchap-identite-0.0.1-jar-with-dependencies.jar:/app/keycloak/providers/tchap-identite-0.0.1-jar-with-dependencies.jar
+            - ./dev/providers/:/app/keycloak/providers/
             - ./dev/import:/app/keycloak/data/import
             - ./theme/tchap-otp-login:/app/keycloak/themes/tchap-otp-login
             #- .:/buildpack
