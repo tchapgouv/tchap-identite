@@ -1,4 +1,4 @@
-<#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false displayWide=false showAnotherWayIfPresent=true pageTitle="">
+<#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false displayWide=false showAnotherWayIfPresent=true clientUrl="" pageTitle="">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -39,48 +39,61 @@
 </head>
 
 <body>
-<header class="rf-header">
-  <div class="rf-container">
-    <div class="rf-header__body">
-      <div class="rf-header__brand">
-  <a href="${properties.kcServiceTitle!}" style="box-shadow: none;"><span class="rf-logo rf-logo__title">
-    République
-    <br>française
-  </span></a>
-</div>
-<div class="rf-header__navbar">
-  <div class="rf-service">
-    <!-- Webinaire de l'État -->
-    <a class="rf-service__title">AudioConf</a>
-    <!-- Le service de réunions en ligne pour les agents de l'État -->
-    <p class="rf-service__tagline">${properties.kcServiceTagline!}</p>
-  </div>
-</div>
-      <div class="rf-header__tools">
+<header role="banner" class="fr-header">
+    <div class="fr-header__body">
+        <div class="fr-container">
+            <div class="fr-header__body-row">
+                <div class="fr-header__brand fr-enlarge-link">
+                    <div class="fr-header__brand-top">
+                        <div class="fr-header__logo">
+                            <p class="fr-logo">
+                                République
+                                <br>Française
+                            </p>
+                        </div>
+                        <div class="fr-header__navbar">
+                            <button class="fr-btn--menu fr-btn" data-fr-opened="false" aria-controls="modal-menu" aria-haspopup="menu" title="Menu">
+                                Menu
+                            </button>
+                        </div>
+                    </div>
+                    <div class="fr-header__service">
+                        <a href="${clientUrl}" title="Accueil - AudioConf">
+                            <p class="fr-header__service-title">
+                                ${pageTitle}
+                            </p>
+                        <p class="fr-header__service-tagline">Conférences téléphoniques pour les agents de l'État</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="fr-header__tools">
+                    <div class="fr-header__tools-links">
 
-<div class="rf-shortcuts">
-    <ul class="rf-shortcuts__list">
-		  <li class="rf-shortcuts__item">
-        <a href="${properties.kcExternalFooterLinksBaseUrl!}/faq" target="_blank" class="rf-link rf-fi-information-line rf-link--icon-left" target="_self">Modalités d'accès</a>
-      </li>
-      <li class="rf-shortcuts__item">
-        <a href="${properties.kcExternalFooterLinksBaseUrl!}/documentation" target="_blank" class="rf-link rf-fi-add-circle-line rf-link--icon-left">Lien vers la documentation</a>
-      </li>
-    </ul>
-  </div></div>
+                        <#--<ul class="fr-links-group">
+                            <li class="fr-link fr-fi-question-line">
+                                <a href="/questions-frequentes">Une question ?</a>
+                            </li>
+                            <li>
+                                <button class="fr-link fr-fi-theme-fill fr-link--icon-left" aria-controls="fr-theme-modal" data-fr-opened="false">Paramètres d'affichage</button>                </li>
+                        </ul>-->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <nav class="rf-nav" role="navigation" aria-label="Menu principal">
-      <ul class="rf-nav__list">
-         <li class="rf-nav__item">
-         </li>
-      </ul>
-   </nav>
-  </div>
+    <!-- Navigation principale -->
+    <div class="fr-header__menu fr-modal" id="modal-menu" aria-labelledby="button-834">
+        <div class="fr-container">
+            <button class="fr-link--close fr-link" aria-controls="modal-menu">Fermer</button>
+            <div class="fr-header__menu-links"></div>
+        </div>
+    </div>
 </header>
-<main role="main" id="main" class="rf-container" >
-  <div class="rf-container  rf-mt-4w rf-mb-4w">
-    <div class="rf-grid-row rf-grid-row--center">
-      <div class="rf-col-xs-12 rf-col-sm-8 rf-col-md-6 rf-col-lg-8">
+
+<main role="main" id="main" class="fr-container" >
+  <div class="fr-container  fr-mt-4w fr-mb-4w">
+    <div class="fr-grid-row fr-grid-row--center">
+      <div class="fr-col-xs-12 fr-col-sm-8 fr-col-md-6 fr-col-lg-8">
 
           <!--p>Domaine ${kcSanitize(msg("loginTitleHtml",(realm.displayNameHtml!'')))?no_esc}</p-->
 
@@ -153,12 +166,12 @@
               <#-- App-initiated actions should not see warning messages about the need to complete the action -->
               <#-- during login.                                                                               -->
               <#if displayMessage && message?has_content && (message.type != 'warning' || !isAppInitiatedAction??)>
-                  <div class="alert alert-${message.type}">
+                  <div class="fr-alert fr-alert--${message.type} fr-alert--sm">
                       <#if message.type = 'success'><span class="${properties.kcFeedbackSuccessIcon!}"></span></#if>
                       <#if message.type = 'warning'><span class="${properties.kcFeedbackWarningIcon!}"></span></#if>
                       <#if message.type = 'error'><span class="${properties.kcFeedbackErrorIcon!}"></span></#if>
                       <#if message.type = 'info'><span class="${properties.kcFeedbackInfoIcon!}"></span></#if>
-                      <span class="kc-feedback-text">${kcSanitize(message.summary)?no_esc}</span>
+                      <p>${kcSanitize(message.summary)?no_esc}</p>
                   </div>
               </#if>
 
@@ -168,7 +181,7 @@
               <form id="kc-select-try-another-way-form" action="${url.loginAction}" method="post" <#if displayWide>class="${properties.kcContentWrapperClass!}"</#if>>
                   <div class="${properties.kcFormGroupClass!}">
                     <input type="hidden" name="tryAnotherWay" value="on" />
-                    <a href="#" id="try-another-way" class="rf-link" onclick="document.forms['kc-select-try-another-way-form'].submit();return false;">${msg("doTryAnotherWay")}</a>
+                    <a href="#" id="try-another-way" class="fr-link" onclick="document.forms['kc-select-try-another-way-form'].submit();return false;">${msg("doTryAnotherWay")}</a>
                   </div>
               </form>
               </#if>
@@ -188,22 +201,18 @@
     </div>
   </div>
 </main>
-<footer class="rf-footer" role="contentinfo">
-    <div class="rf-container">
-        <div class="rf-footer__body">
-            <div class="rf-footer__brand">
-                <span class="rf-logo rf-logo__title">république<br>française</span>
+<footer class="fr-footer" role="contentinfo">
+    <div class="fr-container">
+        <div class="fr-footer__body">
+            <div class="fr-footer__brand">
+                <span class="fr-logo fr-logo__title">république<br>française</span>
             </div>
-            <div class="rf-footer__content">
-                <p class="rf-footer__content-desc">
+            <div class="fr-footer__content">
+                <p class="fr-footer__content-desc">
                     Service proposé par la Direction interministérielle du numérique et la Direction du numérique pour l'éducation
                 </p>
-                <p class="rf-footer__content-desc">
-                    Le code source est ouvert et les contributions sont bienvenues.
-                    <a title="Voir le code source - nouvelle fenêtre" href="https://github.com/betagouv/visio-bbb/" target="_blank" rel="noopener">Voir le code source</a>
-                </p>
 
-                <ul class="rf-footer__content-links">
+                <ul class="fr-footer__content-links">
                     <li>
                         <a href="https://legifrance.gouv.fr">legifrance.gouv.fr</a>
                     </li>
@@ -219,8 +228,8 @@
                 </ul>
             </div>
         </div>
-        <div class="rf-footer__bottom">
-            <ul class="rf-footer__bottom-list">
+        <div class="fr-footer__bottom">
+            <ul class="fr-footer__bottom-list">
                 <li>
                     <a href="${properties.kcExternalFooterLinksBaseUrl!}/accessibilite">Accessibilité : non conforme</a>                </li>
                 <li>
