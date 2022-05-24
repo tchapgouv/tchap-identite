@@ -1,5 +1,6 @@
 # tchap-identite
 
+- maven : 3.8.2
 - keycloak : 18.0
 - quarkus : 2.7.5
 - java : 11
