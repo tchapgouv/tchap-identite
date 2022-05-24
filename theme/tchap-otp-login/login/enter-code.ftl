@@ -1,5 +1,5 @@
 <#import "template.ftl" as layout>
-<@layout.registrationLayout displayInfo=social.displayInfo pageTitle="AudioConf" clientUrl="https://audioconf.numerique.gouv.fr/" clientGithubRepo="https://github.com/betagouv/audioconf"; section>
+<@layout.registrationLayout displayInfo=social.displayInfo pageTitle="${client.name}" clientUrl="${client.baseUrl}" ; section>
     <#if section = "title">
         ${msg("loginTitle",(realm.displayName!''))}
     <#elseif section = "header">

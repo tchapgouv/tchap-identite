@@ -1,4 +1,4 @@
-<#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false displayWide=false showAnotherWayIfPresent=true clientUrl="" pageTitle="" clientGithubRepo="">
+<#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false displayWide=false showAnotherWayIfPresent=true clientUrl="" pageTitle="">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -210,10 +210,6 @@
             <div class="fr-footer__content">
                 <p class="fr-footer__content-desc">
                     Service proposé par la Direction interministérielle du numérique et la Direction du numérique pour l'éducation
-                </p>
-                <p class="fr-footer__content-desc">
-                    Le code source est ouvert et les contributions sont bienvenues.
-                    <a title="Voir le code source - nouvelle fenêtre" href="${clientGithubRepo}" target="_blank" rel="noopener">Voir le code source</a>
                 </p>
 
                 <ul class="fr-footer__content-links">
