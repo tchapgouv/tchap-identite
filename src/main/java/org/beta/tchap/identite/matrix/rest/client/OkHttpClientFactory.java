@@ -1,6 +1,8 @@
 package org.beta.tchap.identite.matrix.rest.client;
 
 import okhttp3.OkHttpClient;
+import org.beta.tchap.identite.utils.Constants;
+import org.beta.tchap.identite.utils.Environment;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -9,13 +11,22 @@ import javax.net.ssl.X509TrustManager;
 
 
 /**
- * Factory that will build an OkHttpClient to skip ssl certificate validations
+ * Factory that will build an OkHttpClient to enable ssl certificate validation
  *
- * NOTE : This class is not a long term solution and should be deprecated
  */
 public class OkHttpClientFactory {
 
-    public static OkHttpClient getUnsafeOkHttpClient() {
+    public static OkHttpClient getClient(){
+        return Boolean.parseBoolean(Environment.getenv(Constants.TCHAP_CERTIFICATE_VALIDATION)) ?
+                getSecuredClient()
+                : getUnsafeOkHttpClient();
+    }
+
+    private static OkHttpClient getSecuredClient(){
+        return new OkHttpClient();
+    }
+
+    private static OkHttpClient getUnsafeOkHttpClient() {
         try {
             // Create a trust manager that does not validate certificate chains
             final TrustManager[] trustAllCerts = new TrustManager[] {

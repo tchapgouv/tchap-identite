@@ -13,7 +13,7 @@ public class LoginClientFactory {
 
     public static LoginClient build(String homeServerBaseUrl) {
         return Feign.builder()
-                .client(new OkHttpClient(OkHttpClientFactory.getUnsafeOkHttpClient()))
+                .client(new OkHttpClient(OkHttpClientFactory.getClient()))
                 .encoder(new GsonEncoder(GsonFactory.getInstance()))
                 .decoder(new GsonDecoder(GsonFactory.getInstance()))
                 .logger(new Slf4jLogger(LoginClient.class))
