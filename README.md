@@ -15,6 +15,9 @@
 - TCHAP_PASSWORD=password for the service account
 - TCHAP_HOME_SERVER_LIST=list of home servers
 - TCHAP_CERTIFICATE_VALIDATION=true
+- javax.net.ssl.trustStore=path to keystore
+- javax.net.ssl.trustStorePassword=password of the keystore
+- javax.net.ssl.trustStoreType=JKS
 
 2. build extension with maven goal. A jar is produced with the custom providers and the custom view.  
 
