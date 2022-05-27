@@ -5,6 +5,7 @@ import org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService;
 import org.beta.tchap.identite.matrix.rest.login.LoginService;
 import org.beta.tchap.identite.matrix.rest.user.UserInfoResource;
 import org.beta.tchap.identite.matrix.rest.user.UserService;
+import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 import org.jboss.logging.Logger;
 
@@ -20,8 +21,8 @@ public class MatrixService {
     private final String password;
 
     protected MatrixService() {
-        account = Environment.getenv("TCHAP_ACCOUNT");
-        password = Environment.getenv("TCHAP_PASSWORD");
+        account = Environment.getenv(Constants.TCHAP_ACCOUNT);
+        password = Environment.getenv(Constants.TCHAP_PASSWORD);
         homeServerService = new HomeServerService();
         loginService = new LoginService();
     }
