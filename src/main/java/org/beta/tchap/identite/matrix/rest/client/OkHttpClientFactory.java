@@ -3,6 +3,7 @@ package org.beta.tchap.identite.matrix.rest.client;
 import okhttp3.OkHttpClient;
 import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
+import org.jboss.logging.Logger;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -16,18 +17,26 @@ import javax.net.ssl.X509TrustManager;
  */
 public class OkHttpClientFactory {
 
+    private static final Logger LOG = Logger.getLogger(OkHttpClientFactory.class);
+    private static OkHttpClient instance;
+
     public static OkHttpClient getClient(){
-        return Boolean.parseBoolean(Environment.getenv(Constants.TCHAP_SKIP_CERTIFICATE_VALIDATION)) ?
+        if ( instance == null ){
+            instance= Boolean.parseBoolean(Environment.getenv(Constants.TCHAP_SKIP_CERTIFICATE_VALIDATION)) ?
                 getUnsafeOkHttpClient()
                 : getSecuredClient();
+        }
+        return instance;
     }
 
     private static OkHttpClient getSecuredClient(){
+        LOG.info("Initialize Secured HTTP Client");
         return new OkHttpClient();
     }
 
     private static OkHttpClient getUnsafeOkHttpClient() {
         try {
+            LOG.warn("Initialize Unsecured HTTP Client (no ssl certificate validation is performed)");
             // Create a trust manager that does not validate certificate chains
             final TrustManager[] trustAllCerts = new TrustManager[] {
                     new X509TrustManager() {
