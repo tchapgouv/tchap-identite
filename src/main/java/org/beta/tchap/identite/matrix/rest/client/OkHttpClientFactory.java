@@ -17,9 +17,9 @@ import javax.net.ssl.X509TrustManager;
 public class OkHttpClientFactory {
 
     public static OkHttpClient getClient(){
-        return Boolean.parseBoolean(Environment.getenv(Constants.TCHAP_CERTIFICATE_VALIDATION)) ?
-                getSecuredClient()
-                : getUnsafeOkHttpClient();
+        return Boolean.parseBoolean(Environment.getenv(Constants.TCHAP_SKIP_CERTIFICATE_VALIDATION)) ?
+                getUnsafeOkHttpClient()
+                : getSecuredClient();
     }
 
     private static OkHttpClient getSecuredClient(){

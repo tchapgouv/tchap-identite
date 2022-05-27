@@ -14,7 +14,7 @@ class MatrixServiceIntTest {
         System.setProperty("TCHAP_ACCOUNT","<replace here with the appropriate service email account>");
         System.setProperty("TCHAP_PASSWORD","<get the password>");
         System.setProperty("TCHAP_HOME_SERVER_LIST", "i.tchap.gouv.fr,e.tchap.gouv.fr");
-        System.setProperty("TCHAP_CERTIFICATE_VALIDATION", "true");
+        System.setProperty("TCHAP_SKIP_CERTIFICATE_VALIDATION", "false");
         System.setProperty("javax.net.ssl.trustStore", "./src/main/resources/keystore.jks");
         System.setProperty("javax.net.ssl.trustStorePassword", "<password of the truststore>");
         System.setProperty("javax.net.ssl.trustStoreType", "JKS");
