@@ -9,6 +9,10 @@ import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 import org.jboss.logging.Logger;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import static org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService.buildHomeServerUrl;
 
 public class MatrixService {
@@ -34,12 +38,37 @@ public class MatrixService {
         }
 
         String userHomeServer = homeServerService.findHomeServerByEmail(email);
+        boolean isValid = isEmailAcceptedOnTchap(userHomeServer);
+        LOG.infof("Email[%s] is valid in tchap : %s", email, isValid);
+        return isValid;
+    }
+
+    /**
+     * Check if an email is accepted on Tchap based on an hardcorded domain list
+     */
+    private boolean isEmailAcceptedOnTchap(String userHomeServer) {
+        return !getInvalidHomeServers().contains(userHomeServer);
+    }
+
+    private List<String> getInvalidHomeServers() {
+        String unauthorizedList = Environment.getenv(Constants.TCHAP_UNAUTHORIZED_HOME_SERVER_LIST);
+        return StringUtils.isNotEmpty(unauthorizedList) ?
+                Arrays.asList(unauthorizedList.split(","))
+                : Collections.emptyList();
+    }
+
+    /**
+     * Check if an account has been created and still valid in Tchap
+     *
+     * TODO : this method is not used anymore. This method is an example of an authenticated flow with Tchap.
+     * The acesss token should be cached if this flow is used.
+     *
+     */
+    private boolean isAccountValidOnTchap(String email, String userHomeServer) {
         String accountHomeServerUrl = buildHomeServerUrl(homeServerService.findHomeServerByEmail(account));
         String accessToken = loginService.findAccessToken(accountHomeServerUrl, account, password);
         UserService userService = new UserService(accountHomeServerUrl, accessToken);
         UserInfoResource userInfoByEmail = userService.findUserInfoByEmail(email, userHomeServer);
-        boolean result = userInfoByEmail != null && !userInfoByEmail.isDeactivated() && !userInfoByEmail.isExpired();
-        LOG.infof("Email[%s] is valid in tchap : %s", email, result);
-        return result;
+        return userInfoByEmail != null && !userInfoByEmail.isDeactivated() && !userInfoByEmail.isExpired();
     }
 }
