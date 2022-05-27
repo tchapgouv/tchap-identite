@@ -13,7 +13,7 @@ public class UserClientFactory {
 
     public static UserClient build(String homeServerBaseUrl, String accessToken) {
         return Feign.builder()
-                .client(new OkHttpClient(OkHttpClientFactory.getUnsafeOkHttpClient()))
+                .client(new OkHttpClient(OkHttpClientFactory.getClient()))
                 .requestInterceptor(requestTemplate ->
                         requestTemplate.header(
                                 "Authorization",

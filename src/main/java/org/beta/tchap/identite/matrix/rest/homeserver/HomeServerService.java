@@ -1,5 +1,6 @@
 package org.beta.tchap.identite.matrix.rest.homeserver;
 
+import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 
 import java.util.Arrays;
@@ -12,7 +13,7 @@ public class HomeServerService {
     private static final String HOME_SERVER_URL_PREFIX = "https://matrix";
 
     public HomeServerService(){
-        homeServerList = Arrays.asList(Environment.getenv("TCHAP_HOME_SERVER_LIST").split(","));
+        homeServerList = Arrays.asList(Environment.getenv(Constants.TCHAP_HOME_SERVER_LIST).split(","));
         homeServerClient = HomeServerClientFactory.build(getRandomHomeServerBaseUrl());
     }
 
