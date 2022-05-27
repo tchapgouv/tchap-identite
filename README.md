@@ -14,6 +14,7 @@
 - TCHAP_ACCOUNT=service account for Tchap Identity created on Tchap Server side
 - TCHAP_PASSWORD=password for the service account
 - TCHAP_HOME_SERVER_LIST=list of home servers
+- TCHAP_SKIP_CERTIFICATE_VALIDATION=false
 
 2. build extension with maven goal. A jar is produced with the custom providers and the custom view.  
 
