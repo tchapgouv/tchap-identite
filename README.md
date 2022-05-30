@@ -7,7 +7,7 @@
 
 # docker image
 
-0. copy env.sample -> env, fill in passwords with (any value you want..)
+1. copy env.sample -> env, fill in passwords with (any value you want..)
 - POSTGRES_PASSWORD=password
 - KEYCLOAK_ADMIN_PASSWORD=password
 - KC_DB_PASSWORD=password
@@ -20,6 +20,10 @@
 2. build extension with maven goal. A jar is produced with the custom providers and the custom view.  
 
 `mvn package`
+
+to specify a version run : 
+
+`mvn install -Drevision=X.Y.Z`
 
 For local development, the jar is copied to /dev/providers
 
