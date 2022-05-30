@@ -37,7 +37,8 @@
     },
     "KC_HOSTNAME": {
       "description": "host",
-      "value": "",
+      "generator": "template",
+      "template": "%APP%.osc-secnum-fr1.scalingo.io",
       "required": false
     },
     "KC_HTTP_PORT": {
