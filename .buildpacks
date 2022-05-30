@@ -1,2 +1,20 @@
-https://github.com/Scalingo/java-buildpack
-https://github.com/tchapgouv/keycloak-buildpack#devops-scalingo-build
+BUILDPACK_URL	https://github.com/pseudonyme21/keycloak-buildpack/	
+DATABASE_URL	$SCALINGO_POSTGRESQL_URL	
+KC_DB	postgres	
+KC_DB_PASSWORD	_hkKg91KST3a6Uh7iE6X	
+KC_DB_URL	jdbc:postgresql://tchap-ident-8090.postgresql.a.osc-secnum-fr1.scalingo-dbs.com:30031/tchap_ident_8090	
+KC_DB_USERNAME	tchap_ident_8090	
+KC_HOSTNAME	dev.identite.tchap.incubateur.net	
+KC_HOSTNAME_STRICT_BACKCHANNEL	true	
+KC_HTTPS_PORT	443	
+KC_HTTP_ENABLED	false	
+KC_HTTP_PORT	$PORT	
+KC_PROXY	edge	
+KEYCLOAK_ADMIN	admin	
+KEYCLOAK_ADMIN_PASSWORD	MW~6Gb?/q(6yWMN-	
+KEYCLOAK_PROVIDERS	tchapgouv/tchap-identite	
+SCALINGO_POSTGRESQL_URL	postgres://tchap_ident_8090:_hkKg91KST3a6Uh7iE6X@tchap-ident-8090.postgresql.a.osc-secnum-fr1.scalingo-dbs.com:30031/tchap_ident_8090?sslmode=prefer	
+TCHAP_ACCOUNT	tchap-identite@tchap.beta.gouv.fr	
+TCHAP_HOME_SERVER_LIST	i.tchap.gouv.fr,e.tchap.gouv.fr	
+TCHAP_PASSWORD	TCLJsspN5A@6N@G3	
+TCHAP_UNAUTHORIZED_HOME_SERVER_LIST	e.tchap.gouv.fr
