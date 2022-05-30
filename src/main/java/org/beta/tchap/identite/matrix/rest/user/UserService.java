@@ -55,4 +55,16 @@ public class UserService {
         }
         return "@" + email.replace("@", "-") + ":" + homeServer;
     }
+
+    public DirectRoomsResource listDMRooms() {
+        Map<String, Object> rawResponse = userClient.listDMRooms("@tchap-identite-tchap.beta.gouv.fr:i.tchap.gouv.fr");
+//        return DirectRoomsResource.toDirectRoomsResource(rawResponse);
+        return null;
+
+//        UserInfoBody userInfoBody = new UserInfoBody();
+//        List<String> userIds = List.of(emailToUserId(email, homeServer));
+//        userInfoBody.setUserIds(userIds);
+//        Map<String, Object> rawResponse = userClient.findByUsers(userInfoBody);
+//        return toUserInfoResource(userIds, rawResponse);
+    }
 }

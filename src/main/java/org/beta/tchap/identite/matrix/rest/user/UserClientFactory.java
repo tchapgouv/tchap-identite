@@ -22,6 +22,6 @@ public class UserClientFactory {
                 .decoder(new GsonDecoder(GsonFactory.getInstance()))
                 .logger(new Slf4jLogger(UserClient.class))
                 .logLevel(Logger.Level.FULL)
-                .target(UserClient.class, homeServerBaseUrl + "/_matrix/client/unstable/users");
+                .target(UserClient.class, homeServerBaseUrl + "/_matrix/client/unstable");
     }
 }

@@ -12,8 +12,8 @@ class UserServiceTest {
     @BeforeAll
     public static void setup(){
         LoginResource loginResource = new LoginResource();
-        loginResource.setAccessToken("fakeToken");
-        userService = new UserService("i.tchap.gouv.fr", loginResource.getAccessToken());
+//        loginResource.setAccessToken("fakeToken");
+        userService = new UserService("https://matrix.i.tchap.gouv.fr", loginResource.getAccessToken());
     }
 
 
