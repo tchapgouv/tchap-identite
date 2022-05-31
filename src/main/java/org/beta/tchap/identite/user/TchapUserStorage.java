@@ -1,8 +1,8 @@
 package org.beta.tchap.identite.user;
 
 import org.beta.tchap.identite.matrix.rest.MatrixService;
+import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.jboss.logging.Logger;
-import org.keycloak.authentication.AuthenticationFlowError;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.models.*;
 import org.keycloak.storage.StorageId;
@@ -33,7 +33,10 @@ public class TchapUserStorage implements UserStorageProvider,
 
     @Override
     public UserModel getUserById(RealmModel realm, String id) {
-        LOG.infof("Checking id : %s", id);
+        if(LOG.isDebugEnabled()){
+            //internal id of keycloak
+            LOG.debugf("Checking keycloak id : %s", LoggingUtilsFactory.getInstance().logOrHash(id));
+        }
         StorageId storageId = new StorageId(id);
         String username = storageId.getExternalId();
         return getUserByUsername(realm, username);
@@ -41,7 +44,9 @@ public class TchapUserStorage implements UserStorageProvider,
 
     @Override
     public UserModel getUserByUsername(RealmModel realm, String username) {
-        LOG.infof("Checking username : %s", username);
+        if(LOG.isDebugEnabled()){
+            LOG.debugf("Checking username : %s", LoggingUtilsFactory.getInstance().logOrHash(username));
+        }
         UserModel adapter = loadedUsers.get(username);
         if (adapter == null && matrixService.isUserValid(username)) {
             adapter = new TchapUserModel(session, realm, model, username);
@@ -53,7 +58,6 @@ public class TchapUserStorage implements UserStorageProvider,
 
     @Override
     public UserModel getUserByEmail(RealmModel realm, String email) {
-        LOG.infof("Checking email : %s",email);
         return getUserByUsername(realm, email);
     }
 

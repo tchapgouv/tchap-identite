@@ -24,9 +24,7 @@ public class OtpLoginAuthenticatorFactory
 
     private static final AuthenticationExecutionModel.Requirement[] REQUIREMENT_CHOICES = {
             AuthenticationExecutionModel.Requirement.REQUIRED,
-            AuthenticationExecutionModel.Requirement.ALTERNATIVE,
-            AuthenticationExecutionModel.Requirement.DISABLED,
-            AuthenticationExecutionModel.Requirement.CONDITIONAL
+            AuthenticationExecutionModel.Requirement.DISABLED
     };
 
     @Override
