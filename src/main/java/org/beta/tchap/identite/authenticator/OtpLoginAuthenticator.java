@@ -93,7 +93,7 @@ public class OtpLoginAuthenticator extends AbstractUsernameFormAuthenticator
         context.challenge(otpForm(context,null));
     }
 
-    private Response otpForm(AuthenticationFlowContext context, String info){
+    static Response otpForm(AuthenticationFlowContext context, String info){
         String userEmail = context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL);
 
         /* if userEmail is not set in the authentication session, fails */
@@ -110,7 +110,7 @@ public class OtpLoginAuthenticator extends AbstractUsernameFormAuthenticator
         return form.createForm(FTL_ENTER_CODE);
     }
 
-    private Response otpFormError(AuthenticationFlowContext context, String error){
+    static Response otpFormError(AuthenticationFlowContext context, String error){
         String userEmail = context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL);
 
         /* if userEmail is not set in the authentication session, fails */
