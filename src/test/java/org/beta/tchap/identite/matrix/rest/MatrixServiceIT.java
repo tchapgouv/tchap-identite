@@ -11,8 +11,8 @@ class MatrixServiceIntTest {
 
     @BeforeAll
     public static void setup() {
-        System.setProperty("TCHAP_ACCOUNT","tchap-identite@tchap.beta.gouv.fr");
-        System.setProperty("TCHAP_PASSWORD","TCLJsspN5A@6N@G3");
+        System.setProperty("TCHAP_ACCOUNT","<replace here with the appropriate service email account>");
+        System.setProperty("TCHAP_PASSWORD","<get the password>");
         System.setProperty("TCHAP_HOME_SERVER_LIST", "i.tchap.gouv.fr,e.tchap.gouv.fr");
 
         matrixService = new MatrixService();
