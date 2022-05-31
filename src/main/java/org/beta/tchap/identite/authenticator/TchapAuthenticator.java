@@ -1,7 +1,7 @@
 package org.beta.tchap.identite.authenticator;
 
 import org.beta.tchap.identite.email.EmailSender;
-import org.beta.tchap.identite.matrix.rest.MatrixService;
+import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.beta.tchap.identite.utils.SecureCode;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
@@ -40,8 +40,9 @@ public class TchapAuthenticator implements Authenticator {
                     Response.status(400).build(), "request is malformed", "request is malformed" );
             return;
         }
-
-        LOG.infof("Authenticate login : %s", loginHint);
+        if(LOG.isDebugEnabled()){
+            LOG.debugf("Authenticate login : %s", LoggingUtilsFactory.getInstance().logOrHash(loginHint));
+        }
         context.getAuthenticationSession().setAuthNote(AUTH_NOTE_USER_EMAIL, loginHint);
         UserModel user = getUser(context);
 
@@ -76,8 +77,9 @@ public class TchapAuthenticator implements Authenticator {
                 Long.toString(System.currentTimeMillis()));
 
         String friendlyCode = secureCode.makeCodeUserFriendly(code);
-        LOG.infof("Sending OTP : %s", friendlyCode);
-
+        if(LOG.isDebugEnabled()){
+            LOG.debugf("Sending OTP : %s", LoggingUtilsFactory.getInstance().logOrHide(friendlyCode));
+        }
         emailSender.sendEmail(context.getSession(), context.getRealm(),
                               getUser(context), friendlyCode);
 

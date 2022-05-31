@@ -45,7 +45,10 @@ public class OtpLoginAuthenticator extends AbstractUsernameFormAuthenticator
     @Override
     public void action(AuthenticationFlowContext context)
     {
-        LOG.debugf("Authenticate action user by otp");
+        if(LOG.isDebugEnabled()){
+            LOG.debugf("Authenticate action OtpLoginAuthenticator");
+        }
+
 
         //prepareOtpForm(context);
         /* retrieve formData*/
@@ -83,7 +86,9 @@ public class OtpLoginAuthenticator extends AbstractUsernameFormAuthenticator
     @Override
     public void authenticate(AuthenticationFlowContext context)
     {
-        LOG.debugf("Authenticate user by otp");
+        if(LOG.isDebugEnabled()){
+            LOG.debugf("Authenticate OtpLoginAuthenticator");
+        }
 
         context.challenge(otpForm(context,null));
     }

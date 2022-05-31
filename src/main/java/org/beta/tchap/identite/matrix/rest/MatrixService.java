@@ -7,6 +7,7 @@ import org.beta.tchap.identite.matrix.rest.user.UserInfoResource;
 import org.beta.tchap.identite.matrix.rest.user.UserService;
 import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
+import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.jboss.logging.Logger;
 
 import java.util.Arrays;
@@ -32,14 +33,18 @@ public class MatrixService {
     }
 
     public boolean isUserValid(String email) {
-        LOG.infof("Check if email is valid in tchap : %s", email);
+        if(LOG.isDebugEnabled()){
+            LOG.debugf("Check if email is valid in tchap : %s", LoggingUtilsFactory.getInstance().logOrHash(email));
+        }
         if (StringUtils.isEmpty(email)) {
             return false;
         }
 
         String userHomeServer = homeServerService.findHomeServerByEmail(email);
         boolean isValid = isEmailAcceptedOnTchap(userHomeServer);
-        LOG.infof("Email[%s] is valid in tchap : %s", email, isValid);
+        if(LOG.isDebugEnabled()){
+            LOG.debugf("Email[%s] is valid in tchap : %s", LoggingUtilsFactory.getInstance().logOrHash(email), isValid);
+        }
         return isValid;
     }
 
