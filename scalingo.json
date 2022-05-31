@@ -7,7 +7,7 @@
   "env": {
     "BUILDPACK_URL": {
       "description": "Buildpack used to deploy Keycloak",
-      "value": "https://github.com/tchapgouv/keycloak-buildpack#master",
+      "value": "https://github.com/Scalingo/multi-buildpack.git",
       "required": true
     },
     "STACK": {
