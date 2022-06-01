@@ -22,7 +22,7 @@ services:
             - keycloak_network
 
     keycloak:
-        image: ghcr.io/pseudonyme21/keycloak-buildpack:master
+        image: ghcr.io/tchapgouv/keycloak-buildpack:master
         platform: linux/amd64
         networks:
             - keycloak_network
