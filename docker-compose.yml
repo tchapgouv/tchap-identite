@@ -14,6 +14,7 @@ services:
     maildev:
         container_name: maildev
         image: djfarrelly/maildev:1.0.0
+        platform: linux/amd64
         ports:
             - "1080:80"
             - "1234:25"
@@ -21,7 +22,8 @@ services:
             - keycloak_network
 
     keycloak:
-        image: ghcr.io/pseudonyme21/keycloak-buildpack:master
+        image: ghcr.io/tchapgouv/keycloak-buildpack:master
+        platform: linux/amd64
         networks:
             - keycloak_network
         volumes:
