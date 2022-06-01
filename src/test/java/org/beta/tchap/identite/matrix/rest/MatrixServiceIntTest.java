@@ -11,23 +11,29 @@ class MatrixServiceIntTest {
 
     @BeforeAll
     public static void setup() {
-        System.setProperty("TCHAP_ACCOUNT","<replace here with the appropriate service email account>");
-        System.setProperty("TCHAP_PASSWORD","<get the password>");
         System.setProperty("TCHAP_HOME_SERVER_LIST", "i.tchap.gouv.fr,e.tchap.gouv.fr");
+        System.setProperty("TCHAP_SKIP_CERTIFICATE_VALIDATION", "false");
+        System.setProperty("TCHAP_UNAUTHORIZED_HOME_SERVER_LIST", "e.tchap.gouv.fr");
 
         matrixService = new MatrixService();
     }
 
     @Test
-    void shouldInternalUserBeValid() {
+    void shouldExistingTchapUserBeValid() {
         boolean userValid = matrixService.isUserValid("maghen.calinghee@beta.gouv.fr");
         Assertions.assertTrue(userValid);
     }
 
     @Test
-    void shouldInternalUserNotBeValid() {
+    void shouldNonExistingTchapUserBeValid() {
         boolean userValid = matrixService.isUserValid("clark.kent@beta.gouv.fr");
-        Assertions.assertFalse(userValid);
+        Assertions.assertTrue(userValid);
+    }
+
+    @Test
+    void shouldEducationUserBeValid() {
+        boolean userValid = matrixService.isUserValid("clark.kent@ac-corse.fr");
+        Assertions.assertTrue(userValid);
     }
 
     @Test
@@ -37,10 +43,15 @@ class MatrixServiceIntTest {
     }
 
     @Test
-    void shouldExternalUserWithInvalidEmailNotBeValid() {
-        boolean userValid = matrixService.isUserValid("clark.kent");
+    void shouldCommunityUserNotBeValid() {
+        boolean userValid = matrixService.isUserValid("clark.kent@3t-chatellerault.fr");
         Assertions.assertFalse(userValid);
     }
 
+    @Test
+    void shouldUserWithInvalidEmailNotBeValid() {
+        boolean userValid = matrixService.isUserValid("clark.kent");
+        Assertions.assertFalse(userValid);
+    }
 
 }
