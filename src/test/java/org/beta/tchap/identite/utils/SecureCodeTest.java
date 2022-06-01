@@ -1,5 +1,6 @@
 package org.beta.tchap.identite.utils;
 
+import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -9,6 +10,7 @@ class SecureCodeTest
 {
 
     SecureCode code = new SecureCode();
+    private static final Logger LOG = Logger.getLogger(SecureCodeTest.class);
 
     /**
      * GIVEN: a generated code
@@ -19,9 +21,8 @@ class SecureCodeTest
     void should_create_new_code_each_time()
     {
         String firstCode = code.generateCode(25);
-        System.out.println(firstCode);
         String secondCode = code.generateCode(25);
-        System.out.println(secondCode);
+        LOG.debugf(" %s : first code %s, second code %s","should_create_new_code_each_time",firstCode,secondCode);
         assertThat(firstCode, not(equalTo(secondCode)));
     }
 
