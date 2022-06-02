@@ -25,6 +25,8 @@ jobs:
   build-jar:
     needs: [tag-version]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
       - name: Get version
@@ -37,20 +39,10 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn -Drevision=${{ needs.tag-version.outputs.new_version }} -B package --file pom.xml
-    outputs:
-      version : "${{ needs.tag-version.outputs.new_version }}"
-  
-  create-release:
-    needs: [build-jar]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v3
       - name: Create tchap-identite release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ needs.build-jar.outputs.version }}
+          tag: ${{ needs.tag-version.outputs.new_version }}
           generateReleaseNotes: true
-          artifacts: "/dev/providers/tchap-identite-${{ needs.build-jar.outputs.version }}.jar"
+          artifacts: "/home/runner/work/tchap-identite/tchap-identite/dev/providers/tchap-identite-${{ needs.build-jar.outputs.version }}.jar"
           token: ${{ secrets.GITHUB_TOKEN }}
