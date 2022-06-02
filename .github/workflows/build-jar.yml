@@ -3,8 +3,6 @@ name: Build jar of tchap-identite #major #minor #patch
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   tag-version:
