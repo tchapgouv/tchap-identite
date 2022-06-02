@@ -38,7 +38,7 @@ jobs:
       - name: Build with Maven
         run: mvn -Drevision=${{ needs.tag-version.outputs.new_version }} -B package --file pom.xml
     outputs:
-      new_jar : "${{ needs.tag-version.outputs.new_version }}.jar"
+      version : "${{ needs.tag-version.outputs.new_version }}"
   
   create-release:
     needs: [build-jar]
@@ -50,6 +50,7 @@ jobs:
       - name: Create tchap-identite release
         uses: ncipollo/release-action@v1
         with:
+          tag: ${{ needs.build-jar.outputs.version }}
           generateReleaseNotes: true
-          artifacts: "/home/runner/work/tchap-identite/tchap-identite/dev/providers/${{ needs.build-jar.outputs.new_jar }}.jar"
+          artifacts: "/home/runner/work/tchap-identite/tchap-identite/dev/providers/tchap-identite-${{ needs.build-jar.outputs.version }}.jar"
           token: ${{ secrets.GITHUB_TOKEN }}
