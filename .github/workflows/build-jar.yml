@@ -44,5 +44,5 @@ jobs:
         with:
           tag: ${{ needs.tag-version.outputs.new_version }}
           generateReleaseNotes: true
-          artifacts: "/home/runner/work/tchap-identite/tchap-identite/dev/providers/tchap-identite-${{ needs.build-jar.outputs.version }}.jar"
+          artifacts: "/home/runner/work/tchap-identite/tchap-identite/dev/providers/tchap-identite-${{ needs.tag-version.outputs.new_version }}.jar"
           token: ${{ secrets.GITHUB_TOKEN }}
