@@ -52,13 +52,13 @@ public class MatrixService {
      * Check if an email is accepted on Tchap based on an hardcorded domain list
      */
     private boolean isEmailAcceptedOnTchap(String userHomeServer) {
-        return !getInvalidHomeServers().contains(userHomeServer);
+        return getValidHomeServers().contains(userHomeServer);
     }
 
-    private List<String> getInvalidHomeServers() {
-        String unauthorizedList = Environment.getenv(Constants.TCHAP_UNAUTHORIZED_HOME_SERVER_LIST);
-        return StringUtils.isNotEmpty(unauthorizedList) ?
-                Arrays.asList(unauthorizedList.split(","))
+    private List<String> getValidHomeServers() {
+        String authorizedList = Environment.getenv(Constants.TCHAP_AUTHORIZED_HOME_SERVER_LIST);
+        return StringUtils.isNotEmpty(authorizedList) ?
+                Arrays.asList(authorizedList.split(","))
                 : Collections.emptyList();
     }
 

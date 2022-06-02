@@ -106,8 +106,8 @@
       "description": "list of home servers that tchap-identity can connect to",
       "value": "i.tchap.gouv.fr,e.tchap.gouv.fr"
     },
-    "TCHAP_UNAUTHORIZED_HOME_SERVER_LIST": {
-      "description": "list of unauthorized home servers -- use to check if a user is valid",
+    "TCHAP_AUTHORIZED_HOME_SERVER_LIST": {
+      "description": "list of authorized home servers -- use to check if a user is valid",
       "value": "e.tchap.gouv.fr"
     },
     "TCHAP_PASSWORD": {

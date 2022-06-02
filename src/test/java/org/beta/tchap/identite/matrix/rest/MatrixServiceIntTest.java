@@ -13,7 +13,7 @@ class MatrixServiceIntTest {
     public static void setup() {
         System.setProperty("TCHAP_HOME_SERVER_LIST", "i.tchap.gouv.fr,e.tchap.gouv.fr");
         System.setProperty("TCHAP_SKIP_CERTIFICATE_VALIDATION", "false");
-        System.setProperty("TCHAP_UNAUTHORIZED_HOME_SERVER_LIST", "e.tchap.gouv.fr");
+        System.setProperty("TCHAP_AUTHORIZED_HOME_SERVER_LIST", "i.tchap.gouv.fr");
 
         matrixService = new MatrixService();
     }
