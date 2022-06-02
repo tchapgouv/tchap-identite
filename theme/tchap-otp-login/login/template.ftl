@@ -228,6 +228,7 @@
                 </ul>
             </div>
         </div>
+        <!--
         <div class="fr-footer__bottom">
             <ul class="fr-footer__bottom-list">
                 <li>
@@ -243,6 +244,7 @@
                 </li>
             </ul>
         </div>
+        -->
     </div>
 </footer>
 </body>

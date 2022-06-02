@@ -26,6 +26,7 @@ public class OtpLoginAuthenticator extends AbstractUsernameFormAuthenticator
     private static final Logger LOG = Logger.getLogger(OtpLoginAuthenticator.class);
 
     private static final String FTL_ENTER_CODE       = "enter-code.ftl";
+    private static final String FTL_ENTER_CODE_WITHOUT_EMAIL       = "enter-code-without-email.ftl";
     public static final String AUTH_NOTE_USER_EMAIL = "user-email";
     public static final String AUTH_NOTE_OTP = "email-code";
     public static final String AUTH_NOTE_TIMESTAMP  = "timestamp";
@@ -107,7 +108,7 @@ public class OtpLoginAuthenticator extends AbstractUsernameFormAuthenticator
         if(info !=null){
             form.setInfo(info);
         }
-        return form.createForm(FTL_ENTER_CODE);
+        return form.createForm(FTL_ENTER_CODE_WITHOUT_EMAIL);
     }
 
     static Response otpFormError(AuthenticationFlowContext context, String error){
@@ -122,7 +123,7 @@ public class OtpLoginAuthenticator extends AbstractUsernameFormAuthenticator
         return context.form()
                 .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail)
                 .setError(error)
-                .createForm(FTL_ENTER_CODE);
+                .createForm(FTL_ENTER_CODE_WITHOUT_EMAIL);
     }
 
 
