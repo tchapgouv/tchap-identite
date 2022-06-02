@@ -1,0 +1,129 @@
+{
+  "name": "Keycloak",
+  "description": "Keycloak",
+  "logo": "https://www.keycloak.org/resources/images/keycloak_logo_480x108.png",
+  "repository": "https://github.com/tchapgouv/keycloak-buildpack",
+  "website": "https://keycloak.org",
+  "env": {
+    "BUILDPACK_URL": {
+      "description": "Buildpack used to deploy Keycloak",
+      "value": "https://github.com/Scalingo/multi-buildpack.git",
+      "required": true
+    },
+    "STACK": {
+      "description": "scalingo stack",
+      "value": "scalingo-20",
+      "required": false
+    },
+    "JQ_VERSION": {
+      "description": "JQ version",
+      "value": "1.6",
+      "required": false
+    },
+    "JRE_MAJOR_VERSION": {
+      "description": "Java version",
+      "value": "11",
+      "required": false
+    },
+    "KEYCLOAK_VERSION": {
+      "description": "keycloak version",
+      "value": "latest",
+      "required": false
+    },
+    "KC_PROXY": {
+      "description": "see https://www.keycloak.org/server/reverseproxy",
+      "value": "edge",
+      "required": true
+    },
+    "KC_HOSTNAME": {
+      "description": "host",
+      "generator": "template",
+      "template": "%APP%.osc-secnum-fr1.scalingo.io",
+      "required": false
+    },
+    "KC_HTTP_PORT": {
+      "description": "keycloak HTTP listening port (same as Scalingo PORT)",
+      "value": "$PORT",
+      "required": true
+    },
+    "KC_HTTPS_PORT": {
+      "description": "keycloak HTTPS listening port (same as Scalingo HTTPS PORT)",
+      "value": "443",
+      "required": true
+    },
+    "KEYCLOAK_ADMIN": {
+      "description": "admin username",
+      "value": "",
+      "required": true
+    },
+    "KEYCLOAK_ADMIN_PASSWORD": {
+      "description": "admin password",
+      "value": "",
+      "required": false
+    },
+    "KC_DB": {
+      "description": "database vendor (default postgres)",
+      "value": "postgres",
+      "required": false
+    },
+    "KC_DB_URL": {
+      "description": "database url: jdbc:postgresql://localhost:5432/keycloak",
+      "value": "jdbc:postgresql://localhost:5432/keycloak",
+      "required": true
+    },
+    "KC_DB_USERNAME": {
+      "description": "database username",
+      "value": "",
+      "required": true
+    },
+    "KC_DB_PASSWORD": {
+      "description": "database password",
+      "value": "",
+      "required": true
+    },
+    "PROVIDERS": {
+      "description": "comma list providers",
+      "value": "",
+      "required": true
+    },
+    "MAX_METASPACE_SIZE": {
+      "description": "Control max memory available",
+      "value": "512m"
+    },
+    "KEYCLOAK_CUSTOM_PROVIDER_DIR": {
+      "description": "path of the custom provider path from local build",
+      "value": "dev/providers"
+    },
+    "DATABASE_URL": {
+      "description": "database url",
+      "value": "$SCALINGO_POSTGRESQL_URL"
+    },
+    "TCHAP_ACCOUNT": {
+      "description": "Email of the Tchap Bot Account",
+      "value": "tchap-identite@tchap.beta.gouv.fr"
+    },
+    "TCHAP_HOME_SERVER_LIST": {
+      "description": "list of home servers that tchap-identity can connect to",
+      "value": "i.tchap.gouv.fr,e.tchap.gouv.fr"
+    },
+    "TCHAP_UNAUTHORIZED_HOME_SERVER_LIST": {
+      "description": "list of unauthorized home servers -- use to check if a user is valid",
+      "value": "e.tchap.gouv.fr"
+    },
+    "TCHAP_PASSWORD": {
+      "description": "Password of the Tchap Bot Account",
+      "value": ""
+    },
+    "TCHAP_SKIP_CERTIFICATE_VALIDATION": {
+      "description": "skip the certificate validation exposed by tchap-servers",
+      "value": "false"
+    }
+  },
+  "addons": ["postgresql:postgresql-sandbox"],
+  "formation": {
+    "web": {
+      "amount": 1,
+      "size": "S"
+    }
+  }
+}
