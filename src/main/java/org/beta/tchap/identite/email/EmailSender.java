@@ -37,7 +37,7 @@ public class EmailSender
             }
             //todo: remove this workaround
             emailSender.setUser(new TchapUserModel(null,null,null,user.getUsername()));
-            emailSender.send("Confirmez la réservation de votre conférence audio", "loginCode.ftl",
+            emailSender.send("Confirmez la réservation de votre conférence audio", "loginCodeWithNiceDesign.html",
                     createCodeLoginAttributes(code));
         } catch (EmailException e) {
             ServicesLogger.LOGGER.failedToSendEmail(e);
