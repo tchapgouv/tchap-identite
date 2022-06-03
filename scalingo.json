@@ -117,6 +117,14 @@
     "TCHAP_SKIP_CERTIFICATE_VALIDATION": {
       "description": "skip the certificate validation exposed by tchap-servers",
       "value": "false"
+    },
+    "TCHAP_OTP_MAIL_DELAY_IN_MINUTES": {
+      "description": "define the delay to wait before sending a new otp by email in minutes (optional, default 0)",
+      "value": "false"
+    },
+    "TCHAP_CODE_TIMEOUT_IN_MINUTES": {
+      "description": "define the otp code time validity in minutes (optional, default 60)",
+      "value": "false"
     }
   },
   "addons": ["postgresql:postgresql-sandbox"],
