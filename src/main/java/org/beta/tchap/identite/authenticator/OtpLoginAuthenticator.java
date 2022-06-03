@@ -58,14 +58,10 @@ public class OtpLoginAuthenticator
     @Override
     public void action(AuthenticationFlowContext context)
     {
-
-
         if(LOG.isDebugEnabled()){
             LOG.debugf("Authenticate action OtpLoginAuthenticator %s", context);
         }
 
-
-        //prepareOtpForm(context);
         /* retrieve formData*/
         MultivaluedMap<String, String> formData = context.getHttpRequest().getDecodedFormParameters();
         String codeInput = formData.getFirst("codeInput");
@@ -115,7 +111,6 @@ public class OtpLoginAuthenticator
             if(LOG.isDebugEnabled()){LOG.debugf("Authenticate login : %s, a previous code has been sent. Should wait for cool down delay before sending a new one",
                     LoggingUtilsFactory.getInstance().logOrHash(loginHint));}
 
-            
             infoMessage = 
                     String.format("Un code vous a déjà été envoyé, veuillez attendre %s minute avant de demander un nouveau code.", mailDelay);
             ;
@@ -126,7 +121,6 @@ public class OtpLoginAuthenticator
                 context.success();
             }
         }
-
 
         context.challenge(otpForm(context,infoMessage));
     }

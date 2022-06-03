@@ -61,12 +61,8 @@ public class TchapUserStorage implements UserStorageProvider,
         return getUserByUsername(realm, email);
     }
 
-
-
-
-
     /*
-     * no user
+     * no use
      */
     @Override
     public void preRemove(RealmModel realm) {
@@ -86,9 +82,6 @@ public class TchapUserStorage implements UserStorageProvider,
     @Override
     public void close() {
     }
-
-
-
 
     /*
      * Deprecated

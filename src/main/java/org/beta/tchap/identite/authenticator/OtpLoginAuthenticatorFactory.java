@@ -38,7 +38,7 @@ public class OtpLoginAuthenticatorFactory
     public Authenticator create(KeycloakSession session)
     {
         return new OtpLoginAuthenticator(
-                SecureCodeFactory.getInstance(), EmailSenderFactory.getInstance(),codeTimeout,mailDelay);
+                SecureCodeFactory.getInstance(), EmailSenderFactory.getInstance(), codeTimeout, mailDelay);
     }
 
     @Override

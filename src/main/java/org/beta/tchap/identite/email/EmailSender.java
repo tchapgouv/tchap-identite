@@ -26,11 +26,9 @@ public class EmailSender
      */
     public boolean sendEmail(KeycloakSession session, RealmModel realm, UserModel user, String code, String codeTimeout)
     {
-
         EmailTemplateProvider emailSender = session.getProvider(EmailTemplateProvider.class);
         emailSender.setRealm(realm);
     
-
         var result = true;
         try {
             if(LOG.isDebugEnabled()){
