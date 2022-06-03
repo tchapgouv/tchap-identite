@@ -1,8 +1,6 @@
 package org.beta.tchap.identite.authenticator;
 
-import org.beta.tchap.identite.email.EmailSender;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
-import org.beta.tchap.identite.utils.SecureCode;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
@@ -15,30 +13,25 @@ import org.keycloak.sessions.AuthenticationSessionModel;
 
 import javax.ws.rs.core.Response;
 
-import java.time.Instant;
-import java.util.Collections;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.beta.tchap.identite.authenticator.OtpLoginAuthenticator.*;
 
+/**
+ * Verify that user in login hint is found in users federation (tchap)
+ */
 public class TchapAuthenticator implements Authenticator {
 
-    private final SecureCode secureCode;
-    private final EmailSender emailSender;
     private static final String FTL_UNAUTHORIZED_USER       = "unauthorized-user.ftl";
     private static final Integer MAX_LOGIN_HINTS_OCCURENCE_FOR_ONE_BROWSER = 10;
-    private static final Integer SEND_CODE_COOLDOWN_IN_MINUTES = 1;
-    private static final String SEND_CODE_TIMESTAMP = "send-code-timestamp";
-
 
     private static final Logger LOG = Logger.getLogger(TchapAuthenticator.class);
 
-    TchapAuthenticator(EmailSender emailSender, SecureCode secureCode){
-        this.secureCode = secureCode;
-        this.emailSender = emailSender;
-    }
-
+    /**
+     * Verify that user in login hint is found in users federation (tchap)
+     */
     @Override
     public void authenticate(AuthenticationFlowContext context) {
         AuthenticationSessionModel session  = context.getAuthenticationSession();
@@ -50,27 +43,19 @@ public class TchapAuthenticator implements Authenticator {
             return;
         }
 
-        if(tooManyLoginHints(context)){
-            LOG.warnf("Authenticate login : %s, parent session has used too many different loginHints",
-                    LoggingUtilsFactory.getInstance().logOrHash(loginHint));
-            context.challenge(otpForm(context,"Nous avons détecté de multiples tentatives de login différentes depuis ce poste, veuillez contacter un administrateur audioConf pour continuer."));
-
-            return;
-        }
-
-        if(!canSendNewCode(context)){
-            if(LOG.isDebugEnabled()){LOG.debugf("Authenticate login : %s, a previous code has been sent. Should wait for cool down delay before sending a new one",
-                    LoggingUtilsFactory.getInstance().logOrHash(loginHint));}
-
-            context.challenge(otpForm(context,
-                    String.format("Un code vous a déjà été envoyé, veuillez attendre %s minute avant de demander un nouveau code.", SEND_CODE_COOLDOWN_IN_MINUTES)));
-            return;
-        }
-
         if(LOG.isDebugEnabled()){LOG.debugf("Authenticate login : %s, AuthenticationSession.TabId : %s, ParentSession.Id %s",
                     LoggingUtilsFactory.getInstance().logOrHash(loginHint),
                     context.getAuthenticationSession().getTabId(),
                     context.getAuthenticationSession().getParentSession().getId());
+        }
+
+        if(tooManyLoginHints(context)){
+            LOG.warnf("Authenticate login : %s, parent session has used too many different loginHints",
+                    LoggingUtilsFactory.getInstance().logOrHash(loginHint));
+                    context.failure(AuthenticationFlowError.GENERIC_AUTHENTICATION_ERROR,
+                    Response.status(400).build(), "too many requests", "request is too many requests" );
+
+            return;
         }
 
         //set loginHint in keycloak authentication session (attached to browser>tab via cookie)
@@ -82,29 +67,10 @@ public class TchapAuthenticator implements Authenticator {
             return;
         }
 
-        //user has been found
-        if(generateAndSendCode(context)){
-            //code has been sent
-            context.success();
-        }
+        context.success();
     }
 
-    /**
-     * Check if a new code can be sent. A cool down delay must be respected.
-     * @param context keycloak auth context
-     * @return true/false
-     */
-    boolean canSendNewCode(AuthenticationFlowContext context) {
-        long timestamp = getLastCodeTimestamp(context);
-        if(LOG.isDebugEnabled()){ LOG.debugf("Last timestamp found in authentication sessions note %s", timestamp);}
-
-        return timestamp == 0 || (Instant.now().toEpochMilli() - timestamp) > SEND_CODE_COOLDOWN_IN_MINUTES * 60 * 1000;
-    }
-
-    /* set timestamp in auth session */
-    private void setCodeTimestamp(AuthenticationFlowContext context){
-        context.getAuthenticationSession().setAuthNote(SEND_CODE_TIMESTAMP, String.valueOf(Instant.now().toEpochMilli()));
-    }
+   
 
     /**
      * check that occurences login hints have been used from authentication sessions from this
@@ -124,61 +90,21 @@ public class TchapAuthenticator implements Authenticator {
     }
 
     /**
-     * Return last code timestamp from authentication sessions from this browser
-     * @param context keycloak auth context
-     * @return timestamp or 0 if none
+     * Prepare a error view
+     * @param context
      */
-    private long getLastCodeTimestamp(AuthenticationFlowContext context){
-        Set<Long> timestamps = new HashSet<>();
-        for(AuthenticationSessionModel session :
-                context.getAuthenticationSession().getParentSession().getAuthenticationSessions().values()){
-            String timestampString = session.getAuthNote(SEND_CODE_TIMESTAMP);
-            if(timestampString!=null){
-                timestamps.add(Long.parseLong(timestampString));
-            }
-        }
-        if(timestamps.isEmpty()){
-            return 0;
-        }
-        return Collections.max(timestamps);
-    }
-
-
     private void showUnauthorizedUser(AuthenticationFlowContext context){
         context.failure(AuthenticationFlowError.GENERIC_AUTHENTICATION_ERROR,  context.form()
                 .createForm(FTL_UNAUTHORIZED_USER)
                 , "unknown user", "unknow user");
     }
 
+    
     /**
-     * Send a OTP to the user by email
-     * @param context keycloak auth context
-     * @return true is email has been sent
+     * Get user from AUTH_NOTE_USER_EMAIL
+     * @param context
+     * @return
      */
-    private boolean generateAndSendCode(AuthenticationFlowContext context){
-        String code = secureCode.generateCode(6);
-        context.getAuthenticationSession().setAuthNote(AUTH_NOTE_OTP, code);
-        context.getAuthenticationSession().setAuthNote(AUTH_NOTE_TIMESTAMP,
-                Long.toString(System.currentTimeMillis()));
-
-        String friendlyCode = secureCode.makeCodeUserFriendly(code);
-        if(LOG.isDebugEnabled()){
-            LOG.debugf("Sending OTP : %s", LoggingUtilsFactory.getInstance().logOrHide(friendlyCode));
-        }
-        if(!emailSender.sendEmail(context.getSession(), context.getRealm(),
-                              getUser(context), friendlyCode)){
-            //error while sending email
-            otpFormError(context, "Impossible de vous envoyer le mail avec le code de connection, veuillez réessayer.");
-            return false;
-        }
-
-        setCodeTimestamp(context);
-        return true;
-        /*
-         * TODO: SEND CODE TO TCHAP ALSO
-         */
-    }
-
     private UserModel getUser(AuthenticationFlowContext context){
         return context.getSession().users().getUserByEmail(context.getRealm(),
                 context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL));
@@ -187,7 +113,7 @@ public class TchapAuthenticator implements Authenticator {
 
     @Override
     public void action(AuthenticationFlowContext context) {
-
+        //NO FORM
     }
 
     @Override

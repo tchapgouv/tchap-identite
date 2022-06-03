@@ -7,6 +7,7 @@ public class SecureCode
 {
 
     Random random = new SecureRandom();
+    private static String SEPARATOR = "-";
 
     protected SecureCode(){}
 
@@ -29,7 +30,7 @@ public class SecureCode
     }
 
     /**
-     * Splits the passed string using "-" to make it more readable
+     * Splits the passed string using SEPARATOR to make it more readable
      * split conditions:
      * - don't split if length <= 5
      * - split in 4s if divisible by 4 or length > 20
@@ -58,7 +59,7 @@ public class SecureCode
         }
 
         for (int i = (codeLength - 1) / codeSnippetLength * codeSnippetLength; i > 0; i -= codeSnippetLength) {
-            userFriendlyCode = userFriendlyCode.substring(0, i) + "-" + userFriendlyCode.substring(i);
+            userFriendlyCode = userFriendlyCode.substring(0, i) + SEPARATOR + userFriendlyCode.substring(i);
         }
 
         return userFriendlyCode;
@@ -67,14 +68,14 @@ public class SecureCode
     /**
      * Validates the code input by the user
      * returns true if entered code met following conditions:
-     * - code is equal to the code send out by email (ignoring "-")
+     * - code is equal to the code send out by email (ignoring SEPARATOR)
      * - code got entered before timeoutInMinutes have passed since code got sent
      * - code got entered after codeActivationDelayInSeconds have passed since code got sent
      */
     public boolean isValid(String codeInput, String emailedCode, String timeStamp, int timeoutInMinutes,
                            int codeActivationDelayInSeconds)
     {
-        codeInput = codeInput.replace("-", "");
+        codeInput = codeInput.replace(SEPARATOR, "");
         long timePassedSinceRequest = System.currentTimeMillis()
                 - Long.parseLong(timeStamp);
         boolean codeActive = timePassedSinceRequest < 1000 * 60 * timeoutInMinutes
