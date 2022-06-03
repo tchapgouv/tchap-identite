@@ -1,6 +1,8 @@
 package org.beta.tchap.identite.authenticator;
 
 import org.beta.tchap.identite.email.EmailSenderFactory;
+import org.beta.tchap.identite.utils.Constants;
+import org.beta.tchap.identite.utils.Environment;
 import org.beta.tchap.identite.utils.SecureCodeFactory;
 import org.keycloak.Config;
 import org.keycloak.authentication.Authenticator;
@@ -21,17 +23,22 @@ public class OtpLoginAuthenticatorFactory
     public static final String DISPLAY_TYPE = "Tchap Login OTP";
     public static final String HELP_TEXT = DISPLAY_TYPE;
     public static final String CATEGORY = "tchap";
-
+    private static final int TCHAP_CODE_TIMEOUT_IN_MINUTES_DEFAULT = 60;
+    private static final int TCHAP_OTP_MAIL_DELAY_IN_MINUTES_DEFAULT = 1;
+    
     private static final AuthenticationExecutionModel.Requirement[] REQUIREMENT_CHOICES = {
-            AuthenticationExecutionModel.Requirement.REQUIRED,
-            AuthenticationExecutionModel.Requirement.DISABLED
+        AuthenticationExecutionModel.Requirement.REQUIRED,
+        AuthenticationExecutionModel.Requirement.DISABLED
     };
+    
+    private int codeTimeout;
+    private int mailDelay;
 
     @Override
     public Authenticator create(KeycloakSession session)
     {
         return new OtpLoginAuthenticator(
-                SecureCodeFactory.getInstance());
+                SecureCodeFactory.getInstance(), EmailSenderFactory.getInstance(),codeTimeout,mailDelay);
     }
 
     @Override
@@ -85,7 +92,12 @@ public class OtpLoginAuthenticatorFactory
     @Override
     public void init(Config.Scope config)
     {
-        // not needed for current version
+        mailDelay = Environment.getenv(Constants.TCHAP_OTP_MAIL_DELAY_IN_MINUTES)!=null?
+            Integer.parseInt(Environment.getenv(Constants.TCHAP_OTP_MAIL_DELAY_IN_MINUTES)): TCHAP_OTP_MAIL_DELAY_IN_MINUTES_DEFAULT;
+
+        codeTimeout = Environment.getenv(Constants.TCHAP_CODE_TIMEOUT_IN_MINUTES)!=null?
+            Integer.parseInt(Environment.getenv(Constants.TCHAP_CODE_TIMEOUT_IN_MINUTES)): TCHAP_CODE_TIMEOUT_IN_MINUTES_DEFAULT;
+
     }
 
     @Override

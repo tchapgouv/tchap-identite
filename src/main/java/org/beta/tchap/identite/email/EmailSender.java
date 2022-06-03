@@ -24,7 +24,7 @@ public class EmailSender
      *
      * @return false if email sending doesn't happen
      */
-    public boolean sendEmail(KeycloakSession session, RealmModel realm, UserModel user, String code)
+    public boolean sendEmail(KeycloakSession session, RealmModel realm, UserModel user, String code, String codeTimeout)
     {
 
         EmailTemplateProvider emailSender = session.getProvider(EmailTemplateProvider.class);
@@ -39,7 +39,7 @@ public class EmailSender
             //todo: remove this workaround
             emailSender.setUser(new TchapUserModel(null,null,null,user.getUsername()));
             emailSender.send("Confirmez la réservation de votre conférence audio", "loginCodeEmail.html",
-                    createCodeLoginAttributes(code));
+                    createCodeLoginAttributes(code,codeTimeout));
         } catch (EmailException e) {
             ServicesLogger.LOGGER.failedToSendEmail(e);
             result = false;
@@ -47,10 +47,11 @@ public class EmailSender
         return result;
     }
 
-    private Map<String, Object> createCodeLoginAttributes(String loginCode)
+    private Map<String, Object> createCodeLoginAttributes(String loginCode, String codeTimeout)
     {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("loginCode", loginCode);
+        attributes.put("codeTimeout", codeTimeout);
         return attributes;
     }
 }

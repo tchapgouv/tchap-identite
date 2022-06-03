@@ -1,8 +1,5 @@
 package org.beta.tchap.identite.authenticator;
 
-import org.beta.tchap.identite.email.EmailSenderFactory;
-import org.beta.tchap.identite.matrix.rest.MatrixServiceFactory;
-import org.beta.tchap.identite.utils.SecureCodeFactory;
 import org.keycloak.Config;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.authentication.AuthenticatorFactory;
@@ -64,10 +61,7 @@ public class TchapAuthenticatorFactory implements AuthenticatorFactory {
 
     @Override
     public Authenticator create(KeycloakSession session) {
-        return new TchapAuthenticator(
-                EmailSenderFactory.getInstance(),
-                SecureCodeFactory.getInstance()
-                );
+        return new TchapAuthenticator();
     }
 
     @Override

@@ -16,8 +16,11 @@
 - TCHAP_HOME_SERVER_LIST=list of home servers that tchap-identity can connect to
 - TCHAP_SKIP_CERTIFICATE_VALIDATION=false
 - TCHAP_UNAUTHORIZED_HOME_SERVER_LIST=list of unauthorized home servers -- use to check if a user is valid
+- TCHAP_OTP_MAIL_DELAY_IN_MINUTES= (optionnal) delay to wait to send another otp to users. default 0 
+- TCHAP_CODE_TIMEOUT_IN_MINUTES= (optionnal) validity of a otp code. default 60 
+- TCHAP_LOG_SENSITIVE_DATA = (optionnal) log sensitive data like username. default false
 
-2. build extension with maven goal. A jar is produced with the custom providers and the custom view.  
+1. build extension with maven goal. A jar is produced with the custom providers and the custom view.  
 
 `mvn package`
 
