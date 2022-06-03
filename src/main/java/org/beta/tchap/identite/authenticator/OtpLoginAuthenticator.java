@@ -22,8 +22,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 /**
- * If all conditions for the code validation are met he gets logged in
- * else he has to restart the process.
+ * Send a OTP to the user in session authenticate() and wait for it in action()
  */
 
 public class OtpLoginAuthenticator
@@ -55,6 +54,40 @@ public class OtpLoginAuthenticator
         this.mailDelay = mailDelay;
     }
 
+    /**
+     * Send a otp to the user in session and present a form
+     */
+    @Override
+    public void authenticate(AuthenticationFlowContext context)
+    {
+        String loginHint = context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL);
+        String infoMessage = "";
+
+        if(LOG.isDebugEnabled()){
+            LOG.debugf("Authenticate OtpLoginAuthenticator");
+        }
+        
+        if(!canSendNewCode(context)){
+            if(LOG.isDebugEnabled()){LOG.debugf("Authenticate login : %s, a previous code has been sent. Should wait for cool down delay before sending a new one",
+                    LoggingUtilsFactory.getInstance().logOrHash(loginHint));}
+
+            infoMessage = 
+                    String.format("Un code vous a déjà été envoyé, veuillez attendre %s minute avant de demander un nouveau code.", mailDelay);
+            ;
+        }else{
+
+            if(generateAndSendCode(context)){
+                //code has been sent
+                context.success();
+            }
+        }
+
+        context.challenge(otpForm(context,infoMessage));
+    }
+
+    /**
+     * Wait for the otp in the form input
+     */
     @Override
     public void action(AuthenticationFlowContext context)
     {
@@ -97,35 +130,14 @@ public class OtpLoginAuthenticator
         return context.getSession().users().getUserByEmail(context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL), context.getRealm());
     }
 
-    @Override
-    public void authenticate(AuthenticationFlowContext context)
-    {
-        String loginHint = context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL);
-        String infoMessage = "";
 
-        if(LOG.isDebugEnabled()){
-            LOG.debugf("Authenticate OtpLoginAuthenticator");
-        }
-        
-        if(!canSendNewCode(context)){
-            if(LOG.isDebugEnabled()){LOG.debugf("Authenticate login : %s, a previous code has been sent. Should wait for cool down delay before sending a new one",
-                    LoggingUtilsFactory.getInstance().logOrHash(loginHint));}
-
-            infoMessage = 
-                    String.format("Un code vous a déjà été envoyé, veuillez attendre %s minute avant de demander un nouveau code.", mailDelay);
-            ;
-        }else{
-
-            if(generateAndSendCode(context)){
-                //code has been sent
-                context.success();
-            }
-        }
-
-        context.challenge(otpForm(context,infoMessage));
-    }
-
-    static Response otpForm(AuthenticationFlowContext context, String info){
+    /**
+     * Prepare the view of the otp form
+     * @param context
+     * @param info optional info message
+     * @return ready-to-send Response
+     */
+    private Response otpForm(AuthenticationFlowContext context, String info){
         String userEmail = context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL);
 
         /* if userEmail is not set in the authentication session, fails */
@@ -143,7 +155,13 @@ public class OtpLoginAuthenticator
         return form.createForm(FTL_ENTER_CODE);
     }
 
-    static Response otpFormError(AuthenticationFlowContext context, String error){
+    /**
+     * Prepare an error view
+     * @param context
+     * @param error required error message
+     * @return ready-to-send Response
+     */
+    private Response otpFormError(AuthenticationFlowContext context, String error){
         String userEmail = context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL);
 
         /* if userEmail is not set in the authentication session, fails */
@@ -192,7 +210,7 @@ public class OtpLoginAuthenticator
      * @param context keycloak auth context
      * @return true/false
      */
-    boolean canSendNewCode(AuthenticationFlowContext context) {
+    private boolean canSendNewCode(AuthenticationFlowContext context) {
         long timestamp = getLastCodeTimestamp(context);
         if(LOG.isDebugEnabled()){ LOG.debugf("Last timestamp found in authentication sessions note %s", timestamp);}
 

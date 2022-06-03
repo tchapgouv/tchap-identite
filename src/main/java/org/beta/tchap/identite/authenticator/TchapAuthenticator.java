@@ -19,6 +19,9 @@ import java.util.Set;
 
 import static org.beta.tchap.identite.authenticator.OtpLoginAuthenticator.*;
 
+/**
+ * Verify that user in login hint is found in users federation (tchap)
+ */
 public class TchapAuthenticator implements Authenticator {
 
     private static final String FTL_UNAUTHORIZED_USER       = "unauthorized-user.ftl";
@@ -26,6 +29,9 @@ public class TchapAuthenticator implements Authenticator {
 
     private static final Logger LOG = Logger.getLogger(TchapAuthenticator.class);
 
+    /**
+     * Verify that user in login hint is found in users federation (tchap)
+     */
     @Override
     public void authenticate(AuthenticationFlowContext context) {
         AuthenticationSessionModel session  = context.getAuthenticationSession();
@@ -83,9 +89,10 @@ public class TchapAuthenticator implements Authenticator {
         return loginHints.size() > MAX_LOGIN_HINTS_OCCURENCE_FOR_ONE_BROWSER;
     }
 
-    
-
-
+    /**
+     * Prepare a error view
+     * @param context
+     */
     private void showUnauthorizedUser(AuthenticationFlowContext context){
         context.failure(AuthenticationFlowError.GENERIC_AUTHENTICATION_ERROR,  context.form()
                 .createForm(FTL_UNAUTHORIZED_USER)
@@ -93,7 +100,11 @@ public class TchapAuthenticator implements Authenticator {
     }
 
     
-
+    /**
+     * Get user from AUTH_NOTE_USER_EMAIL
+     * @param context
+     * @return
+     */
     private UserModel getUser(AuthenticationFlowContext context){
         return context.getSession().users().getUserByEmail(context.getRealm(),
                 context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL));
@@ -102,7 +113,7 @@ public class TchapAuthenticator implements Authenticator {
 
     @Override
     public void action(AuthenticationFlowContext context) {
-
+        //NO FORM
     }
 
     @Override
