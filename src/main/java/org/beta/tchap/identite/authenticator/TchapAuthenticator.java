@@ -53,7 +53,7 @@ public class TchapAuthenticator implements Authenticator {
         if(tooManyLoginHints(context)){
             LOG.warnf("Authenticate login : %s, parent session has used too many different loginHints",
                     LoggingUtilsFactory.getInstance().logOrHash(loginHint));
-            context.challenge(otpForm(context,"Nous avons détecté de multiples tentatives de login différentes depuis ce poste, veuillez contacter un administrateur audioConf pour continuer"));
+            context.challenge(otpForm(context,"Nous avons détecté de multiples tentatives de login différentes depuis ce poste, veuillez contacter un administrateur audioConf pour continuer."));
 
             return;
         }
@@ -63,7 +63,7 @@ public class TchapAuthenticator implements Authenticator {
                     LoggingUtilsFactory.getInstance().logOrHash(loginHint));}
 
             context.challenge(otpForm(context,
-                    String.format("Un code vous a déjà été envoyé, veuillez attendre %s minute avant de demander un nouveau code", SEND_CODE_COOLDOWN_IN_MINUTES)));
+                    String.format("Un code vous a déjà été envoyé, veuillez attendre %s minute avant de demander un nouveau code.", SEND_CODE_COOLDOWN_IN_MINUTES)));
             return;
         }
 
@@ -168,7 +168,7 @@ public class TchapAuthenticator implements Authenticator {
         if(!emailSender.sendEmail(context.getSession(), context.getRealm(),
                               getUser(context), friendlyCode)){
             //error while sending email
-            otpFormError(context, "Impossible de vous envoyer l'email avec le code de connection, veuillez réessayer");
+            otpFormError(context, "Impossible de vous envoyer le mail avec le code de connection, veuillez réessayer.");
             return false;
         }
 

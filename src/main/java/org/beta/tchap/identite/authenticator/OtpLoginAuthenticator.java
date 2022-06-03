@@ -61,16 +61,19 @@ public class OtpLoginAuthenticator extends AbstractUsernameFormAuthenticator
         }
 
         if (context.getAuthenticationSession().getAuthNote(AUTH_NOTE_OTP) == null) {
-            context.challenge(otpFormError(context,"Le code est invalide, veuillez redemander un code"));
+            context.challenge(otpFormError(context,"Le code n'est pas valide. Vérifiez votre saisie ou demandez un nouveau code."));
             return;
         }
+
+        //trim code
+        codeInput = codeInput.trim();
 
         if (!secureCode.isValid(codeInput, context.getAuthenticationSession().getAuthNote(AUTH_NOTE_OTP),
                                context.getAuthenticationSession().getAuthNote(AUTH_NOTE_TIMESTAMP),
                 CODE_TIMEOUT_IN_MINUTES,
                 CODE_ACTIVATION_DELAY_IN_SECONDS)) {
             //code validation has failed
-            context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS,otpFormError(context,"Le code n'est pas valide"));
+            context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS,otpFormError(context,"Le code n'est pas valide. Vérifiez votre saisie ou demandez un nouveau code."));
             return;
         }
 

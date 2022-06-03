@@ -29,6 +29,7 @@ public class EmailSender
 
         EmailTemplateProvider emailSender = session.getProvider(EmailTemplateProvider.class);
         emailSender.setRealm(realm);
+    
 
         var result = true;
         try {
@@ -37,7 +38,7 @@ public class EmailSender
             }
             //todo: remove this workaround
             emailSender.setUser(new TchapUserModel(null,null,null,user.getUsername()));
-            emailSender.send("Confirmez la réservation de votre conférence audio", "loginCodeWithNiceDesign.html",
+            emailSender.send("Confirmez la réservation de votre conférence audio", "loginCodeEmail.html",
                     createCodeLoginAttributes(code));
         } catch (EmailException e) {
             ServicesLogger.LOGGER.failedToSendEmail(e);

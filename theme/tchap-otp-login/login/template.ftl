@@ -1,4 +1,4 @@
-<#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false displayWide=false showAnotherWayIfPresent=true clientUrl="" pageTitle="">
+<#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false displayWide=false showAnotherWayIfPresent=true clientUrl="" pageTitle="" clientName="" clientDescription="">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -58,11 +58,11 @@
                         </div>
                     </div>
                     <div class="fr-header__service">
-                        <a href="${clientUrl}" title="Accueil - AudioConf">
+                        <a href="${clientUrl}" title="Accueil - ${clientName}">
                             <p class="fr-header__service-title">
                                 ${pageTitle}
                             </p>
-                        <p class="fr-header__service-tagline">Conférences téléphoniques pour les agents de l'État</p>
+                        <p class="fr-header__service-tagline">${clientDescription}</p>
                         </a>
                     </div>
                 </div>
@@ -208,26 +208,28 @@
                 <span class="fr-logo fr-logo__title">république<br>française</span>
             </div>
             <div class="fr-footer__content">
-                <p class="fr-footer__content-desc">
-                    Service proposé par la Direction interministérielle du numérique et la Direction du numérique pour l'éducation
-                </p>
-
-                <ul class="fr-footer__content-links">
-                    <li>
-                        <a href="https://legifrance.gouv.fr">legifrance.gouv.fr</a>
-                    </li>
-                    <li>
-                        <a href="https://gouvernement.fr">gouvernement.fr</a>
-                    </li>
-                    <li>
-                        <a href="https://service-public.fr">service-public.fr</a>
-                    </li>
-                    <li>
-                        <a href="https://data.gouv.fr">data.gouv.fr</a>
-                    </li>
-                </ul>
-            </div>
+        <p class="fr-footer__content-desc">Conférences téléphoniques pour les agents de l'État</p>
+        <p class="fr-footer__content-desc">
+          Le code source est ouvert et les contributions sont bienvenues.
+          <a title="Voir le code source" href="https://github.com/betagouv/tchap-identite" target="_blank" rel="noopener">Voir le code source</a>
+        </p>
+        <ul class="fr-footer__content-list">
+          <li class="fr-footer__content-item">
+            <a class="fr-footer__content-link" href="${clientUrl}/contact">Contactez-nous</a>
+          </li>
+          <li class="fr-footer__content-item">
+            <a class="fr-footer__content-link" href="https://www.numerique.gouv.fr">numerique.gouv.fr</a>
+          </li>
+          <li class="fr-footer__content-item">
+            <a class="fr-footer__content-link" href="https://beta.gouv.fr">beta.gouv.fr</a>
+          </li>
+          <li class="fr-footer__content-item">
+            <a class="fr-footer__content-link" href="https://www.gouvernement.fr">gouvernement.fr</a>
+          </li>
+        </ul>
+      </div>
         </div>
+        <!--
         <div class="fr-footer__bottom">
             <ul class="fr-footer__bottom-list">
                 <li>
@@ -243,6 +245,7 @@
                 </li>
             </ul>
         </div>
+        -->
     </div>
 </footer>
 </body>
