@@ -24,7 +24,7 @@ public class OtpLoginAuthenticatorFactory
     public static final String HELP_TEXT = DISPLAY_TYPE;
     public static final String CATEGORY = "tchap";
     private static final int TCHAP_CODE_TIMEOUT_IN_MINUTES_DEFAULT = 60;
-    private static final int TCHAP_OTP_MAIL_DELAY_IN_MINUTES_DEFAULT = 1;
+    private static final int TCHAP_OTP_MAIL_DELAY_IN_MINUTES_DEFAULT = 0;
     
     private static final AuthenticationExecutionModel.Requirement[] REQUIREMENT_CHOICES = {
         AuthenticationExecutionModel.Requirement.REQUIRED,
