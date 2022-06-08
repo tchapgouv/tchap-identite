@@ -1,9 +1,10 @@
 <#import "template.ftl" as layout>
-<@layout.registrationLayout displayInfo=social.displayInfo pageTitle="${client.name}" clientName="${client.name}" clientDescription="${client.description}" clientUrl="${client.baseUrl}" ; section>
+<@layout.registrationLayout pageTitle="${client.name}"  ; section>
     <#if section = "title">
         ${msg("loginTitle",(realm.displayName!''))}
     <#elseif section = "header">
     <#elseif section = "form">
+
         <h2>Rentrez votre code secret</h2>
         <form id="kc-form-login" class="${properties.kcFormClass!}" onsubmit="login.disabled = true; return true;"
               action="${url.loginAction}" method="post">
@@ -23,8 +24,9 @@
                                                                                                         ${client.name}.
                         </label>
 
+
                     <input tabindex="1" id="codeInput" class="${properties.kcInputClass!} code-input" name="codeInput" type="text"
-                           autofocus minlength="6" maxlength="8" required/>
+                           autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
             </div>
 
             <div class="${properties.kcFormGroupClass!}">
