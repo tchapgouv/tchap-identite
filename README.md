@@ -1,5 +1,5 @@
 # tchap-identite
-Le projet Tchap idendité publie un service d'authentification qui utilise un canal tchap pour identifier les utilisateurs.
+Le projet Tchap identité publie un service d'authentification qui utilise un canal tchap pour identifier les utilisateurs.
 
 ## Stack Technology
 - maven : 3.8.2
