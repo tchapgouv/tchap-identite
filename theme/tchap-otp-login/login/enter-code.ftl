@@ -29,9 +29,10 @@
                            autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
             </div>
 
-            <div class="${properties.kcFormGroupClass!}">
-                <label for="email" class="${properties.kcLabelClass!}">Je n'ai pas reçu le code. <a href="">Me renvoyer un code</a></label>
-            </div>
+<#--              <div class="${properties.kcFormGroupClass!}">
+                <label for="email" class="${properties.kcLabelClass!}">Je n'ai pas reçu le code. <a href="/">Me renvoyer un code</a></label>
+            </div>  -->
+
 
             <div class="${properties.kcFormGroupClass!}">
                 <div id="kc-form-options" class="${properties.kcFormOptionsClass!}">
