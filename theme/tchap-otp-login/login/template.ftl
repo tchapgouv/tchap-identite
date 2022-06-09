@@ -1,6 +1,12 @@
-<#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false displayWide=false showAnotherWayIfPresent=true clientUrl="" pageTitle="" clientName="" clientDescription="">
+<#macro registrationLayout bodyClass="" displayMessage=false displayRequiredFields=false displayWide=false showAnotherWayIfPresent=true  pageTitle="">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
+
+<#assign clientName = (client??)?then(client.name,'Authentification')>
+<#assign clientDescription = (client??)?then(client.description,'Authentifier les utilisateurs simplement')>
+<#assign clientUrl = (client??)?then(client.baseUrl,'')>
+
 
 <head>
     <meta charset="utf-8">
@@ -12,7 +18,7 @@
             <meta name="${meta?split('==')[0]}" content="${meta?split('==')[1]}"/>
         </#list>
     </#if>
-    <title>${pageTitle}</title>
+    <title>${clientName}</title>
     <link rel="icon" href="${url.resourcesPath}/img/favicon.ico" />
     <link rel="icon" type="image/png" sizes="16x16" href="${url.resourcesPath}/img/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="${url.resourcesPath}/img/favicon-32x32.png">
@@ -60,7 +66,7 @@
                     <div class="fr-header__service">
                         <a href="${clientUrl}" title="Accueil - ${clientName}">
                             <p class="fr-header__service-title">
-                                ${pageTitle}
+                                ${clientName}
                             </p>
                         <p class="fr-header__service-tagline">${clientDescription}</p>
                         </a>
@@ -186,13 +192,7 @@
               </form>
               </#if>
 
-              <#if displayInfo>
-                  <div id="kc-info">
-                      <div id="kc-info-wrapper">
-                          <#nested "info">
-                      </div>
-                  </div>
-              </#if>
+
             </div>
           </div>
           </div>

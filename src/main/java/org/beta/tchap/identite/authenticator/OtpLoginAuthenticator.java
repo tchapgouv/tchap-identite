@@ -35,6 +35,7 @@ public class OtpLoginAuthenticator
     public static final String AUTH_NOTE_OTP = "email-code";
     public static final String AUTH_NOTE_TIMESTAMP  = "timestamp";
     public static final String FORM_ATTRIBUTE_USER_EMAIL  = "userEmail";
+    public static final String FORM_ATTRIBUTE_ERROR_TYPE  = "errorType";
 
     private static final Integer CODE_ACTIVATION_DELAY_IN_SECONDS = 2;
 
@@ -71,18 +72,20 @@ public class OtpLoginAuthenticator
             if(LOG.isDebugEnabled()){LOG.debugf("Authenticate login : %s, a previous code has been sent. Should wait for cool down delay before sending a new one",
                     LoggingUtilsFactory.getInstance().logOrHash(loginHint));}
 
-            infoMessage = 
-                    String.format("Un code vous a déjà été envoyé, veuillez attendre %s minute avant de demander un nouveau code.", mailDelay);
-            ;
-        }else{
-
-            if(generateAndSendCode(context)){
-                //code has been sent
-                context.success();
-            }
+            context.challenge(context.form()
+                    .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, loginHint)
+                    .setInfo("info.code.already.sent.wait", mailDelay)
+                    .createForm(FTL_ENTER_CODE));
+            return;
         }
 
-        context.challenge(otpForm(context,infoMessage));
+        if(generateAndSendCode(context)){
+            //code has been sent
+            context.success();
+        }
+
+        context.challenge(otpForm(context,null));
+
     }
 
     /**
@@ -100,12 +103,12 @@ public class OtpLoginAuthenticator
         String codeInput = formData.getFirst("codeInput");
 
         if (codeInput == null || codeInput.isEmpty()) {
-            context.challenge(otpForm(context,"Veuillez renseignez un code"));
+            context.challenge(otpForm(context,"info.input.code"));
             return;
         }
 
         if (context.getAuthenticationSession().getAuthNote(AUTH_NOTE_OTP) == null) {
-            context.challenge(otpFormError(context,"Le code n'est pas valide. Vérifiez votre saisie ou demandez un nouveau code."));
+            context.challenge(otpFormError(context,"error.invalid.code.in.session"));
             return;
         }
 
@@ -117,17 +120,18 @@ public class OtpLoginAuthenticator
                                codeTimeout,
                 CODE_ACTIVATION_DELAY_IN_SECONDS)) {
             //code validation has failed
-            context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS,otpFormError(context,"Le code n'est pas valide. Vérifiez votre saisie ou demandez un nouveau code."));
+            context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS,otpFormError(context,"error.invalid.code"));
             return;
         }
 
+        //authenticator is successful
         context.setUser(getUser(context));
         context.success();
     }
 
     private UserModel getUser(AuthenticationFlowContext context)
     {
-        return context.getSession().users().getUserByEmail(context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL), context.getRealm());
+        return context.getSession().users().getUserByEmail(context.getRealm(),context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL));
     }
 
 
@@ -143,6 +147,7 @@ public class OtpLoginAuthenticator
         /* if userEmail is not set in the authentication session, fails */
         if(userEmail==null || userEmail.isEmpty()){
             //TODO
+            userEmail="";
         }
 
         /* display otp form*/
@@ -167,11 +172,13 @@ public class OtpLoginAuthenticator
         /* if userEmail is not set in the authentication session, fails */
         if(userEmail==null || userEmail.isEmpty()){
             //TODO
+            userEmail = "";
         }
 
         /* display otp form*/
         return context.form()
                 .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail)
+                .setAttribute(FORM_ATTRIBUTE_ERROR_TYPE, error)
                 .setError(error)
                 .createForm(FTL_ENTER_CODE);
     }
@@ -194,7 +201,7 @@ public class OtpLoginAuthenticator
         if(!emailSender.sendEmail(context.getSession(), context.getRealm(),
                               getUser(context), friendlyCode, String.valueOf(codeTimeout))){
             //error while sending email
-            otpFormError(context, "Impossible de vous envoyer le mail avec le code de connection, veuillez réessayer.");
+            otpFormError(context, "error.email.not.sent");
             return false;
         }
 
@@ -214,7 +221,7 @@ public class OtpLoginAuthenticator
         long timestamp = getLastCodeTimestamp(context);
         if(LOG.isDebugEnabled()){ LOG.debugf("Last timestamp found in authentication sessions note %s", timestamp);}
 
-        return timestamp == 0 || (Instant.now().toEpochMilli() - timestamp) > mailDelay * 60 * 1000;
+        return timestamp == 0 || (Instant.now().toEpochMilli() - timestamp) > (long) mailDelay * 60 * 1000;
     }
 
 
