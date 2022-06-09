@@ -1,18 +1,21 @@
 <#import "template.ftl" as layout>
 <@layout.registrationLayout ; section>
+<#assign clientUrl = (client??)?then(client.baseUrl,'')>
+<#assign clientName = (client??)?then(client.name,'')>
+
     <#if section = "title">
         ${msg("loginTitle",(realm.displayName!''))}
     <#elseif section = "header">
     <#elseif section = "form">
-        <h2>Réserver une conférence téléphonique</h2>
+        <h2>Authentification</h2>
         <div class="fr-callout fr-alert fr-alert--warning">
 
-            <p class="fr-callout__text">Cet email ne correspond pas à une agence de l'État. Si vous appartenez à un service de l'État mais votre email n'est pas reconnu par AudioConf, contactez-nous pour que nous le rajoutions!</p>
+            <p class="fr-callout__text">${msg("error.unknown.domain","clientName")} </p>
 
             <a class="fr-btn fr-btn--primary" title="Nous contacter" href="https://audioconf.numerique.gouv.fr/contact">Nous contacter</a>
 
 
         </div>
-        <a type="submit" class="fr-btn" href="${client.baseUrl}">Réserver une autre conférence</a>
+        <a type="submit" class="fr-btn" href="${clientUrl}">Réessayer</a>
     </#if>
 </@layout.registrationLayout>
