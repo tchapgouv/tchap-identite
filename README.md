@@ -1,11 +1,13 @@
 # tchap-identite
+Le projet Tchap idendité publie un service d'authentification qui utilise un canal tchap pour identifier les utilisateurs.
 
+## Stack Technology
 - maven : 3.8.2
 - keycloak : 18.0
 - quarkus : 2.7.5
 - java : 11
 
-# docker image
+## Run the local environment with docker containers
 
 1. copy env.sample -> env, fill in passwords with (any value you want..)
 - POSTGRES_PASSWORD=password
@@ -20,14 +22,12 @@
 - TCHAP_CODE_TIMEOUT_IN_MINUTES= (optionnal) validity of a otp code. default 60 
 - TCHAP_LOG_SENSITIVE_DATA = (optionnal) log sensitive data like username. default false
 
-1. build extension with maven goal. A jar is produced with the custom providers and the custom view.  
+2. build extension with maven goal. A jar is produced with the custom providers and the custom view.  
 
-`mvn package`
+`mvn clean package`
 
 to specify a version run : 
-
-`mvn install -Drevision=X.Y.Z`
-
+`mvn clean install -Drevision=X.Y.Z`
 For local development, the jar is copied to /dev/providers
 
 3. launch containers
