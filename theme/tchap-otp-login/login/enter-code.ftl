@@ -1,5 +1,5 @@
 <#import "template.ftl" as layout>
-<@layout.registrationLayout pageTitle="${client.name}"  ; section>
+<@layout.registrationLayout pageTitle="${client.name}" ; section>
     <#if section = "title">
         ${msg("loginTitle",(realm.displayName!''))}
     <#elseif section = "header">
@@ -9,28 +9,21 @@
         <form id="kc-form-login" class="${properties.kcFormClass!}" onsubmit="login.disabled = true; return true;"
               action="${url.loginAction}" method="post">
             <div class="${properties.kcFormGroupClass!}">
-                    <label for="codeInput" class="${properties.kcLabelClass!}">Renseignez le code que vous avez reçu 
-                        à votre adresse mail <strong>${userEmail!}</strong> et sur <a  href="https://www.tchap.gouv.fr/" target="_blank">Tchap</a>. ${client.name} 
-                                                                                                        utilise Tchap 
-                                                                                                        pour assurer que
-                                                                                                        seuls les agents
-                                                                                                        publics
-                                                                                                        utilisent les
-                                                                                                        services qui
-                                                                                                        leur sont
-                                                                                                        réservés. Ceci
-                                                                                                        est une mesure
-                                                                                                        de sécurité 
-                                                                                                        ${client.name}.
-                        </label>
-
+                    <label for="codeInput" class="${properties.kcLabelClass!}">
+                        Renseignez le code que vous avez reçu à votre adresse mail <strong>${userEmail!}</strong>.
+                        ${client.name} utilise Tchap pour assurer que seuls les agents publics utilisent les services qui
+                        leur sont réservés. Ceci est une mesure de sécurité ${client.name}.
+                    </label>
 
                     <input tabindex="1" id="codeInput" class="${properties.kcInputClass!} code-input" name="codeInput" type="text"
                            autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
             </div>
 
             <div class="${properties.kcFormGroupClass!}">
-                <label for="email" class="${properties.kcLabelClass!}">Je n'ai pas reçu le code. <a href="">Me renvoyer un code</a></label>
+                <label for="email" class="${properties.kcLabelClass!}">
+                    Je n'ai pas reçu le code.
+                    <a href="">Me renvoyer un code</a>
+                </label>
             </div>
 
             <div class="${properties.kcFormGroupClass!}">
