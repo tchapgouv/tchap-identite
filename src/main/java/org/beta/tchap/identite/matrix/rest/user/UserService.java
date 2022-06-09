@@ -1,7 +1,10 @@
 package org.beta.tchap.identite.matrix.rest.user;
 
 import org.apache.commons.lang.StringUtils;
+import org.beta.tchap.identite.utils.Constants;
+import org.beta.tchap.identite.utils.Environment;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,14 +60,33 @@ public class UserService {
     }
 
     public DirectRoomsResource listDMRooms() {
-        Map<String, Object> rawResponse = userClient.listDMRooms("@tchap-identite-tchap.beta.gouv.fr:i.tchap.gouv.fr");
-//        return DirectRoomsResource.toDirectRoomsResource(rawResponse);
-        return null;
+        Map<String, ArrayList<String>> rawResponse = userClient.listDMRooms("@tchap-identite-tchap.beta.gouv.fr:i.tchap.gouv.fr");
+        return DirectRoomsResource.toDirectRoomsResource(rawResponse);
+    }
 
-//        UserInfoBody userInfoBody = new UserInfoBody();
-//        List<String> userIds = List.of(emailToUserId(email, homeServer));
-//        userInfoBody.setUserIds(userIds);
-//        Map<String, Object> rawResponse = userClient.findByUsers(userInfoBody);
-//        return toUserInfoResource(userIds, rawResponse);
+    public String createDM(String destMatrixId) {
+        DirectRoomsResource allRooms = this.listDMRooms();
+        if (hasARoomWithUser(destMatrixId, allRooms)) {
+            return allRooms.getDirectRoomsForMId(destMatrixId).get(0);
+        }
+
+        CreateDMBody body = new CreateDMBody();
+        body.addInvite(destMatrixId);
+        Map<String, String> response = userClient.createDM(body);
+
+        allRooms.addDirectRoomForMatrixId(destMatrixId, response.get("room_id"));
+        String botAccount = "@tchap-identite-tchap.beta.gouv.fr:i.tchap.gouv.fr";
+        userClient.updateDMRoomList(botAccount, allRooms.getDirectRooms());
+
+        return response.get("room_id");
+    }
+
+    private boolean hasARoomWithUser(String destMatrixId, DirectRoomsResource rooms) {
+        return rooms.getDirectRoomsForMId(destMatrixId) != null && rooms.getDirectRoomsForMId(destMatrixId).size() > 0;
+    }
+
+    public void sendMessage(String roomId, String message) {
+        SendMessageBody messageBody = new SendMessageBody(message);
+        userClient.sendMessage(roomId, messageBody);
     }
 }
