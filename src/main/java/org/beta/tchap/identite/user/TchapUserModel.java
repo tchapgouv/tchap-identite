@@ -9,7 +9,8 @@ public class TchapUserModel extends AbstractUserAdapter {
 
     private String email;
 
-    public TchapUserModel(KeycloakSession session, RealmModel realm, ComponentModel model, String email){
+    public TchapUserModel(
+            KeycloakSession session, RealmModel realm, ComponentModel model, String email) {
         super(session, realm, model);
         this.email = email;
     }
@@ -18,8 +19,9 @@ public class TchapUserModel extends AbstractUserAdapter {
     public String getUsername() {
         return email;
     }
+
     @Override
-    public String getEmail(){
+    public String getEmail() {
         return email;
     }
 }

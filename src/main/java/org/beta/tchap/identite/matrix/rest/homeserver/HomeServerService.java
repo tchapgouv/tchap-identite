@@ -1,12 +1,11 @@
 package org.beta.tchap.identite.matrix.rest.homeserver;
 
-import org.apache.commons.lang.StringUtils;
-import org.beta.tchap.identite.utils.Constants;
-import org.beta.tchap.identite.utils.Environment;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import org.apache.commons.lang.StringUtils;
+import org.beta.tchap.identite.utils.Constants;
+import org.beta.tchap.identite.utils.Environment;
 
 public class HomeServerService {
     private final HomeServerClient homeServerClient;
@@ -14,8 +13,9 @@ public class HomeServerService {
     private static final String HOME_SERVER_URL_PREFIX = "https://matrix";
     private static final String DOMAIN_SEPARATOR = "@";
 
-    public HomeServerService(){
-        homeServerList = Arrays.asList(Environment.getenv(Constants.TCHAP_HOME_SERVER_LIST).split(","));
+    public HomeServerService() {
+        homeServerList =
+                Arrays.asList(Environment.getenv(Constants.TCHAP_HOME_SERVER_LIST).split(","));
         homeServerClient = HomeServerClientFactory.build(getRandomHomeServerBaseUrl());
     }
 
@@ -26,11 +26,12 @@ public class HomeServerService {
 
     public String findHomeServerByEmail(String email) {
         String domain = getDomain(email);
-        HomeServerInfoResource homeServerInfoResource = homeServerClient.findHomeServerByEmail(new HomeServerInfoQuery("email", domain));
+        HomeServerInfoResource homeServerInfoResource =
+                homeServerClient.findHomeServerByEmail(new HomeServerInfoQuery("email", domain));
         return homeServerInfoResource.getHs();
     }
 
-    private static String getDomain(String email){
+    private static String getDomain(String email) {
         return DOMAIN_SEPARATOR + StringUtils.substringAfter(email, DOMAIN_SEPARATOR);
     }
 

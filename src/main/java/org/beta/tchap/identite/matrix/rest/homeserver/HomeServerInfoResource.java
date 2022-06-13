@@ -3,8 +3,8 @@ package org.beta.tchap.identite.matrix.rest.homeserver;
 public class HomeServerInfoResource {
 
     private String hs;
-    public HomeServerInfoResource() {
-    }
+
+    public HomeServerInfoResource() {}
 
     public String getHs() {
         return hs;

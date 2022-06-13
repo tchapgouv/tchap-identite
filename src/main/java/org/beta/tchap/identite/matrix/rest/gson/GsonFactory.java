@@ -9,10 +9,11 @@ public class GsonFactory {
     private static Gson instance;
 
     public static Gson getInstance() {
-        if ( instance == null ){
-            instance = new GsonBuilder()
-                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                    .create();
+        if (instance == null) {
+            instance =
+                    new GsonBuilder()
+                            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                            .create();
         }
         return instance;
     }

@@ -1,5 +1,7 @@
 package org.beta.tchap.identite.user;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.jboss.logging.Logger;
@@ -9,11 +11,7 @@ import org.keycloak.storage.StorageId;
 import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.user.UserLookupProvider;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class TchapUserStorage implements UserStorageProvider,
-        UserLookupProvider {
+public class TchapUserStorage implements UserStorageProvider, UserLookupProvider {
 
     private static final Logger LOG = Logger.getLogger(TchapUserStorage.class);
     protected KeycloakSession session;
@@ -21,21 +19,20 @@ public class TchapUserStorage implements UserStorageProvider,
     protected Map<String, UserModel> loadedUsers = new HashMap<>();
     private MatrixService matrixService;
 
-    /**
-     * Public constructor
-     */
-    public TchapUserStorage(KeycloakSession session, ComponentModel model, MatrixService matrixService) {
+    /** Public constructor */
+    public TchapUserStorage(
+            KeycloakSession session, ComponentModel model, MatrixService matrixService) {
         this.session = session;
         this.model = model;
         this.matrixService = matrixService;
     }
 
-
     @Override
     public UserModel getUserById(RealmModel realm, String id) {
-        if(LOG.isDebugEnabled()){
-            //internal id of keycloak
-            LOG.debugf("Checking keycloak id : %s", LoggingUtilsFactory.getInstance().logOrHash(id));
+        if (LOG.isDebugEnabled()) {
+            // internal id of keycloak
+            LOG.debugf(
+                    "Checking keycloak id : %s", LoggingUtilsFactory.getInstance().logOrHash(id));
         }
         StorageId storageId = new StorageId(id);
         String username = storageId.getExternalId();
@@ -44,8 +41,10 @@ public class TchapUserStorage implements UserStorageProvider,
 
     @Override
     public UserModel getUserByUsername(RealmModel realm, String username) {
-        if(LOG.isDebugEnabled()){
-            LOG.debugf("Checking username : %s", LoggingUtilsFactory.getInstance().logOrHash(username));
+        if (LOG.isDebugEnabled()) {
+            LOG.debugf(
+                    "Checking username : %s",
+                    LoggingUtilsFactory.getInstance().logOrHash(username));
         }
         UserModel adapter = loadedUsers.get(username);
         if (adapter == null && matrixService.isUserValid(username)) {
@@ -80,24 +79,23 @@ public class TchapUserStorage implements UserStorageProvider,
     }
 
     @Override
-    public void close() {
-    }
+    public void close() {}
 
     /*
      * Deprecated
      */
     @Override
     public UserModel getUserById(String s, RealmModel realmModel) {
-        return getUserById(realmModel,s);
+        return getUserById(realmModel, s);
     }
 
     @Override
     public UserModel getUserByEmail(String s, RealmModel realmModel) {
-        return getUserByEmail(realmModel,s);
+        return getUserByEmail(realmModel, s);
     }
 
     @Override
     public UserModel getUserByUsername(String s, RealmModel realmModel) {
-        return getUserByUsername(realmModel,s);
+        return getUserByUsername(realmModel, s);
     }
 }

@@ -6,12 +6,12 @@ public class LoginResource {
 
     @JsonProperty("user_id")
     private String userId;
+
     private String accessToken;
     private String homeServer;
     private String deviceId;
 
-    public LoginResource() {
-    }
+    public LoginResource() {}
 
     public String getUserId() {
         return userId;

@@ -5,8 +5,7 @@ import java.util.List;
 public class UserInfoBody {
     private List<String> userIds;
 
-    public UserInfoBody() {
-    }
+    public UserInfoBody() {}
 
     public List<String> getUserIds() {
         return userIds;

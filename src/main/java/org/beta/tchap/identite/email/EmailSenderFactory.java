@@ -4,7 +4,7 @@ public class EmailSenderFactory {
     private static EmailSender instance;
 
     public static EmailSender getInstance() {
-        if ( instance == null ){
+        if (instance == null) {
             instance = new EmailSender();
         }
         return instance;

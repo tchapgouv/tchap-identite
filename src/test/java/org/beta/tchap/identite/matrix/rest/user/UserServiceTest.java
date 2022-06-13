@@ -10,16 +10,15 @@ class UserServiceTest {
     private static UserService userService;
 
     @BeforeAll
-    public static void setup(){
+    public static void setup() {
         LoginResource loginResource = new LoginResource();
         loginResource.setAccessToken("fakeToken");
         userService = new UserService("i.tchap.gouv.fr", loginResource.getAccessToken());
     }
 
-
     @Test
     void emailToUserId() {
         String userId = userService.emailToUserId("clark.kent@beta.gouv.fr", "i.tchap.gouv.fr");
-        Assertions.assertEquals("@clark.kent-beta.gouv.fr:i.tchap.gouv.fr",userId);
+        Assertions.assertEquals("@clark.kent-beta.gouv.fr:i.tchap.gouv.fr", userId);
     }
 }

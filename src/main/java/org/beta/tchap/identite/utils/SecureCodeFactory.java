@@ -4,7 +4,7 @@ public class SecureCodeFactory {
     private static SecureCode instance;
 
     public static SecureCode getInstance() {
-        if ( instance == null ){
+        if (instance == null) {
             instance = new SecureCode();
         }
         return instance;
