@@ -1,7 +1,6 @@
-package org.beta.tchap.identite.matrix.rest;
+package org.beta.tchap.identite.bot.testing;
 
 import org.apache.log4j.BasicConfigurator;
-import org.beta.tchap.identite.bot.BotSender;
 import org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService;
 import org.beta.tchap.identite.matrix.rest.login.LoginService;
 import org.beta.tchap.identite.matrix.rest.room.RoomClient;
@@ -20,7 +19,7 @@ import static org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService.b
 
 
 // FIXME need cleanup of rooms before/after each test
-class MatrixBotIntTest {
+class MatrixBotUnitTest {
     private static UserService userService;
     private static RoomService roomService;
 
@@ -41,12 +40,11 @@ class MatrixBotIntTest {
 
         RoomClient roomClient = RoomFactory.build(accountHomeServerUrl, accessToken);
         roomService = new RoomService(roomClient, userService);
-
-        BotSender botSender = new BotSender(roomService);
     }
 
     @Nested
     class ListRoomsTest {
+        // FIXME à décaler ailleurs
         @Test
         void shouldListDMRooms() {
             DirectRoomsResource rooms = userService.listDMRooms();
