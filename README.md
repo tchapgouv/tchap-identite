@@ -40,6 +40,12 @@ For local development, the jar is copied to /dev/providers
 - copy this secret in your open id client (see -4-)
 - email client : http://localhost:1080
 
-4. install a openId client sample
+5. install a openId client sample
 
 https://github.com/tchapgouv/oidc-client-example
+
+
+## Code formatting
+
+1. To format the code, execute the following command : `mvn spotless:apply`
+2. You can view the diff with : `git diff `
