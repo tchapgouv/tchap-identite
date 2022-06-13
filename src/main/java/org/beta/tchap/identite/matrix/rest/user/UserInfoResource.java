@@ -5,8 +5,7 @@ public class UserInfoResource {
     private boolean expired;
     private boolean deactivated;
 
-    public UserInfoResource() {
-    }
+    public UserInfoResource() {}
 
     public String getUserId() {
         return userId;

@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-
 class MatrixServiceIntTest {
 
     private static MatrixService matrixService;
@@ -53,5 +52,4 @@ class MatrixServiceIntTest {
         boolean userValid = matrixService.isUserValid("clark.kent");
         Assertions.assertFalse(userValid);
     }
-
 }

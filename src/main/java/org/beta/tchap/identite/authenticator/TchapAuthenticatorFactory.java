@@ -1,5 +1,7 @@
 package org.beta.tchap.identite.authenticator;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.keycloak.Config;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.authentication.AuthenticatorFactory;
@@ -7,9 +9,6 @@ import org.keycloak.models.AuthenticationExecutionModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.provider.ProviderConfigProperty;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TchapAuthenticatorFactory implements AuthenticatorFactory {
 
@@ -19,8 +18,8 @@ public class TchapAuthenticatorFactory implements AuthenticatorFactory {
     public static final String CATEGORY = "tchap";
 
     private static final AuthenticationExecutionModel.Requirement[] REQUIREMENT_CHOICES = {
-            AuthenticationExecutionModel.Requirement.REQUIRED,
-            AuthenticationExecutionModel.Requirement.DISABLED
+        AuthenticationExecutionModel.Requirement.REQUIRED,
+        AuthenticationExecutionModel.Requirement.DISABLED
     };
 
     @Override
@@ -39,8 +38,7 @@ public class TchapAuthenticatorFactory implements AuthenticatorFactory {
     }
 
     @Override
-    public AuthenticationExecutionModel.Requirement[] getRequirementChoices()
-    {
+    public AuthenticationExecutionModel.Requirement[] getRequirementChoices() {
         return REQUIREMENT_CHOICES;
     }
 
@@ -65,19 +63,13 @@ public class TchapAuthenticatorFactory implements AuthenticatorFactory {
     }
 
     @Override
-    public void init(Config.Scope config) {
-
-    }
+    public void init(Config.Scope config) {}
 
     @Override
-    public void postInit(KeycloakSessionFactory factory) {
-
-    }
+    public void postInit(KeycloakSessionFactory factory) {}
 
     @Override
-    public void close() {
-
-    }
+    public void close() {}
 
     @Override
     public String getId() {

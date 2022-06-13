@@ -7,8 +7,7 @@ public class LoginBody {
     private String medium;
     private String address;
 
-    public LoginBody() {
-    }
+    public LoginBody() {}
 
     public String getType() {
         return type;

@@ -4,7 +4,7 @@ public class MatrixServiceFactory {
     private static MatrixService instance;
 
     public static MatrixService getInstance() {
-        if ( instance == null ){
+        if (instance == null) {
             instance = new MatrixService();
         }
         return instance;

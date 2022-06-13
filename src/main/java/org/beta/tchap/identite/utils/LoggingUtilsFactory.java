@@ -4,7 +4,7 @@ public class LoggingUtilsFactory {
     private static LoggingUtils instance;
 
     public static LoggingUtils getInstance() {
-        if ( instance == null ){
+        if (instance == null) {
             instance = new LoggingUtils();
         }
         return instance;
