@@ -4,22 +4,19 @@ import org.beta.tchap.identite.matrix.rest.room.CreateDMBody;
 import org.beta.tchap.identite.matrix.rest.room.RoomClient;
 import org.beta.tchap.identite.matrix.rest.room.SendMessageBody;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 class FakeRoomClient implements RoomClient {
-    public Map<String, ArrayList<String>> rooms;
+    public Map<String, List<String>> rooms;
     public String lastMessage = null;
 
     @Override
-    public Map<String, ArrayList<String>> listDMRooms(String userId) {
+    public Map<String, List<String>> listDMRooms(String userId) {
         return rooms;
     }
 
     @Override
-    public void updateDMRoomList(String userId, Map<String, ArrayList<String>> dMRoomsList) {
+    public void updateDMRoomList(String userId, Map<String, List<String>> dMRoomsList) {
         this.rooms = dMRoomsList;
     }
 
@@ -27,9 +24,9 @@ class FakeRoomClient implements RoomClient {
     public Map<String, String> createDM(CreateDMBody createDMBody) {
         String invitedId = createDMBody.getInvite().get(0);
         String roomId = "123";
-        this.rooms.put(invitedId, new ArrayList<>(Collections.singleton(roomId)));
+        this.rooms.put(invitedId, List.of(roomId));
 
-        HashMap<String, String> returnValue = new HashMap<>();
+        Map<String, String> returnValue = new HashMap<>();
         returnValue.put("room_id", roomId);
         return returnValue;
     }

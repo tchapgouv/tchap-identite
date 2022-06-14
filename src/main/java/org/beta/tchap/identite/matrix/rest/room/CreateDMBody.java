@@ -13,7 +13,7 @@ public class CreateDMBody {
     private final String preset = "trusted_private_chat";
     private final String visibility = "private";
     private final String access_rules = "direct";
-    private final ArrayList<Object> initial_state = new Gson().fromJson("[\n" +
+    private final List<Object> initial_state = new Gson().fromJson("[\n" +
             "                {\"content\":{\"guest_access\":\"forbidden\"},\n" +
             "                    \"type\":\"m.room.guest_access\",\"state_key\":\"\"},\n" +
             "                {\"content\":{\"history_visibility\":\"invited\"},\n" +
@@ -53,7 +53,7 @@ public class CreateDMBody {
         return access_rules;
     }
 
-    public ArrayList<Object> getInitial_state() {
+    public List<Object> getInitial_state() {
         return initial_state;
     }
 }

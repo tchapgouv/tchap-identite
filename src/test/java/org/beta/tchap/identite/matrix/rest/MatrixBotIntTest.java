@@ -12,7 +12,7 @@ import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 import org.junit.jupiter.api.*;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService.buildHomeServerUrl;
@@ -47,7 +47,7 @@ class MatrixBotIntTest {
 
     @AfterEach
     public void teardown() {
-        Map<String, ArrayList<String>> dmRooms = roomService.listBotDMRooms().getDirectRooms();
+        Map<String, List<String>> dmRooms = roomService.listBotDMRooms().getDirectRooms();
         dmRooms.remove(testAccountMatrixId);
         roomService.updateBotDMRoomList(dmRooms);
     }

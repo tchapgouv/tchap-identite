@@ -3,7 +3,7 @@ package org.beta.tchap.identite.matrix.rest.room;
 import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class RoomService {
@@ -16,11 +16,11 @@ public class RoomService {
     }
 
     public DirectRoomsResource listBotDMRooms() {
-        Map<String, ArrayList<String>> rawResponse = roomClient.listDMRooms(this.botMatrixId);
+        Map<String, List<String>> rawResponse = roomClient.listDMRooms(this.botMatrixId);
         return DirectRoomsResource.toDirectRoomsResource(rawResponse);
     }
 
-    public void updateBotDMRoomList(Map<String, ArrayList<String>> dMRoomsList ) {
+    public void updateBotDMRoomList(Map<String, List<String>> dMRoomsList) {
         roomClient.updateDMRoomList(this.botMatrixId, dMRoomsList);
     }
 
