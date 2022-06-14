@@ -1,21 +1,28 @@
 package org.beta.tchap.identite.matrix.rest.room;
 
 import org.beta.tchap.identite.matrix.rest.user.UserService;
-import org.beta.tchap.identite.matrix.rest.user.DirectRoomsResource;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class RoomService {
     private final RoomClient roomClient;
-    private final UserService userService;
 
-    public RoomService(RoomClient roomClient, UserService userService) {
+    public RoomService(RoomClient roomClient) {
         this.roomClient = roomClient;
-        this.userService = userService;
+    }
+
+    public DirectRoomsResource listDMRooms() {
+        Map<String, ArrayList<String>> rawResponse = roomClient.listDMRooms("@tchap-identite-tchap.beta.gouv.fr:i.tchap.gouv.fr");
+        return DirectRoomsResource.toDirectRoomsResource(rawResponse);
+    }
+
+    public void updateDMRoomList(String userId, Map<String, ArrayList<String>> dMRoomsList ) {
+        roomClient.updateDMRoomList(userId, dMRoomsList);
     }
 
     public String createDM(String destMatrixId) {
-        DirectRoomsResource allRooms = userService.listDMRooms();
+        DirectRoomsResource allRooms = this.listDMRooms();
         if (hasARoomWithUser(destMatrixId, allRooms)) {
             return allRooms.getDirectRoomsForMId(destMatrixId).get(0);
         }
@@ -26,7 +33,7 @@ public class RoomService {
 
         allRooms.addDirectRoomForMatrixId(destMatrixId, response.get("room_id"));
         String botAccount = "@tchap-identite-tchap.beta.gouv.fr:i.tchap.gouv.fr";
-        userService.updateDMRoomList(botAccount, allRooms.getDirectRooms());
+        roomClient.updateDMRoomList(botAccount, allRooms.getDirectRooms());
 
         return response.get("room_id");
     }

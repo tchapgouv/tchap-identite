@@ -26,10 +26,9 @@ public class BotSenderFactory {
 
             String accountHomeServerUrl = buildHomeServerUrl(homeServerService.findHomeServerByEmail(account));
             String accessToken = loginService.findAccessToken(accountHomeServerUrl, account, password);
-            UserService userService = new UserService(accountHomeServerUrl, accessToken);
 
             RoomClient roomClient = RoomFactory.build(accountHomeServerUrl, accessToken);
-            RoomService roomService = new RoomService(roomClient, userService);
+            RoomService roomService = new RoomService(roomClient);
             instance = new BotSender(roomService);
         }
         return instance;

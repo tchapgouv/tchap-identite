@@ -4,10 +4,10 @@ import org.apache.log4j.BasicConfigurator;
 import org.beta.tchap.identite.bot.BotSender;
 import org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService;
 import org.beta.tchap.identite.matrix.rest.login.LoginService;
+import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
 import org.beta.tchap.identite.matrix.rest.room.RoomClient;
 import org.beta.tchap.identite.matrix.rest.room.RoomFactory;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
-import org.beta.tchap.identite.matrix.rest.user.DirectRoomsResource;
 import org.beta.tchap.identite.matrix.rest.user.UserService;
 import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
@@ -21,8 +21,8 @@ import static org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService.b
 
 // FIXME need cleanup of rooms before/after each test
 class MatrixBotIntTest {
-    private static UserService userService;
     private static RoomService roomService;
+    private static BotSender botSender;
 
     @BeforeAll
     public static void setup() {
@@ -37,22 +37,11 @@ class MatrixBotIntTest {
 
         String accountHomeServerUrl = buildHomeServerUrl(homeServerService.findHomeServerByEmail(account));
         String accessToken = loginService.findAccessToken(accountHomeServerUrl, account, password);
-        userService = new UserService(accountHomeServerUrl, accessToken);
 
         RoomClient roomClient = RoomFactory.build(accountHomeServerUrl, accessToken);
-        roomService = new RoomService(roomClient, userService);
+        roomService = new RoomService(roomClient);
 
-        BotSender botSender = new BotSender(roomService);
-    }
-
-    @Nested
-    class ListRoomsTest {
-        @Test
-        void shouldListDMRooms() {
-            DirectRoomsResource rooms = userService.listDMRooms();
-            Assertions.assertTrue(rooms.getDirectRooms().size() > 0);
-        }
-
+        botSender = new BotSender(roomService);
     }
 
     @Nested
@@ -61,7 +50,7 @@ class MatrixBotIntTest {
         void shouldHaveNoDMEventsIfNoDM() {
             String destId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
 
-            DirectRoomsResource dmRooms = userService.listDMRooms();
+            DirectRoomsResource dmRooms = roomService.listDMRooms();
             Assertions.assertNull(dmRooms.getDirectRoomsForMId(destId));
         }
     }
@@ -73,7 +62,7 @@ class MatrixBotIntTest {
             String destId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
             String roomId = roomService.createDM(destId);
 
-            DirectRoomsResource dmRooms = userService.listDMRooms();
+            DirectRoomsResource dmRooms = roomService.listDMRooms();
             Assertions.assertNotNull(roomId);
             Assertions.assertNotNull(dmRooms.getDirectRoomsForMId(destId));
             Assertions.assertTrue(dmRooms.getDirectRoomsForMId(destId).size() > 0);
@@ -96,6 +85,16 @@ class MatrixBotIntTest {
             String destId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
             String roomId = roomService.createDM(destId);
             Assertions.assertDoesNotThrow(() -> roomService.sendMessage(roomId, "Hello world"));
+        }
+    }
+
+    @Nested
+    class SendingOTPTest {
+        @Test
+        void shouldSendOTPCode() {
+            String destId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
+            String otp = "1234";
+            Assertions.assertDoesNotThrow(() -> botSender.sendOtp(otp, destId));
         }
     }
 }
