@@ -2,34 +2,38 @@ package org.beta.tchap.identite.authenticator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 import javax.ws.rs.core.Response;
 
+import org.apache.log4j.BasicConfigurator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.sessions.AuthenticationSessionModel;
 import org.mockito.ArgumentCaptor;
-
+import org.mockito.Captor;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class TchapAuthenticatorTest {
     
 
-    TchapAuthenticator authenticator;
-    ArgumentCaptor<Response> responseCaptor;
-    ArgumentCaptor<String> userErrorCaptor;
-    ArgumentCaptor<String> authNote;
+    TchapAuthenticator authenticator = new TchapAuthenticator();
+    
+    @Captor ArgumentCaptor<Response> responseCaptor;
+    @Captor ArgumentCaptor<String> userErrorCaptor;
+    @Captor ArgumentCaptor<String> authNote;
 
     final String username = "userA";
 
     @BeforeEach
     public void setup() {
-        authenticator = new TchapAuthenticator();
-        responseCaptor = ArgumentCaptor.forClass(Response.class);
-        userErrorCaptor = ArgumentCaptor.forClass(String.class);
-        authNote = ArgumentCaptor.forClass(String.class);
+        BasicConfigurator.configure();
     }
 
 
