@@ -10,10 +10,10 @@ import org.beta.tchap.identite.matrix.rest.room.RoomClientFactory;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
 import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 import static org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService.buildHomeServerUrl;
 
@@ -22,8 +22,7 @@ import static org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService.b
 class MatrixBotIntTest {
     private static RoomService roomService;
     private static BotSender botSender;
-    private final String testAccountMatrixId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
-
+    private final static String testAccountMatrixId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
 
     @BeforeAll
     public static void setup() {
@@ -45,11 +44,18 @@ class MatrixBotIntTest {
         botSender = new BotSender(roomService);
     }
 
+    @AfterEach
+    public static void teardown() {
+        Map<String, ArrayList<String>> dmRooms = roomService.listBotDMRooms().getDirectRooms();
+        dmRooms.remove(testAccountMatrixId);
+        roomService.updateBotDMRoomList(dmRooms);
+    }
+
     @Nested
     class NoEventsTest {
         @Test
         void shouldHaveNoDMEventsIfNoDM() {
-            DirectRoomsResource dmRooms = roomService.listDMRooms();
+            DirectRoomsResource dmRooms = roomService.listBotDMRooms();
             Assertions.assertNull(dmRooms.getDirectRoomsForMId(testAccountMatrixId));
         }
     }
@@ -60,7 +66,7 @@ class MatrixBotIntTest {
         void shouldCreateADMAndAddDMEvent() {
             String roomId = roomService.createDM(testAccountMatrixId);
 
-            DirectRoomsResource dmRooms = roomService.listDMRooms();
+            DirectRoomsResource dmRooms = roomService.listBotDMRooms();
             Assertions.assertNotNull(roomId);
             Assertions.assertNotNull(dmRooms.getDirectRoomsForMId(testAccountMatrixId));
             Assertions.assertTrue(dmRooms.getDirectRoomsForMId(testAccountMatrixId).size() > 0);

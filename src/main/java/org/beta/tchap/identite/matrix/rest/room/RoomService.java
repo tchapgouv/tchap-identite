@@ -14,17 +14,17 @@ public class RoomService {
         this.botMatrixId = Constants.TCHAP_MATRIX_ID;
     }
 
-    public DirectRoomsResource listDMRooms() {
+    public DirectRoomsResource listBotDMRooms() {
         Map<String, ArrayList<String>> rawResponse = roomClient.listDMRooms(this.botMatrixId);
         return DirectRoomsResource.toDirectRoomsResource(rawResponse);
     }
 
-    public void updateDMRoomList(String userId, Map<String, ArrayList<String>> dMRoomsList ) {
-        roomClient.updateDMRoomList(userId, dMRoomsList);
+    public void updateBotDMRoomList(Map<String, ArrayList<String>> dMRoomsList ) {
+        roomClient.updateDMRoomList(this.botMatrixId, dMRoomsList);
     }
 
     public String createDM(String destMatrixId) {
-        DirectRoomsResource allRooms = this.listDMRooms();
+        DirectRoomsResource allRooms = this.listBotDMRooms();
         if (hasARoomWithUser(destMatrixId, allRooms)) {
             return allRooms.getDirectRoomsForMId(destMatrixId).get(0);
         }

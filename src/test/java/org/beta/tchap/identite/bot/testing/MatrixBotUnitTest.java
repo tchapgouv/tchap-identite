@@ -2,7 +2,6 @@ package org.beta.tchap.identite.bot.testing;
 
 import org.apache.log4j.BasicConfigurator;
 import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
-import org.beta.tchap.identite.matrix.rest.room.RoomClient;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,7 +33,7 @@ class MatrixBotUnitTest {
         @Test
         void shouldListDMRooms() {
             roomClient.rooms.put("testId", new ArrayList<>(2));
-            DirectRoomsResource rooms = roomService.listDMRooms();
+            DirectRoomsResource rooms = roomService.listBotDMRooms();
             Assertions.assertTrue(rooms.getDirectRooms().size() > 0);
         }
 
@@ -44,7 +43,7 @@ class MatrixBotUnitTest {
     class NoEventsTest {
         @Test
         void shouldHaveNoDMEventsIfNoDM() {
-            DirectRoomsResource dmRooms = roomService.listDMRooms();
+            DirectRoomsResource dmRooms = roomService.listBotDMRooms();
             Assertions.assertNull(dmRooms.getDirectRoomsForMId(testAccountMatrixId));
         }
     }
@@ -55,7 +54,7 @@ class MatrixBotUnitTest {
         void shouldCreateADMAndAddDMEvent() {
             String roomId = roomService.createDM(testAccountMatrixId);
 
-            DirectRoomsResource dmRooms = roomService.listDMRooms();
+            DirectRoomsResource dmRooms = roomService.listBotDMRooms();
             Assertions.assertNotNull(roomId);
             Assertions.assertNotNull(dmRooms.getDirectRoomsForMId(testAccountMatrixId));
             Assertions.assertTrue(dmRooms.getDirectRoomsForMId(testAccountMatrixId).size() > 0);
