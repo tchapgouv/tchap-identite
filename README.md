@@ -1,6 +1,10 @@
 # tchap-identite
 Le projet Tchap identité publie un service d'authentification qui utilise un canal tchap pour identifier les utilisateurs.
 
+## Monitoring
+
+Realm uptime can be found here : https://updown.io/fta9
+
 ## Stack Technology
 - maven : 3.8.2
 - keycloak : 18.0
