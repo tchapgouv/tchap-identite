@@ -1,4 +1,4 @@
-package org.beta.tchap.identite.matrix.rest;
+package org.beta.tchap.identite.bot;
 
 import org.apache.log4j.BasicConfigurator;
 import org.beta.tchap.identite.bot.BotSender;

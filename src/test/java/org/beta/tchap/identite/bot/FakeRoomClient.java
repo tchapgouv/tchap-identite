@@ -1,4 +1,4 @@
-package org.beta.tchap.identite.bot.testing;
+package org.beta.tchap.identite.bot;
 
 import org.beta.tchap.identite.matrix.rest.room.CreateDMBody;
 import org.beta.tchap.identite.matrix.rest.room.RoomClient;
