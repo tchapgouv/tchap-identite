@@ -26,6 +26,7 @@ public class MockFactory {
 
     public static class AuthenticationFlowContextBuilder {
         String loginHint;
+        String authNote;
         List<String> usernames = new ArrayList<>();
 
         public AuthenticationFlowContextBuilder(){}
@@ -37,6 +38,11 @@ public class MockFactory {
 
         public AuthenticationFlowContextBuilder addValidUser(String username){
             this.usernames.add(username);
+            return this;
+        }
+
+        public AuthenticationFlowContextBuilder addAuthNote(String authNote){
+            this.authNote = authNote;
             return this;
         }
 
