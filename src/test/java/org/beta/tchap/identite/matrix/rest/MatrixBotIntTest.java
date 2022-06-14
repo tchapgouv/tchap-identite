@@ -19,6 +19,7 @@ import static org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService.b
 
 
 // FIXME need cleanup of rooms before/after each test
+// FIXME: errors to catch: feign.FeignException$Forbidden
 class MatrixBotIntTest {
     private static RoomService roomService;
     private static BotSender botSender;
@@ -45,7 +46,7 @@ class MatrixBotIntTest {
     }
 
     @AfterEach
-    public static void teardown() {
+    public void teardown() {
         Map<String, ArrayList<String>> dmRooms = roomService.listBotDMRooms().getDirectRooms();
         dmRooms.remove(testAccountMatrixId);
         roomService.updateBotDMRoomList(dmRooms);

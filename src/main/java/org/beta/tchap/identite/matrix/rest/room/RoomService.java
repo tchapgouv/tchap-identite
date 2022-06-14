@@ -1,6 +1,7 @@
 package org.beta.tchap.identite.matrix.rest.room;
 
 import org.beta.tchap.identite.utils.Constants;
+import org.beta.tchap.identite.utils.Environment;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -11,7 +12,7 @@ public class RoomService {
 
     public RoomService(RoomClient roomClient) {
         this.roomClient = roomClient;
-        this.botMatrixId = Constants.TCHAP_MATRIX_ID;
+        this.botMatrixId = Environment.getenv(Constants.TCHAP_MATRIX_ID);
     }
 
     public DirectRoomsResource listBotDMRooms() {
