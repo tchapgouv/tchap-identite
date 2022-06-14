@@ -5,12 +5,12 @@
     <#elseif section = "header">
     <#elseif section = "form">
 
-        <h2>Rentrez votre code secret</h2>
+        <h2>Renseignez le code que vous avez reçu</h2>
         <form id="kc-form-login" class="${properties.kcFormClass!}" onsubmit="login.disabled = true; return true;"
               action="${url.loginAction}" method="post">
             <div class="${properties.kcFormGroupClass!}">
                     <label for="codeInput" class="${properties.kcLabelClass!}">
-                        Renseignez le code que vous avez reçu à votre adresse mail <strong>${userEmail!}</strong>.
+                        Vous avez reçu le code à votre adresse mail <strong>${userEmail!}</strong>.
                     </label>
 
                     <input tabindex="1" id="codeInput" class="${properties.kcInputClass!} code-input" name="codeInput" type="text"
