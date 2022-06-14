@@ -2,7 +2,6 @@ package org.beta.tchap.identite.matrix.rest.user;
 
 import feign.Headers;
 import feign.RequestLine;
-
 import java.util.Map;
 
 public interface UserClient {

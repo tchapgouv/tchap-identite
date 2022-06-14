@@ -1,5 +1,10 @@
 package org.beta.tchap.identite.authenticator;
 
+import static org.beta.tchap.identite.authenticator.OtpLoginAuthenticator.*;
+
+import java.util.HashSet;
+import java.util.Set;
+import javax.ws.rs.core.Response;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
@@ -11,78 +16,85 @@ import org.keycloak.models.UserModel;
 import org.keycloak.protocol.oidc.OIDCLoginProtocol;
 import org.keycloak.sessions.AuthenticationSessionModel;
 
-import javax.ws.rs.core.Response;
-
-
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.beta.tchap.identite.authenticator.OtpLoginAuthenticator.*;
-
-/**
- * Verify that user in login hint is found in users federation (tchap)
- */
+/** Verify that user in login hint is found in users federation (tchap) */
 public class TchapAuthenticator implements Authenticator {
 
-    private static final String FTL_UNAUTHORIZED_USER       = "unauthorized-user.ftl";
+    private static final String FTL_UNAUTHORIZED_USER = "unauthorized-user.ftl";
     private static final Integer MAX_LOGIN_HINTS_OCCURENCE_FOR_ONE_BROWSER = 10;
 
     private static final Logger LOG = Logger.getLogger(TchapAuthenticator.class);
 
-    /**
-     * Verify that user in login hint is found in users federation (tchap)
-     */
+    public static final String ERROR_UNKNOWN_USER = "unknow user";
+    public static final String ERROR_TOO_MANY_REQUESTS = "too many requests";
+    public static final String ERROR_MALFORMED_REQUEST = "request is malformed";
+
+
+    /** Verify that user in login hint is found in users federation (tchap) */
     @Override
     public void authenticate(AuthenticationFlowContext context) {
-        AuthenticationSessionModel session  = context.getAuthenticationSession();
+        AuthenticationSessionModel session = context.getAuthenticationSession();
         String loginHint = session.getClientNote(OIDCLoginProtocol.LOGIN_HINT_PARAM);
 
-        if(loginHint == null){
-            context.failure(AuthenticationFlowError.GENERIC_AUTHENTICATION_ERROR,
-                    Response.status(400).build(), "request is malformed", "request is malformed" );
+        if (loginHint == null) {
+            context.failure(
+                    AuthenticationFlowError.GENERIC_AUTHENTICATION_ERROR,
+                    Response.status(400).build(),
+                    ERROR_MALFORMED_REQUEST,
+                    ERROR_MALFORMED_REQUEST);
             return;
         }
 
-        if(LOG.isDebugEnabled()){LOG.debugf("Authenticate login : %s, AuthenticationSession.TabId : %s, ParentSession.Id %s",
+        if (LOG.isDebugEnabled()) {
+            LOG.debugf(
+                    "Authenticate login : %s, AuthenticationSession.TabId : %s, ParentSession.Id"
+                            + " %s",
                     LoggingUtilsFactory.getInstance().logOrHash(loginHint),
                     context.getAuthenticationSession().getTabId(),
                     context.getAuthenticationSession().getParentSession().getId());
         }
 
-        if(tooManyLoginHints(context)){
-            LOG.warnf("Authenticate login : %s, parent session has used too many different loginHints",
+        if (tooManyLoginHints(context)) {
+            LOG.warnf(
+                    "Authenticate login : %s, parent session has used too many different"
+                            + " loginHints",
                     LoggingUtilsFactory.getInstance().logOrHash(loginHint));
-                    context.failure(AuthenticationFlowError.GENERIC_AUTHENTICATION_ERROR,
-                    Response.status(400).build(), "too many requests", "request is too many requests" );
+            context.failure(
+                    AuthenticationFlowError.GENERIC_AUTHENTICATION_ERROR,
+                    Response.status(400).build(),
+                    ERROR_TOO_MANY_REQUESTS,
+                    ERROR_TOO_MANY_REQUESTS);
 
             return;
         }
 
-        //set loginHint in keycloak authentication session (attached to browser>tab via cookie)
-        context.getAuthenticationSession().setAuthNote(AUTH_NOTE_USER_EMAIL, loginHint);
-        UserModel user = getUser(context);
+        // set loginHint in keycloak authentication session (attached to browser>tab via cookie)
+        UserModel user = getUser(context, loginHint);
 
         if (user == null) {
             showUnauthorizedUser(context);
             return;
         }
-
+        
+        context.getAuthenticationSession().setAuthNote(AUTH_NOTE_USER_EMAIL, loginHint);
         context.success();
     }
-
-   
 
     /**
      * check that occurences login hints have been used from authentication sessions from this
      * browser is not superior than MAX_LOGIN_HINTS_OCCURENCE_FOR_ONE_BROWSER
+     *
      * @param context keycloak auth context
      * @return number of different login hints
      */
-    private boolean tooManyLoginHints(AuthenticationFlowContext context){
+    private boolean tooManyLoginHints(AuthenticationFlowContext context) {
         Set<String> loginHints = new HashSet<>();
-        for(AuthenticationSessionModel session : context.getAuthenticationSession().getParentSession().getAuthenticationSessions().values()){
+        for (AuthenticationSessionModel session :
+                context.getAuthenticationSession()
+                        .getParentSession()
+                        .getAuthenticationSessions()
+                        .values()) {
             String loginHint = session.getAuthNote(AUTH_NOTE_USER_EMAIL);
-            if(loginHint!=null){
+            if (loginHint != null) {
                 loginHints.add(loginHint);
             }
         }
@@ -91,29 +103,35 @@ public class TchapAuthenticator implements Authenticator {
 
     /**
      * Prepare a error view
+     *
      * @param context
      */
-    private void showUnauthorizedUser(AuthenticationFlowContext context){
-        context.failure(AuthenticationFlowError.GENERIC_AUTHENTICATION_ERROR,  context.form()
-                .createForm(FTL_UNAUTHORIZED_USER)
-                , "unknown user", "unknow user");
+    private void showUnauthorizedUser(AuthenticationFlowContext context) {
+        context.failure(
+                AuthenticationFlowError.GENERIC_AUTHENTICATION_ERROR,
+                context.form().createForm(FTL_UNAUTHORIZED_USER),
+                ERROR_UNKNOWN_USER,
+                ERROR_UNKNOWN_USER
+                );
     }
 
-    
     /**
      * Get user from AUTH_NOTE_USER_EMAIL
+     *
      * @param context
      * @return
      */
-    private UserModel getUser(AuthenticationFlowContext context){
-        return context.getSession().users().getUserByEmail(context.getRealm(),
-                context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL));
+    private UserModel getUser(AuthenticationFlowContext context, String loginHint) {
+        return context.getSession()
+                .users()
+                .getUserByEmail(
+                        context.getRealm(),
+                        loginHint);
     }
-
 
     @Override
     public void action(AuthenticationFlowContext context) {
-        //NO FORM
+        // NO FORM
     }
 
     @Override
@@ -127,12 +145,8 @@ public class TchapAuthenticator implements Authenticator {
     }
 
     @Override
-    public void setRequiredActions(KeycloakSession session, RealmModel realm, UserModel user) {
-
-    }
+    public void setRequiredActions(KeycloakSession session, RealmModel realm, UserModel user) {}
 
     @Override
-    public void close() {
-
-    }
+    public void close() {}
 }

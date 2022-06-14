@@ -9,7 +9,8 @@ public class TchapUserStorageFactory implements UserStorageProviderFactory<Tchap
 
     @Override
     public TchapUserStorage create(KeycloakSession keycloakSession, ComponentModel componentModel) {
-        return new TchapUserStorage(keycloakSession, componentModel, MatrixServiceFactory.getInstance());
+        return new TchapUserStorage(
+                keycloakSession, componentModel, MatrixServiceFactory.getInstance());
     }
 
     @Override

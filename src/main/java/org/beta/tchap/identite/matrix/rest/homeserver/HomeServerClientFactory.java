@@ -8,8 +8,6 @@ import feign.okhttp.OkHttpClient;
 import feign.slf4j.Slf4jLogger;
 import org.beta.tchap.identite.matrix.rest.client.OkHttpClientFactory;
 import org.beta.tchap.identite.matrix.rest.gson.GsonFactory;
-import org.beta.tchap.identite.matrix.rest.login.LoginResource;
-import org.beta.tchap.identite.matrix.rest.user.UserClient;
 
 public class HomeServerClientFactory {
 

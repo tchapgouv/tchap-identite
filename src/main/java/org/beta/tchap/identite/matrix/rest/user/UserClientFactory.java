@@ -14,10 +14,9 @@ public class UserClientFactory {
     public static UserClient build(String homeServerBaseUrl, String accessToken) {
         return Feign.builder()
                 .client(new OkHttpClient(OkHttpClientFactory.getClient()))
-                .requestInterceptor(requestTemplate ->
-                        requestTemplate.header(
-                                "Authorization",
-                                "Bearer " + accessToken))
+                .requestInterceptor(
+                        requestTemplate ->
+                                requestTemplate.header("Authorization", "Bearer " + accessToken))
                 .encoder(new GsonEncoder(GsonFactory.getInstance()))
                 .decoder(new GsonDecoder(GsonFactory.getInstance()))
                 .logger(new Slf4jLogger(UserClient.class))

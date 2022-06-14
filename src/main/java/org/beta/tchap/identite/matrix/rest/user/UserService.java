@@ -1,9 +1,8 @@
 package org.beta.tchap.identite.matrix.rest.user;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang.StringUtils;
 
 public class UserService {
     private final UserClient userClient;
@@ -20,7 +19,8 @@ public class UserService {
         return toUserInfoResource(userIds, rawResponse);
     }
 
-    private UserInfoResource toUserInfoResource(List<String> userIds, Map<String, Object> rawResponse) {
+    private UserInfoResource toUserInfoResource(
+            List<String> userIds, Map<String, Object> rawResponse) {
         UserInfoResource userInfoResource = null;
         if (rawResponse.size() != 1 || userIds.size() != 1) {
             return userInfoResource;
