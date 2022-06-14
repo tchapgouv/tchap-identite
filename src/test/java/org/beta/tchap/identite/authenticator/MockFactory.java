@@ -7,6 +7,9 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.forms.login.LoginFormsProvider;
 import org.keycloak.models.KeycloakSession;
@@ -23,7 +26,7 @@ public class MockFactory {
 
     public static class AuthenticationFlowContextBuilder {
         String loginHint;
-        String username;
+        List<String> usernames = new ArrayList<>();
 
         public AuthenticationFlowContextBuilder(){}
 
@@ -32,8 +35,8 @@ public class MockFactory {
             return this;
         }
 
-        public AuthenticationFlowContextBuilder withValidUser(String username){
-            this.username = username;
+        public AuthenticationFlowContextBuilder addValidUser(String username){
+            this.usernames.add(username);
             return this;
         }
 
@@ -49,8 +52,8 @@ public class MockFactory {
                 doReturn(loginHint).when(sessionMock).getClientNote(OIDCLoginProtocol.LOGIN_HINT_PARAM);
             }
 
-            if(username != null){
-                UserProvider userProviderMock = buildUserProvider(username);
+            if(!usernames.isEmpty()){
+                UserProvider userProviderMock = buildUserProvider(usernames);
                 doReturn(userProviderMock).when(keycloakSession).users();
             }
             
@@ -73,7 +76,7 @@ public class MockFactory {
         return userMock;
     }
 
-    static UserProvider buildUserProvider(String username){
+    static UserProvider buildUserProvider(List<String> usernames){
         UserProvider userProviderMock = spy(UserProvider.class);
         //final List<String> validUsernames = Arrays.asList(usernames);
         
@@ -81,10 +84,10 @@ public class MockFactory {
             @Override
             public UserModel answer(InvocationOnMock invocation) throws Throwable {
                 //Object realm = invocation.getArguments()[0];
-                Object usernameParam = invocation.getArguments()[1];
+                String usernameParam = (String) invocation.getArguments()[1];
                 //System.out.printf("Invocation Arguments : %s %s", realm, usernameParam);
-                if(usernameParam.equals(username)){
-                    return buildUserModel(username);
+                if(usernames.contains(usernameParam)){
+                    return buildUserModel(usernameParam);
                 }
                 return null;
             }}).when(userProviderMock).getUserByEmail(any(RealmModel.class), anyString());    

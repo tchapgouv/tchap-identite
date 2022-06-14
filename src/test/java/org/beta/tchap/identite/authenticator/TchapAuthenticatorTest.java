@@ -46,10 +46,9 @@ public class TchapAuthenticatorTest {
     }
 
     @Test
-    public void withLoginHint_userNotExists_shouldShowErrorMessage(){
+    public void whenUserNotExists_shouldShowErrorMessage(){
         AuthenticationFlowContext context =  new MockFactory.AuthenticationFlowContextBuilder()
             .withLoginHint("userA")
-            .withValidUser("")
             .build();
 
         authenticator.authenticate(context);
@@ -60,11 +59,11 @@ public class TchapAuthenticatorTest {
     }
     
     @Test
-    public void withUserExists_shouldSetAuthNote_andSuccess(){
+    public void whenUserExists_shouldSetAuthNote_andSuccess(){
         AuthenticationFlowContext context =  
             new MockFactory.AuthenticationFlowContextBuilder()
                 .withLoginHint(username)
-                .withValidUser(username)
+                .addValidUser(username)
                 .build();
         AuthenticationSessionModel session = context.getAuthenticationSession();
 
