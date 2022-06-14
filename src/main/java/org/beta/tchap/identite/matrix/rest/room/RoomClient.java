@@ -3,7 +3,6 @@ package org.beta.tchap.identite.matrix.rest.room;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
-import org.beta.tchap.identite.matrix.rest.user.UserInfoBody;
 
 import java.util.ArrayList;
 import java.util.Map;

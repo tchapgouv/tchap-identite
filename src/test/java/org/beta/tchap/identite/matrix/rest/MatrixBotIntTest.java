@@ -8,7 +8,6 @@ import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
 import org.beta.tchap.identite.matrix.rest.room.RoomClient;
 import org.beta.tchap.identite.matrix.rest.room.RoomFactory;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
-import org.beta.tchap.identite.matrix.rest.user.UserService;
 import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 import org.junit.jupiter.api.Assertions;

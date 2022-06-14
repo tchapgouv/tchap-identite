@@ -1,24 +1,16 @@
 package org.beta.tchap.identite.bot.testing;
 
 import org.apache.log4j.BasicConfigurator;
-import org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService;
-import org.beta.tchap.identite.matrix.rest.login.LoginService;
 import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
-import org.beta.tchap.identite.matrix.rest.user.UserService;
-import org.beta.tchap.identite.utils.Constants;
-import org.beta.tchap.identite.utils.Environment;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService.buildHomeServerUrl;
-
 
 // FIXME need cleanup of rooms before/after each test
 class MatrixBotUnitTest {
-    private static UserService userService;
     private RoomService roomService;
 
     @BeforeAll

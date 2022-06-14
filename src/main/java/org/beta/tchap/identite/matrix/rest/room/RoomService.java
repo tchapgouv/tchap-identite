@@ -1,7 +1,5 @@
 package org.beta.tchap.identite.matrix.rest.room;
 
-import org.beta.tchap.identite.matrix.rest.user.UserService;
-
 import java.util.ArrayList;
 import java.util.Map;
 
