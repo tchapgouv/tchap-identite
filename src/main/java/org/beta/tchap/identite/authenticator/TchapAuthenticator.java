@@ -24,6 +24,11 @@ public class TchapAuthenticator implements Authenticator {
 
     private static final Logger LOG = Logger.getLogger(TchapAuthenticator.class);
 
+    public static final String ERROR_UNKNOWN_USER = "unknow user";
+    public static final String ERROR_TOO_MANY_REQUESTS = "too many requests";
+    public static final String ERROR_MALFORMED_REQUEST = "request is malformed";
+
+
     /** Verify that user in login hint is found in users federation (tchap) */
     @Override
     public void authenticate(AuthenticationFlowContext context) {
@@ -34,8 +39,8 @@ public class TchapAuthenticator implements Authenticator {
             context.failure(
                     AuthenticationFlowError.GENERIC_AUTHENTICATION_ERROR,
                     Response.status(400).build(),
-                    "request is malformed",
-                    "request is malformed");
+                    ERROR_MALFORMED_REQUEST,
+                    ERROR_MALFORMED_REQUEST);
             return;
         }
 
@@ -56,21 +61,21 @@ public class TchapAuthenticator implements Authenticator {
             context.failure(
                     AuthenticationFlowError.GENERIC_AUTHENTICATION_ERROR,
                     Response.status(400).build(),
-                    "too many requests",
-                    "request is too many requests");
+                    ERROR_TOO_MANY_REQUESTS,
+                    ERROR_TOO_MANY_REQUESTS);
 
             return;
         }
 
         // set loginHint in keycloak authentication session (attached to browser>tab via cookie)
-        context.getAuthenticationSession().setAuthNote(AUTH_NOTE_USER_EMAIL, loginHint);
-        UserModel user = getUser(context);
+        UserModel user = getUser(context, loginHint);
 
         if (user == null) {
             showUnauthorizedUser(context);
             return;
         }
-
+        
+        context.getAuthenticationSession().setAuthNote(AUTH_NOTE_USER_EMAIL, loginHint);
         context.success();
     }
 
@@ -105,8 +110,9 @@ public class TchapAuthenticator implements Authenticator {
         context.failure(
                 AuthenticationFlowError.GENERIC_AUTHENTICATION_ERROR,
                 context.form().createForm(FTL_UNAUTHORIZED_USER),
-                "unknown user",
-                "unknow user");
+                ERROR_UNKNOWN_USER,
+                ERROR_UNKNOWN_USER
+                );
     }
 
     /**
@@ -115,12 +121,12 @@ public class TchapAuthenticator implements Authenticator {
      * @param context
      * @return
      */
-    private UserModel getUser(AuthenticationFlowContext context) {
+    private UserModel getUser(AuthenticationFlowContext context, String loginHint) {
         return context.getSession()
                 .users()
                 .getUserByEmail(
                         context.getRealm(),
-                        context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL));
+                        loginHint);
     }
 
     @Override
