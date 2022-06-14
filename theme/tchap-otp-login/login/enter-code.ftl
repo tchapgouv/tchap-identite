@@ -11,8 +11,6 @@
             <div class="${properties.kcFormGroupClass!}">
                     <label for="codeInput" class="${properties.kcLabelClass!}">
                         Renseignez le code que vous avez reçu à votre adresse mail <strong>${userEmail!}</strong>.
-                        ${client.name} utilise un service d'authentification pour assurer que seuls les agents publics utilisent les services qui
-                        leur sont réservés.
                     </label>
 
                     <input tabindex="1" id="codeInput" class="${properties.kcInputClass!} code-input" name="codeInput" type="text"
