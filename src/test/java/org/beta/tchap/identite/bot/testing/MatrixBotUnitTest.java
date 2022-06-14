@@ -2,29 +2,36 @@ package org.beta.tchap.identite.bot.testing;
 
 import org.apache.log4j.BasicConfigurator;
 import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
+import org.beta.tchap.identite.matrix.rest.room.RoomClient;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 
 // FIXME need cleanup of rooms before/after each test
 class MatrixBotUnitTest {
-    private RoomService roomService;
+    private static FakeRoomClient roomClient;
+    private static RoomService roomService;
 
     @BeforeAll
-    public void setup() {
+    static void setup() {
         // Needed for logging
         BasicConfigurator.configure();
-//        roomService = new RoomService(roomClient, userService);
-        roomService = new FakeRoomService();
+        roomClient = new FakeRoomClient();
+        roomClient.rooms = new HashMap<>();
+        roomService = new RoomService(roomClient);
     }
 
     @Nested
     class ListRoomsTest {
         @Test
         void shouldListDMRooms() {
+            roomClient.rooms.put("testId", new ArrayList<>(2));
             DirectRoomsResource rooms = roomService.listDMRooms();
             Assertions.assertTrue(rooms.getDirectRooms().size() > 0);
         }

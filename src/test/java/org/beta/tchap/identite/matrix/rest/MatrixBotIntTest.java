@@ -6,7 +6,7 @@ import org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService;
 import org.beta.tchap.identite.matrix.rest.login.LoginService;
 import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
 import org.beta.tchap.identite.matrix.rest.room.RoomClient;
-import org.beta.tchap.identite.matrix.rest.room.RoomFactory;
+import org.beta.tchap.identite.matrix.rest.room.RoomClientFactory;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
 import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
@@ -37,7 +37,7 @@ class MatrixBotIntTest {
         String accountHomeServerUrl = buildHomeServerUrl(homeServerService.findHomeServerByEmail(account));
         String accessToken = loginService.findAccessToken(accountHomeServerUrl, account, password);
 
-        RoomClient roomClient = RoomFactory.build(accountHomeServerUrl, accessToken);
+        RoomClient roomClient = RoomClientFactory.build(accountHomeServerUrl, accessToken);
         roomService = new RoomService(roomClient);
 
         botSender = new BotSender(roomService);
