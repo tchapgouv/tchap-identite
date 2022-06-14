@@ -22,6 +22,8 @@ import static org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService.b
 class MatrixBotIntTest {
     private static RoomService roomService;
     private static BotSender botSender;
+    private final String testAccountMatrixId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
+
 
     @BeforeAll
     public static void setup() {
@@ -47,10 +49,8 @@ class MatrixBotIntTest {
     class NoEventsTest {
         @Test
         void shouldHaveNoDMEventsIfNoDM() {
-            String destId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
-
             DirectRoomsResource dmRooms = roomService.listDMRooms();
-            Assertions.assertNull(dmRooms.getDirectRoomsForMId(destId));
+            Assertions.assertNull(dmRooms.getDirectRoomsForMId(testAccountMatrixId));
         }
     }
 
@@ -58,20 +58,18 @@ class MatrixBotIntTest {
     class CreateDMTest {
         @Test
         void shouldCreateADMAndAddDMEvent() {
-            String destId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
-            String roomId = roomService.createDM(destId);
+            String roomId = roomService.createDM(testAccountMatrixId);
 
             DirectRoomsResource dmRooms = roomService.listDMRooms();
             Assertions.assertNotNull(roomId);
-            Assertions.assertNotNull(dmRooms.getDirectRoomsForMId(destId));
-            Assertions.assertTrue(dmRooms.getDirectRoomsForMId(destId).size() > 0);
+            Assertions.assertNotNull(dmRooms.getDirectRoomsForMId(testAccountMatrixId));
+            Assertions.assertTrue(dmRooms.getDirectRoomsForMId(testAccountMatrixId).size() > 0);
         }
 
         @Test
         void shouldNotCreateADMIfADMWithUserExists() {
-            String destId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
-            String roomId1 = roomService.createDM(destId);
-            String roomId2 = roomService.createDM(destId);
+            String roomId1 = roomService.createDM(testAccountMatrixId);
+            String roomId2 = roomService.createDM(testAccountMatrixId);
 
             Assertions.assertEquals(roomId1, roomId2);
         }
@@ -81,8 +79,7 @@ class MatrixBotIntTest {
     class SendingMessagesTest {
         @Test
         void shouldSendAMessageToADMRoom() {
-            String destId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
-            String roomId = roomService.createDM(destId);
+            String roomId = roomService.createDM(testAccountMatrixId);
             Assertions.assertDoesNotThrow(() -> roomService.sendMessage(roomId, "Hello world"));
         }
     }
@@ -91,9 +88,8 @@ class MatrixBotIntTest {
     class SendingOTPTest {
         @Test
         void shouldSendOTPCode() {
-            String destId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
             String otp = "1234";
-            Assertions.assertDoesNotThrow(() -> botSender.sendOtp(otp, destId));
+            Assertions.assertDoesNotThrow(() -> botSender.sendOtp(otp, testAccountMatrixId));
         }
     }
 }
