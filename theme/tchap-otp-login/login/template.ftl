@@ -103,7 +103,7 @@
 
           <!--p>Domaine ${kcSanitize(msg("loginTitleHtml",(realm.displayNameHtml!'')))?no_esc}</p-->
 
-              <#if realm.internationalizationEnabled  && locale.supported?size gt 1>
+<#--                <#if realm.internationalizationEnabled  && locale.supported?size gt 1>
                   <div id="kc-locale">
                       <div id="kc-locale-wrapper" class="${properties.kcLocaleWrapperClass!}">
                           <div class="kc-dropdown" id="kc-locale-dropdown">
@@ -116,8 +116,8 @@
                           </div>
                       </div>
                   </div>
-              </#if>
-              <#if !(auth?has_content && auth.showUsername() && !auth.showResetCredentials())>
+              </#if>  -->
+              <#--  <#if !(auth?has_content && auth.showUsername() && !auth.showResetCredentials())>
                   <#if displayRequiredFields>
                       <div class="${properties.kcContentWrapperClass!}">
                           <div class="${properties.kcLabelWrapperClass!} subtitle">
@@ -165,7 +165,7 @@
                           </div>
                       </div>
                   </#if>
-              </#if>
+              </#if>  -->
 
             <div id="kc-content">
             <div id="kc-content-wrapper">
