@@ -214,8 +214,13 @@ public class OtpLoginAuthenticator implements Authenticator {
 
         setCodeTimestamp(context);
 
+        
+        
         String homeServer = user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER);
         String matrixId = matrixService.getUserService().findUserInfoByEmail(user.getUsername(), homeServer).getUserId();
+        
+        LOG.debugf(
+            "Sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
 
         /*
          * botSender
@@ -226,9 +231,6 @@ public class OtpLoginAuthenticator implements Authenticator {
         matrixService.sendMessage(roomId, friendlyCode);
 
         return true;
-        /*
-         * TODO: SEND CODE TO TCHAP ALSO
-         */
     }
 
     /**
