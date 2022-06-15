@@ -52,7 +52,7 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
         UserModel user = loadedUsers.get(username);
         if (user == null) {
             String homeServer = matrixService.getUserHomeServer(username);
-            if(matrixService.isHomeServerAccepted(homeServer)){
+            if(matrixService.isHomeServerAcceptedOnTchap(homeServer)){
                 user = new InMemoryUserAdapter(session, realm, buildId(model, username));
                 user.setEnabled(true);
                 user.setUsername(username);
