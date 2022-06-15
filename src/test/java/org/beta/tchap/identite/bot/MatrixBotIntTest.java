@@ -1,5 +1,6 @@
 package org.beta.tchap.identite.bot;
 
+import groovy.util.logging.Log;
 import org.apache.log4j.BasicConfigurator;
 import org.beta.tchap.identite.bot.BotSender;
 import org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService;

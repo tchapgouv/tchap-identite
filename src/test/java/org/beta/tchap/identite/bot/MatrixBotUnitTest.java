@@ -3,10 +3,7 @@ package org.beta.tchap.identite.bot;
 import org.apache.log4j.BasicConfigurator;
 import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +23,11 @@ class MatrixBotUnitTest {
         roomClient = new FakeRoomClient();
         roomClient.rooms = new HashMap<>();
         roomService = new RoomService(roomClient);
+    }
+
+    @AfterEach
+    void teardown() {
+        roomClient.rooms = new HashMap<>();
     }
 
     @Nested
@@ -57,6 +59,7 @@ class MatrixBotUnitTest {
             DirectRoomsResource dmRooms = roomService.listBotDMRooms();
             Assertions.assertNotNull(roomId);
             Assertions.assertNotNull(dmRooms.getDirectRoomsForMId(testAccountMatrixId));
+            Assertions.assertSame("123", dmRooms.getDirectRoomsForMId(testAccountMatrixId).get(0));
             Assertions.assertTrue(dmRooms.getDirectRoomsForMId(testAccountMatrixId).size() > 0);
         }
 
