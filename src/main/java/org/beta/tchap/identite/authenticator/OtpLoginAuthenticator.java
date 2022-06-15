@@ -1,12 +1,5 @@
 package org.beta.tchap.identite.authenticator;
 
-import java.time.Instant;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-
 import org.beta.tchap.identite.email.EmailSender;
 import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.user.TchapUserStorage;
@@ -22,7 +15,16 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.sessions.AuthenticationSessionModel;
 
-/** Send a OTP to the user in session authenticate() and wait for it in action() */
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Send a OTP to the user in session authenticate() and wait for it in action()
+ */
 public class OtpLoginAuthenticator implements Authenticator {
     private static final Logger LOG = Logger.getLogger(OtpLoginAuthenticator.class);
 
@@ -52,7 +54,9 @@ public class OtpLoginAuthenticator implements Authenticator {
         this.matrixService = matrixService;
     }
 
-    /** Send a otp to the user in session and present a form */
+    /**
+     * Send a otp to the user in session and present a form
+     */
     @Override
     public void authenticate(AuthenticationFlowContext context) {        
         //user should have been set in the context before
@@ -91,7 +95,9 @@ public class OtpLoginAuthenticator implements Authenticator {
         context.challenge(otpForm(context, null));
     }
 
-    /** Wait for the otp in the form input */
+    /**
+     * Wait for the otp in the form input
+     */
     @Override
     public void action(AuthenticationFlowContext context) {
         if (LOG.isDebugEnabled()) {
@@ -144,7 +150,7 @@ public class OtpLoginAuthenticator implements Authenticator {
      * Prepare the view of the otp form
      *
      * @param context
-     * @param info optional info message
+     * @param info    optional info message
      * @return ready-to-send Response
      */
     private Response otpForm(AuthenticationFlowContext context, String info) {
@@ -163,7 +169,7 @@ public class OtpLoginAuthenticator implements Authenticator {
      * Prepare an error view
      *
      * @param context
-     * @param error required error message
+     * @param error   required error message
      * @return ready-to-send Response
      */
     private Response otpFormError(AuthenticationFlowContext context, String error) {
@@ -218,6 +224,7 @@ public class OtpLoginAuthenticator implements Authenticator {
         String serviceName = context.getAuthenticationSession().getClient().getName();
         matrixService.sendMessage(roomId, "Voici votre code pour " + serviceName);
         matrixService.sendMessage(roomId, friendlyCode);
+
         return true;
         /*
          * TODO: SEND CODE TO TCHAP ALSO
