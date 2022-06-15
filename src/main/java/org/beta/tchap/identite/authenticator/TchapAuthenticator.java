@@ -33,6 +33,8 @@ public class TchapAuthenticator implements Authenticator {
     @Override
     public void authenticate(AuthenticationFlowContext context) {
         AuthenticationSessionModel session = context.getAuthenticationSession();
+        
+        //retrieve login hint from a standard note injected by oidc
         String loginHint = session.getClientNote(OIDCLoginProtocol.LOGIN_HINT_PARAM);
 
         if (loginHint == null) {
@@ -67,15 +69,15 @@ public class TchapAuthenticator implements Authenticator {
             return;
         }
 
-        // set loginHint in keycloak authentication session (attached to browser>tab via cookie)
+        // retrieve user from loginHint in keycloak authentication session (attached to browser>tab via cookie)
         UserModel user = getUser(context, loginHint);
 
         if (user == null) {
             showUnauthorizedUser(context);
             return;
         }
-        
-        context.getAuthenticationSession().setAuthNote(AUTH_NOTE_USER_EMAIL, loginHint);
+        context.setUser(user);
+        context.getAuthenticationSession().setAuthNote(AUTH_NOTE_USER_EMAIL, user.getUsername());
         context.success();
     }
 
@@ -119,7 +121,7 @@ public class TchapAuthenticator implements Authenticator {
      * Get user from AUTH_NOTE_USER_EMAIL
      *
      * @param context
-     * @return
+     * @return userModel retrieved by the user storage
      */
     private UserModel getUser(AuthenticationFlowContext context, String loginHint) {
         return context.getSession()

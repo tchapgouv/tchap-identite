@@ -58,10 +58,10 @@ public class MockFactory {
                 doReturn(loginHint).when(sessionMock).getClientNote(OIDCLoginProtocol.LOGIN_HINT_PARAM);
             }
 
-            if(!usernames.isEmpty()){
-                UserProvider userProviderMock = buildUserProvider(usernames);
-                doReturn(userProviderMock).when(keycloakSession).users();
-            }
+            
+            UserProvider userProviderMock = buildUserProvider(usernames);
+            doReturn(userProviderMock).when(keycloakSession).users();
+        
             
             doReturn(loginFormsProvider).when(contextMock).form();
             doReturn(sessionMock).when(contextMock).getAuthenticationSession();

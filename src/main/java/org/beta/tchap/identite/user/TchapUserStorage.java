@@ -9,6 +9,7 @@ import org.keycloak.component.ComponentModel;
 import org.keycloak.models.*;
 import org.keycloak.storage.StorageId;
 import org.keycloak.storage.UserStorageProvider;
+import org.keycloak.storage.adapter.InMemoryUserAdapter;
 import org.keycloak.storage.user.UserLookupProvider;
 
 public class TchapUserStorage implements UserStorageProvider, UserLookupProvider {
@@ -18,6 +19,8 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
     protected ComponentModel model;
     protected Map<String, UserModel> loadedUsers = new HashMap<>();
     private MatrixService matrixService;
+
+    public  static String ATTRIBUTE_HOMESERVER = "homeServer";
 
     /** Public constructor */
     public TchapUserStorage(
@@ -46,13 +49,20 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
                     "Checking username : %s",
                     LoggingUtilsFactory.getInstance().logOrHash(username));
         }
-        UserModel adapter = loadedUsers.get(username);
-        if (adapter == null && matrixService.isUserValid(username)) {
-            adapter = new TchapUserModel(session, realm, model, username);
-            loadedUsers.put(username, adapter);
+        UserModel user = loadedUsers.get(username);
+        if (user == null) {
+            String homeServer = matrixService.getUserHomeServer(username);
+            if(matrixService.isHomeServerAcceptedOnTchap(homeServer)){
+                user = new InMemoryUserAdapter(session, realm, buildId(model, username));
+                user.setEnabled(true);
+                user.setUsername(username);
+                user.setEmail(username);
+                user.setSingleAttribute(ATTRIBUTE_HOMESERVER, homeServer);
+                loadedUsers.put(username, user);
+            }
         }
 
-        return adapter;
+        return user;
     }
 
     @Override
@@ -60,6 +70,13 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
         return getUserByUsername(realm, email);
     }
 
+     /**
+     * Defaults to 'f:' + storageProvider.getId() + ':' + getUsername()
+     *https://www.keycloak.org/docs/latest/server_development/#storage-ids
+     */
+    private String buildId(ComponentModel model, String username){
+        return new StorageId(model.getId(), username).getId();
+    }
     /*
      * no use
      */

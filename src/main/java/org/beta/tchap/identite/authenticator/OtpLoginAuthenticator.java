@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import org.beta.tchap.identite.email.EmailSender;
+import org.beta.tchap.identite.user.TchapUserStorage;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.beta.tchap.identite.utils.SecureCode;
 import org.jboss.logging.Logger;
@@ -49,11 +50,17 @@ public class OtpLoginAuthenticator implements Authenticator {
 
     /** Send a otp to the user in session and present a form */
     @Override
-    public void authenticate(AuthenticationFlowContext context) {
-        String loginHint = context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL);
+    public void authenticate(AuthenticationFlowContext context) {        
+        //user should have been set in the context before
+        UserModel user = context.getUser();
+        
+        if(user==null){
+            context.failure(AuthenticationFlowError.UNKNOWN_USER);
+        }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debugf("Authenticate OtpLoginAuthenticator");
+            LOG.debugf("Authenticate OtpLoginAuthenticator with user %s %s", LoggingUtilsFactory.getInstance().logOrHash(user.getEmail()), 
+                user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER));
         }
 
         if (!canSendNewCode(context)) {
@@ -61,12 +68,12 @@ public class OtpLoginAuthenticator implements Authenticator {
                 LOG.debugf(
                         "Authenticate login : %s, a previous code has been sent. Should wait for"
                                 + " cool down delay before sending a new one",
-                        LoggingUtilsFactory.getInstance().logOrHash(loginHint));
+                        LoggingUtilsFactory.getInstance().logOrHash(user.getUsername()));
             }
 
             context.challenge(
                     context.form()
-                            .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, loginHint)
+                            .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, user.getUsername())
                             .setInfo("info.code.already.sent.wait", mailDelay)
                             .createForm(FTL_ENTER_CODE));
             return;
@@ -118,11 +125,9 @@ public class OtpLoginAuthenticator implements Authenticator {
             return;
         }
 
-        // authenticator is successful
-        context.setUser(getUser(context));
         context.success();
     }
-
+/* 
     private UserModel getUser(AuthenticationFlowContext context) {
         return context.getSession()
                 .users()
@@ -130,7 +135,7 @@ public class OtpLoginAuthenticator implements Authenticator {
                         context.getRealm(),
                         context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL));
     }
-
+ */
     /**
      * Prepare the view of the otp form
      *
@@ -139,14 +144,8 @@ public class OtpLoginAuthenticator implements Authenticator {
      * @return ready-to-send Response
      */
     private Response otpForm(AuthenticationFlowContext context, String info) {
-        String userEmail = context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL);
-
-        /* if userEmail is not set in the authentication session, fails */
-        if (userEmail == null || userEmail.isEmpty()) {
-            // TODO
-            userEmail = "";
-        }
-
+        String userEmail = context.getUser().getUsername();
+    
         /* display otp form*/
         LoginFormsProvider form = context.form().setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail);
 
@@ -164,13 +163,7 @@ public class OtpLoginAuthenticator implements Authenticator {
      * @return ready-to-send Response
      */
     private Response otpFormError(AuthenticationFlowContext context, String error) {
-        String userEmail = context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL);
-
-        /* if userEmail is not set in the authentication session, fails */
-        if (userEmail == null || userEmail.isEmpty()) {
-            // TODO
-            userEmail = "";
-        }
+        String userEmail = context.getUser().getUsername();
 
         /* display otp form*/
         return context.form()
@@ -200,7 +193,7 @@ public class OtpLoginAuthenticator implements Authenticator {
         if (!emailSender.sendEmail(
                 context.getSession(),
                 context.getRealm(),
-                getUser(context),
+                context.getUser(),
                 friendlyCode,
                 String.valueOf(codeTimeout))) {
             // error while sending email
