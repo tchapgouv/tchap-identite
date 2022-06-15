@@ -1,8 +1,8 @@
 package org.beta.tchap.identite.bot;
 
-import groovy.util.logging.Log;
 import org.apache.log4j.BasicConfigurator;
-import org.beta.tchap.identite.bot.BotSender;
+import org.beta.tchap.identite.matrix.rest.MatrixService;
+import org.beta.tchap.identite.matrix.rest.MatrixServiceFactory;
 import org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService;
 import org.beta.tchap.identite.matrix.rest.login.LoginService;
 import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
@@ -20,10 +20,11 @@ import static org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService.b
 
 
 // FIXME need cleanup of rooms before/after each test
+// FIXME should test the events in the rooms to be sure it's ok
 // FIXME: errors to catch: feign.FeignException$Forbidden
 class MatrixBotIntTest {
     private static RoomService roomService;
-    private static BotSender botSender;
+    private static MatrixService matrixService;
     private final static String testAccountMatrixId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
 
     @BeforeAll
@@ -43,7 +44,7 @@ class MatrixBotIntTest {
         RoomClient roomClient = RoomClientFactory.build(accountHomeServerUrl, accessToken);
         roomService = new RoomService(roomClient);
 
-        botSender = new BotSender(roomService);
+        matrixService = MatrixServiceFactory.getInstance();
     }
 
     @AfterEach
@@ -97,7 +98,7 @@ class MatrixBotIntTest {
         @Test
         void shouldSendOTPCode() {
             String otp = "1234";
-            Assertions.assertDoesNotThrow(() -> botSender.sendOtp(otp, testAccountMatrixId));
+            Assertions.assertDoesNotThrow(() -> matrixService.sendDirectMessageToUser(otp, testAccountMatrixId));
         }
     }
 }

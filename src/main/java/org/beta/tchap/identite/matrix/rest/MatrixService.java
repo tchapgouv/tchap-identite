@@ -1,29 +1,46 @@
 package org.beta.tchap.identite.matrix.rest;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService;
+import org.beta.tchap.identite.matrix.rest.login.LoginService;
+import org.beta.tchap.identite.matrix.rest.room.RoomClient;
+import org.beta.tchap.identite.matrix.rest.room.RoomClientFactory;
+import org.beta.tchap.identite.matrix.rest.room.RoomService;
 import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.jboss.logging.Logger;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService.buildHomeServerUrl;
 
 public class MatrixService {
 
     private static final Logger LOG = Logger.getLogger(MatrixService.class);
 
     private final HomeServerService homeServerService;
-    // private final LoginService loginService;
-    // private final String account;
-    // private final String password;
+    //    private final UserService userService;
+    private final RoomService roomService;
+
+    private final String account;
+    private final String password;
 
     protected MatrixService() {
-        // account = Environment.getenv(Constants.TCHAP_ACCOUNT);
-        // password = Environment.getenv(Constants.TCHAP_PASSWORD);
+        account = Environment.getenv(Constants.TCHAP_ACCOUNT);
+        password = Environment.getenv(Constants.TCHAP_PASSWORD);
+        LoginService loginService = new LoginService();
         homeServerService = new HomeServerService();
-        // loginService = new LoginService();
+
+        String accountHomeServerUrl = buildHomeServerUrl(homeServerService.findHomeServerByEmail(account));
+        String accessToken = loginService.findAccessToken(accountHomeServerUrl, account, password);
+
+//        userService = new UserService(accountHomeServerUrl, accessToken);
+
+        RoomClient roomClient = RoomClientFactory.build(accountHomeServerUrl, accessToken);
+        roomService = new RoomService(roomClient);
     }
 
     public boolean isUserValid(String email) {
@@ -46,7 +63,9 @@ public class MatrixService {
         return isValid;
     }
 
-    /** Check if an email is accepted on Tchap based on an hardcorded domain list */
+    /**
+     * Check if an email is accepted on Tchap based on an hardcorded domain list
+     */
     private boolean isEmailAcceptedOnTchap(String userHomeServer) {
         return !getInvalidHomeServers().contains(userHomeServer);
     }
@@ -56,6 +75,11 @@ public class MatrixService {
         return StringUtils.isNotEmpty(unauthorizedList)
                 ? Arrays.asList(unauthorizedList.split(","))
                 : Collections.emptyList();
+    }
+
+    public void sendDirectMessageToUser(String message, String destMatrixId) {
+        String roomId = roomService.createDM(destMatrixId);
+        roomService.sendMessage(roomId, message);
     }
 
     /**

@@ -1,9 +1,6 @@
 package org.beta.tchap.identite.matrix.rest.room;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DirectRoomsResource {
     private Map<String, List<String>> directRooms;
@@ -24,7 +21,7 @@ public class DirectRoomsResource {
     }
 
     public void addDirectRoomForMatrixId(String matrixId, String roomId) {
-        List<String> newRoomsId = new ArrayList<>(getDirectRoomsForMId(matrixId));
+        List<String> newRoomsId = Optional.ofNullable(getDirectRoomsForMId(matrixId)).orElse(new ArrayList<>());
         newRoomsId.add(roomId);
         directRooms.put(matrixId, newRoomsId);
     }
