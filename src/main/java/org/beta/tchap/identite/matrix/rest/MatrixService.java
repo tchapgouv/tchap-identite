@@ -76,7 +76,7 @@ public class MatrixService {
         boolean isValid = isEmailAcceptedOnTchap(userHomeServer);
         if (LOG.isDebugEnabled()) {
             LOG.debugf(
-                    "Email[%s] is valid in tchap : %s",
+                    "HomeServer [%s] is valid in tchap : %s",
                     LoggingUtilsFactory.getInstance().logOrHash(userHomeServer), isValid);
         }
         return isValid;
