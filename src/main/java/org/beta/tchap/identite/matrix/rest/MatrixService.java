@@ -6,6 +6,7 @@ import org.beta.tchap.identite.matrix.rest.login.LoginService;
 import org.beta.tchap.identite.matrix.rest.room.RoomClient;
 import org.beta.tchap.identite.matrix.rest.room.RoomClientFactory;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
+import org.beta.tchap.identite.matrix.rest.user.UserService;
 import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
@@ -22,7 +23,7 @@ public class MatrixService {
     private static final Logger LOG = Logger.getLogger(MatrixService.class);
 
     private final HomeServerService homeServerService;
-    //    private final UserService userService;
+    private final UserService userService;
     private final RoomService roomService;
 
     private final String account;
@@ -37,7 +38,7 @@ public class MatrixService {
         String accountHomeServerUrl = buildHomeServerUrl(homeServerService.findHomeServerByEmail(account));
         String accessToken = loginService.findAccessToken(accountHomeServerUrl, account, password);
 
-//        userService = new UserService(accountHomeServerUrl, accessToken);
+        userService = new UserService(accountHomeServerUrl, accessToken);
 
         RoomClient roomClient = RoomClientFactory.build(accountHomeServerUrl, accessToken);
         roomService = new RoomService(roomClient);
@@ -111,11 +112,23 @@ public class MatrixService {
                 : Collections.emptyList();
     }
 
-    public void sendDirectMessageToUser(String message, String destMatrixId) {
+     public void sendDirectMessageToUser(String message, String destMatrixId) {
         String roomId = roomService.createDM(destMatrixId);
         roomService.sendMessage(roomId, message);
     }
 
+    public String openDM(String destMatrixId) {
+        return roomService.createDM(destMatrixId);
+    }
+
+    public void sendMessage(String roomId, String message) {
+        roomService.sendMessage(roomId, message);
+    }
+
+
+    public UserService getUserService() {
+        return userService;
+    }
     /**
      * Check if an account has been created and still valid in Tchap
      *

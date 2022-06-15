@@ -3,8 +3,8 @@ package org.beta.tchap.identite.authenticator;
 import java.util.Collections;
 import java.util.List;
 
-import org.beta.tchap.identite.bot.BotSenderFactory;
 import org.beta.tchap.identite.email.EmailSenderFactory;
+import org.beta.tchap.identite.matrix.rest.MatrixServiceFactory;
 import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 import org.beta.tchap.identite.utils.SecureCodeFactory;
@@ -40,7 +40,7 @@ public class OtpLoginAuthenticatorFactory implements AuthenticatorFactory {
                 EmailSenderFactory.getInstance(),
                 codeTimeout,
                 mailDelay,
-                BotSenderFactory.getInstance());
+                MatrixServiceFactory.getInstance());
     }
 
     @Override

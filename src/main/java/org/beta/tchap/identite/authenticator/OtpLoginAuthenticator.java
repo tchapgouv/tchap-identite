@@ -7,8 +7,8 @@ import java.util.Set;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
-import org.beta.tchap.identite.bot.BotSender;
 import org.beta.tchap.identite.email.EmailSender;
+import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.user.TchapUserStorage;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.beta.tchap.identite.utils.SecureCode;
@@ -41,15 +41,15 @@ public class OtpLoginAuthenticator implements Authenticator {
     private final EmailSender emailSender;
     private final int codeTimeout;
     private final int mailDelay;
-    private final BotSender botSender;
+    private final MatrixService matrixService;
 
     public OtpLoginAuthenticator(
-            SecureCode secureCode, EmailSender emailSender, int codeTimeout, int mailDelay, BotSender botSender) {
+            SecureCode secureCode, EmailSender emailSender, int codeTimeout, int mailDelay, MatrixService matrixService) {
         this.secureCode = secureCode;
         this.emailSender = emailSender;
         this.codeTimeout = codeTimeout;
         this.mailDelay = mailDelay;
-        this.botSender = botSender;
+        this.matrixService = matrixService;
     }
 
     /** Send a otp to the user in session and present a form */
@@ -185,6 +185,7 @@ public class OtpLoginAuthenticator implements Authenticator {
      */
     private boolean generateAndSendCode(AuthenticationFlowContext context) {
         String code = secureCode.generateCode(6);
+        UserModel user = context.getUser();
         context.getAuthenticationSession().setAuthNote(AUTH_NOTE_OTP, code);
         context.getAuthenticationSession()
                 .setAuthNote(AUTH_NOTE_TIMESTAMP, Long.toString(System.currentTimeMillis()));
@@ -207,11 +208,16 @@ public class OtpLoginAuthenticator implements Authenticator {
 
         setCodeTimestamp(context);
 
+        String homeServer = user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER);
+        String matrixId = matrixService.getUserService().findUserInfoByEmail(user.getUsername(), homeServer).getUserId();
+
         /*
          * botSender
          */
-        botSender.sendOtp("Voici votre code : " + friendlyCode, "destMatrixId");
-
+        String roomId =  matrixService.openDM(matrixId);
+        String serviceName = context.getAuthenticationSession().getClient().getName();
+        matrixService.sendMessage(roomId, "Voici votre code pour " + serviceName);
+        matrixService.sendMessage(roomId, friendlyCode);
         return true;
         /*
          * TODO: SEND CODE TO TCHAP ALSO
