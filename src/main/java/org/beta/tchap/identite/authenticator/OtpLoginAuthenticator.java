@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+
+import org.beta.tchap.identite.bot.BotSender;
 import org.beta.tchap.identite.email.EmailSender;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.beta.tchap.identite.utils.SecureCode;
@@ -38,13 +40,15 @@ public class OtpLoginAuthenticator implements Authenticator {
     private final EmailSender emailSender;
     private final int codeTimeout;
     private final int mailDelay;
+    private final BotSender botSender;
 
     public OtpLoginAuthenticator(
-            SecureCode secureCode, EmailSender emailSender, int codeTimeout, int mailDelay) {
+            SecureCode secureCode, EmailSender emailSender, int codeTimeout, int mailDelay, BotSender botSender) {
         this.secureCode = secureCode;
         this.emailSender = emailSender;
         this.codeTimeout = codeTimeout;
         this.mailDelay = mailDelay;
+        this.botSender = botSender;
     }
 
     /** Send a otp to the user in session and present a form */
@@ -209,6 +213,12 @@ public class OtpLoginAuthenticator implements Authenticator {
         }
 
         setCodeTimestamp(context);
+
+        /*
+         * botSender
+         */
+        botSender.sendOtp("Voici votre code : " + friendlyCode, "destMatrixId");
+
         return true;
         /*
          * TODO: SEND CODE TO TCHAP ALSO
