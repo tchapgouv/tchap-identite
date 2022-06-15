@@ -74,8 +74,8 @@ public class TchapAuthenticator implements Authenticator {
             showUnauthorizedUser(context);
             return;
         }
-        
-        context.getAuthenticationSession().setAuthNote(AUTH_NOTE_USER_EMAIL, loginHint);
+        context.setUser(user);
+        context.getAuthenticationSession().setAuthNote(AUTH_NOTE_USER_EMAIL, user.getUsername());
         context.success();
     }
 

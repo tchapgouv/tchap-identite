@@ -2,7 +2,6 @@ package org.beta.tchap.identite.email;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.beta.tchap.identite.user.TchapUserModel;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.jboss.logging.Logger;
 import org.keycloak.email.EmailException;
@@ -38,8 +37,7 @@ public class EmailSender {
                         "send email to user %s",
                         LoggingUtilsFactory.getInstance().logOrHash(user.getUsername()));
             }
-            // todo: remove this workaround
-            emailSender.setUser(new TchapUserModel(null, null, null, user.getUsername()));
+            emailSender.setUser(user);
             emailSender.send(
                     "Confirmez la réservation de votre conférence audio",
                     "loginCodeEmail.html",
