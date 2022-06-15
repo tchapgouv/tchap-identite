@@ -43,6 +43,12 @@ public class MatrixService {
         roomService = new RoomService(roomClient);
     }
 
+    /*
+    *
+     * Check if an email is accepted on Tchap based on an hardcorded domain list
+    * @param email
+     * @return
+     */
     public boolean isUserValid(String email) {
         if (LOG.isDebugEnabled()) {
             LOG.debugf(
@@ -64,8 +70,36 @@ public class MatrixService {
     }
 
     /**
-     * Check if an email is accepted on Tchap based on an hardcorded domain list
+     * Get the home server of the user
+     * @param email
+     * @return 
      */
+    public String getUserHomeServer(String email){
+        if (StringUtils.isEmpty(email)) {
+            return null;
+        }
+        return homeServerService.findHomeServerByEmail(email);
+    }
+
+     /**
+     * Check if the home server is accepted on tchap
+     * @param email
+     * @return
+     */
+    public boolean isHomeServerAcceptedOnTchap(String userHomeServer) {
+        if (StringUtils.isEmpty(userHomeServer)) {
+            return false;
+        }
+        boolean isValid = isEmailAcceptedOnTchap(userHomeServer);
+        if (LOG.isDebugEnabled()) {
+            LOG.debugf(
+                    "HomeServer [%s] is valid in tchap : %s",
+                    LoggingUtilsFactory.getInstance().logOrHash(userHomeServer), isValid);
+        }
+        return isValid;
+    }
+
+    /** Check if an email is accepted on Tchap based on an hardcorded domain list */
     private boolean isEmailAcceptedOnTchap(String userHomeServer) {
         return !getInvalidHomeServers().contains(userHomeServer);
     }
