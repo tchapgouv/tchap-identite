@@ -21,7 +21,7 @@ public class DirectRoomsResource {
     }
 
     public void addDirectRoomForMatrixId(String matrixId, String roomId) {
-        List<String> newRoomsId = Optional.ofNullable(getDirectRoomsForMId(matrixId)).orElse(new ArrayList<>());
+        List<String> newRoomsId = Optional.ofNullable(getDirectRoomsForMId(matrixId)).map(ArrayList::new).orElse(new ArrayList<>());
         newRoomsId.add(roomId);
         directRooms.put(matrixId, newRoomsId);
     }

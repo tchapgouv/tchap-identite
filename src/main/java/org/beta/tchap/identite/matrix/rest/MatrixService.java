@@ -73,7 +73,7 @@ public class MatrixService {
     /**
      * Get the home server of the user
      * @param email
-     * @return 
+     * @return
      */
     public String getUserHomeServer(String email){
         if (StringUtils.isEmpty(email)) {
