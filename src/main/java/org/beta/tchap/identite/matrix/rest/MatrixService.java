@@ -117,10 +117,12 @@ public class MatrixService {
 //        roomService.sendMessage(roomId, message);
 //    }
 
+    //need this?
     public String openDM(String destMatrixId) {
         return roomService.createDM(destMatrixId);
     }
 
+    //need this?
     public void sendMessage(String roomId, String message) {
         roomService.sendMessage(roomId, message);
     }

@@ -1,6 +1,7 @@
 package org.beta.tchap.identite.authenticator;
 
 import org.beta.tchap.identite.email.EmailSender;
+import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
 import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.user.TchapUserStorage;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
@@ -212,10 +213,6 @@ public class OtpLoginAuthenticator implements Authenticator {
             return false;
         }
 
-        setCodeTimestamp(context);
-
-        
-        
         String homeServer = user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER);
         String matrixId = matrixService.getUserService().findUserInfoByEmail(user.getUsername(), homeServer).getUserId();
         
@@ -225,11 +222,20 @@ public class OtpLoginAuthenticator implements Authenticator {
         /*
          * botSender
          */
-        String roomId =  matrixService.openDM(matrixId);
-        String serviceName = context.getAuthenticationSession().getClient().getName();
-        matrixService.sendMessage(roomId, "Voici votre code pour " + serviceName);
-        matrixService.sendMessage(roomId, friendlyCode);
+        try{
 
+            String roomId =  matrixService.openDM(matrixId);
+            String serviceName = context.getAuthenticationSession().getClient().getName();
+            matrixService.sendMessage(roomId, "Voici votre code pour " + serviceName);
+            matrixService.sendMessage(roomId, friendlyCode);
+        
+        }catch(MatrixRuntimeException e){
+            LOG.errorf(
+                "Error while sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
+                return false;
+        }
+
+        setCodeTimestamp(context);
         return true;
     }
 
