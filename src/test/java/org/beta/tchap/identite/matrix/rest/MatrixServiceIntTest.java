@@ -11,11 +11,11 @@ class MatrixServiceIntTest {
 
     @BeforeAll
     public static void setup() {
-        //System.setProperty("TCHAP_HOME_SERVER_LIST", "i.tchap.gouv.fr,e.tchap.gouv.fr");
-        //System.setProperty("TCHAP_SKIP_CERTIFICATE_VALIDATION", "false");
-        //System.setProperty("TCHAP_UNAUTHORIZED_HOME_SERVER_LIST", "e.tchap.gouv.fr");
         TestSuiteUtils.loadEnvFromDotEnvFile();
-
+        Assertions.assertTrue(!System.getProperty("TCHAP_HOME_SERVER_LIST").isEmpty());
+        Assertions.assertTrue(!System.getProperty("TCHAP_SKIP_CERTIFICATE_VALIDATION").isEmpty());
+        Assertions.assertTrue(!System.getProperty("TCHAP_UNAUTHORIZED_HOME_SERVER_LIST").isEmpty());
+        
         matrixService = new MatrixService();
     }
 
