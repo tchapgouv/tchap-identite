@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import javax.ws.rs.core.Response;
 
 import org.beta.tchap.identite.email.EmailSender;
+import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.utils.SecureCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ public class OtpLoginAuthenticatorTest {
     
     @Mock EmailSender emailSender; 
     @Mock SecureCode secureCode; 
+    @Mock MatrixService matrixService; 
     int codeTimeout = 0;
     int mailDelay = 0;
 
@@ -29,7 +31,7 @@ public class OtpLoginAuthenticatorTest {
 
     @BeforeEach
     public void setup() {
-        authenticator = new OtpLoginAuthenticator(secureCode, emailSender, codeTimeout, mailDelay);
+        authenticator = new OtpLoginAuthenticator(secureCode, emailSender, codeTimeout, mailDelay,matrixService);
     }
 
     //TODO, it is not implemented like this

@@ -5,15 +5,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class UserServiceTest {
+class RoomServiceTest {
 
     private static UserService userService;
 
     @BeforeAll
     public static void setup() {
         LoginResource loginResource = new LoginResource();
-        loginResource.setAccessToken("fakeToken");
-        userService = new UserService("i.tchap.gouv.fr", loginResource.getAccessToken());
+//        loginResource.setAccessToken("fakeToken");
+        userService = new UserService("https://matrix.i.tchap.gouv.fr", loginResource.getAccessToken());
     }
 
     @Test

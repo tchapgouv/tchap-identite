@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface UserClient {
 
-    @RequestLine("POST /info")
+    @RequestLine("POST /users/info")
     @Headers("Content-Type: application/json")
     Map<String, Object> findByUsers(UserInfoBody userInfoBody);
 }

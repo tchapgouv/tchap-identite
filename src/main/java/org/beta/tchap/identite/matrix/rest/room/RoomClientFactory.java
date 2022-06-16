@@ -1,4 +1,4 @@
-package org.beta.tchap.identite.matrix.rest.user;
+package org.beta.tchap.identite.matrix.rest.room;
 
 import feign.Feign;
 import feign.Logger;
@@ -9,18 +9,19 @@ import feign.slf4j.Slf4jLogger;
 import org.beta.tchap.identite.matrix.rest.client.OkHttpClientFactory;
 import org.beta.tchap.identite.matrix.rest.gson.GsonFactory;
 
-public class UserClientFactory {
+public class RoomClientFactory {
 
-    public static UserClient build(String homeServerBaseUrl, String accessToken) {
+    public static RoomClient build(String homeServerBaseUrl, String accessToken) {
         return Feign.builder()
                 .client(new OkHttpClient(OkHttpClientFactory.getClient()))
-                .requestInterceptor(
-                        requestTemplate ->
-                                requestTemplate.header("Authorization", "Bearer " + accessToken))
+                .requestInterceptor(requestTemplate ->
+                        requestTemplate.header(
+                                "Authorization",
+                                "Bearer " + accessToken))
                 .encoder(new GsonEncoder(GsonFactory.getInstance()))
                 .decoder(new GsonDecoder(GsonFactory.getInstance()))
-                .logger(new Slf4jLogger(UserClient.class))
+                .logger(new Slf4jLogger(RoomClient.class))
                 .logLevel(Logger.Level.FULL)
-                .target(UserClient.class, homeServerBaseUrl + "/_matrix/client/unstable");
+                .target(RoomClient.class, homeServerBaseUrl + "/_matrix/client/unstable");
     }
 }

@@ -26,8 +26,8 @@
     <junit-jupiter.version>5.7.2</junit-jupiter.version>
     <slf4j.version>1.7.36</slf4j.version>
     <maven-surefire-plugin.version>3.0.0-M6</maven-surefire-plugin.version>
-    <spotless.version>2.22.8</spotless.version> 
-    <mockito.version>4.6.1</mockito.version> 
+    <spotless.version>2.22.8</spotless.version>
+    <mockito.version>4.6.1</mockito.version>
 
   </properties>
 
@@ -222,7 +222,7 @@
         <artifactId>spotless-maven-plugin</artifactId>
         <version>${spotless.version}</version>
         <configuration>
-          <!-- optional: limit format enforcement to just the files changed by this feature branch 
+          <!-- optional: limit format enforcement to just the files changed by this feature branch
           <ratchetFrom>origin/main</ratchetFrom>
           -->
           <formats>
@@ -255,9 +255,9 @@
 
             <!-- make sure every file has the following copyright header.
               optionally, Spotless can set copyright years by digging
-              through git history (see "license" section below) 
+              through git history (see "license" section below)
             <licenseHeader>
-              <content>/* (C)$YEAR */</content>  
+              <content>/* (C)$YEAR */</content>
               or <file>${project.basedir}/license-header</file>
             </licenseHeader>
             -->
