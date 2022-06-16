@@ -14,6 +14,7 @@ import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 import org.junit.jupiter.api.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,8 @@ class MatrixBotIntTest {
     private static RoomService roomService;
     private static MatrixService matrixService;
     private static String testAccountMatrixId;
+
+    private final List<String> createdTestRooms = new ArrayList<>();
 
     @BeforeAll
     public static void setup() {
@@ -57,6 +60,10 @@ class MatrixBotIntTest {
         Map<String, List<String>> dmRooms = roomService.listBotDMRooms().getDirectRooms();
         dmRooms.remove(testAccountMatrixId);
         roomService.updateBotDMRoomList(dmRooms);
+
+        for (String roomId: createdTestRooms) {
+            roomService.leaveRoom(roomId);
+        }
     }
 
     @Nested
@@ -78,6 +85,8 @@ class MatrixBotIntTest {
             Assertions.assertNotNull(roomId);
             Assertions.assertNotNull(dmRooms.getDirectRoomsForMId(testAccountMatrixId));
             Assertions.assertTrue(dmRooms.getDirectRoomsForMId(testAccountMatrixId).size() > 0);
+
+            markForDeletion(roomId);
         }
 
         @Test
@@ -86,6 +95,8 @@ class MatrixBotIntTest {
             String roomId2 = roomService.createDM(testAccountMatrixId);
 
             Assertions.assertEquals(roomId1, roomId2);
+            markForDeletion(roomId1);
+            markForDeletion(roomId2);
         }
     }
 
@@ -104,6 +115,7 @@ class MatrixBotIntTest {
             Assertions.assertDoesNotThrow(() -> roomService.sendMessage(roomId, "First message 1/3"));
             Assertions.assertDoesNotThrow(() -> roomService.sendMessage(roomId, "Second message 2/3"));
             Assertions.assertDoesNotThrow(() -> roomService.sendMessage(roomId, "Other message 3/3"));
+            markForDeletion(roomId);
         }
     }
 
@@ -116,6 +128,11 @@ class MatrixBotIntTest {
             String otp = "123-456";
             Assertions.assertDoesNotThrow(() -> matrixService.sendMessage(roomId, "Voici votre code pour " + serviceName));
             Assertions.assertDoesNotThrow(() -> matrixService.sendMessage(roomId, otp));
+            markForDeletion(roomId);
         }
+    }
+
+    private void markForDeletion(String room) {
+        createdTestRooms.add(room);
     }
 }

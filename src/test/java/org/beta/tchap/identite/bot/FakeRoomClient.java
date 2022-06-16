@@ -32,6 +32,11 @@ class FakeRoomClient implements RoomClient {
     }
 
     @Override
+    public void leaveRoom(String roomId) {
+
+    }
+
+    @Override
     public void sendMessage(String roomId, String transactionId, SendMessageBody messageBody) {
         lastMessage = messageBody.getBody();
     }

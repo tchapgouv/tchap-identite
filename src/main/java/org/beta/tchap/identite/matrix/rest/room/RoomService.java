@@ -50,4 +50,8 @@ public class RoomService {
         String transactionId = new Timestamp(System.currentTimeMillis()).toString();
         roomClient.sendMessage(roomId, transactionId, messageBody);
     }
+
+    public void leaveRoom(String roomId) {
+        roomClient.leaveRoom(roomId);
+    }
 }
