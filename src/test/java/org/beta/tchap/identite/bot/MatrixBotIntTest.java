@@ -91,14 +91,26 @@ class MatrixBotIntTest {
             String roomId = roomService.createDM(testAccountMatrixId);
             Assertions.assertDoesNotThrow(() -> roomService.sendMessage(roomId, "Hello world"));
         }
+
+        @Test
+        void shouldSendMultipleMessageToADMRoom() {
+            String roomId = roomService.createDM(testAccountMatrixId);
+
+            Assertions.assertDoesNotThrow(() -> roomService.sendMessage(roomId, "First message 1/3"));
+            Assertions.assertDoesNotThrow(() -> roomService.sendMessage(roomId, "Second message 2/3"));
+            Assertions.assertDoesNotThrow(() -> roomService.sendMessage(roomId, "Other message 3/3"));
+        }
     }
 
     @Nested
     class SendingOTPTest {
         @Test
         void shouldSendOTPCode() {
-            String otp = "1234";
-            Assertions.assertDoesNotThrow(() -> matrixService.sendDirectMessageToUser(otp, testAccountMatrixId));
+            String roomId =  matrixService.openDM(testAccountMatrixId);
+            String serviceName = "TestApp";
+            String otp = "123-456";
+            Assertions.assertDoesNotThrow(() -> matrixService.sendMessage(roomId, "Voici votre code pour " + serviceName));
+            Assertions.assertDoesNotThrow(() -> matrixService.sendMessage(roomId, otp));
         }
     }
 }

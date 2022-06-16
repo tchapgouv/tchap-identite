@@ -20,7 +20,7 @@ public interface RoomClient {
     @Headers("Content-Type: application/json")
     Map<String, String> createDM(CreateDMBody createDMBody);
 
-    @RequestLine("PUT /rooms/{roomId}/send/m.room.message/{nonce}")
+    @RequestLine("PUT /rooms/{roomId}/send/m.room.message/{transactionId}")
     @Headers("Content-Type: application/json")
-    void sendMessage(@Param("roomId") String roomId, SendMessageBody messageBody);
+    void sendMessage(@Param("roomId") String roomId, @Param("transactionId") String transactionId, SendMessageBody messageBody);
 }

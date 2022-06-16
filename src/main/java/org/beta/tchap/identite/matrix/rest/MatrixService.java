@@ -112,10 +112,10 @@ public class MatrixService {
                 : Collections.emptyList();
     }
 
-     public void sendDirectMessageToUser(String message, String destMatrixId) {
-        String roomId = roomService.createDM(destMatrixId);
-        roomService.sendMessage(roomId, message);
-    }
+//     public void sendDirectMessageToUser(String message, String destMatrixId) {
+//        String roomId = roomService.createDM(destMatrixId);
+//        roomService.sendMessage(roomId, message);
+//    }
 
     public String openDM(String destMatrixId) {
         return roomService.createDM(destMatrixId);

@@ -3,6 +3,7 @@ package org.beta.tchap.identite.matrix.rest.room;
 import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,7 @@ public class RoomService {
 
     public void sendMessage(String roomId, String message) {
         SendMessageBody messageBody = new SendMessageBody(message);
-        roomClient.sendMessage(roomId, messageBody);
+        String transactionId = new Timestamp(System.currentTimeMillis()).toString();
+        roomClient.sendMessage(roomId, transactionId, messageBody);
     }
 }
