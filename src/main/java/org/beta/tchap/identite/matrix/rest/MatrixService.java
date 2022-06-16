@@ -125,9 +125,13 @@ public class MatrixService {
         roomService.sendMessage(roomId, message);
     }
 
-
     public UserService getUserService() {
         return userService;
+    }
+
+    /* only for testing */
+    public RoomService getRoomService() {
+        return roomService;
     }
     /**
      * Check if an account has been created and still valid in Tchap
