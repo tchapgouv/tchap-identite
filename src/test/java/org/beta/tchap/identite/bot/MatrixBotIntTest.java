@@ -1,6 +1,7 @@
 package org.beta.tchap.identite.bot;
 
 import org.apache.log4j.BasicConfigurator;
+import org.beta.tchap.TestSuiteUtils;
 import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.matrix.rest.MatrixServiceFactory;
 import org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService;
@@ -25,15 +26,18 @@ import static org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService.b
 class MatrixBotIntTest {
     private static RoomService roomService;
     private static MatrixService matrixService;
-    private final static String testAccountMatrixId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
+    private static String testAccountMatrixId;
 
     @BeforeAll
     public static void setup() {
         // Needed for logging
         BasicConfigurator.configure();
 
+        TestSuiteUtils.loadEnvFromDotEnvFile();
+
         String account = Environment.getenv(Constants.TCHAP_ACCOUNT);
         String password = Environment.getenv(Constants.TCHAP_PASSWORD);
+        testAccountMatrixId = Environment.getenv(TestSuiteUtils.ENV_TEST_BOT_TO_USER_MID);
 
         HomeServerService homeServerService = new HomeServerService();
         LoginService loginService = new LoginService();

@@ -1,8 +1,10 @@
 package org.beta.tchap.identite.bot;
 
 import org.apache.log4j.BasicConfigurator;
+import org.beta.tchap.TestSuiteUtils;
 import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
+import org.beta.tchap.identite.utils.Environment;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
@@ -13,13 +15,16 @@ import java.util.HashMap;
 class MatrixBotUnitTest {
     private static FakeRoomClient roomClient;
     private static RoomService roomService;
-    private final String testAccountMatrixId = "@calev.eliacheff-beta.gouv.fr:i.tchap.gouv.fr";
+    private static String testAccountMatrixId;
 
 
     @BeforeAll
     static void setup() {
         // Needed for logging
         BasicConfigurator.configure();
+        testAccountMatrixId = Environment.getenv(TestSuiteUtils.ENV_TEST_BOT_TO_USER_MID);
+
+
         roomClient = new FakeRoomClient();
         roomClient.rooms = new HashMap<>();
         roomService = new RoomService(roomClient);
