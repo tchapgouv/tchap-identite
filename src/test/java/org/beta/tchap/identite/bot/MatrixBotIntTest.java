@@ -32,6 +32,7 @@ class MatrixBotIntTest {
     public static void setup() {
         // Needed for logging
         BasicConfigurator.configure();
+        TestSuiteUtils.loadEnvFromDotEnvFile();
 
         TestSuiteUtils.loadEnvFromDotEnvFile();
 
