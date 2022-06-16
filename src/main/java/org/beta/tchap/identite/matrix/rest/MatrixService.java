@@ -73,7 +73,7 @@ public class MatrixService {
     /**
      * Get the home server of the user
      * @param email
-     * @return
+     * @return (nullable) string of the homeserver
      */
     public String getUserHomeServer(String email){
         if (StringUtils.isEmpty(email)) {
@@ -85,7 +85,7 @@ public class MatrixService {
      /**
      * Check if the home server is accepted on tchap
      * @param email
-     * @return
+     * @return not null value
      */
     public boolean isHomeServerAcceptedOnTchap(String userHomeServer) {
         if (StringUtils.isEmpty(userHomeServer)) {
@@ -100,7 +100,11 @@ public class MatrixService {
         return isValid;
     }
 
-    /** Check if an email is accepted on Tchap based on an hardcorded domain list */
+    /**
+     * Check if an email is accepted on Tchap based on an hardcorded domain list
+     * @param userHomeServer
+     * @return
+     */
     private boolean isEmailAcceptedOnTchap(String userHomeServer) {
         return !getInvalidHomeServers().contains(userHomeServer);
     }
@@ -110,21 +114,6 @@ public class MatrixService {
         return StringUtils.isNotEmpty(unauthorizedList)
                 ? Arrays.asList(unauthorizedList.split(","))
                 : Collections.emptyList();
-    }
-
-//     public void sendDirectMessageToUser(String message, String destMatrixId) {
-//        String roomId = roomService.createDM(destMatrixId);
-//        roomService.sendMessage(roomId, message);
-//    }
-
-    //need this?
-    public String openDM(String destMatrixId) {
-        return roomService.createDM(destMatrixId);
-    }
-
-    //need this?
-    public void sendMessage(String roomId, String message) {
-        roomService.sendMessage(roomId, message);
     }
 
     public UserService getUserService() {

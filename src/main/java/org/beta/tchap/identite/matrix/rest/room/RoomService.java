@@ -17,6 +17,11 @@ public class RoomService {
         this.botMatrixId = Environment.getenv(Constants.TCHAP_MATRIX_ID);
     }
 
+    /**
+     * Access the direct rooms listing in the bot account
+     * @return not nullable object
+    * @throws MatrixRuntimeException direct rooms listing can not be retrieved
+     */
     public DirectRoomsResource listBotDMRooms() {
         try{
             Map<String, List<String>> rawResponse = roomClient.listDMRooms(this.botMatrixId);
@@ -26,6 +31,11 @@ public class RoomService {
         }
     }
 
+    /**
+     * Update the dm rooms listing of the bot account
+     * @param dMRoomsList not nullable
+     * @throws MatrixRuntimeException direct rooms listing can not be updated
+     */
     public void updateBotDMRoomList(Map<String, List<String>> dMRoomsList) {
         try{
             roomClient.updateDMRoomList(this.botMatrixId, dMRoomsList);
@@ -34,6 +44,12 @@ public class RoomService {
         }
     }
 
+    /**
+     * Create a new direct message room with a user if not exists
+     * @param destMatrixId not nullable string
+     * @return not nullable id of the room
+     * @throws MatrixRuntimeException room can not be created
+     */
     public String createDM(String destMatrixId) {
         try{
             DirectRoomsResource allRooms = this.listBotDMRooms();
@@ -54,14 +70,12 @@ public class RoomService {
         }
     }
 
-    private boolean hasARoomWithUser(String destMatrixId, DirectRoomsResource rooms) {
-        try{
-            return rooms.getDirectRoomsForMId(destMatrixId) != null && rooms.getDirectRoomsForMId(destMatrixId).size() > 0;
-        }catch(RuntimeException e){
-            throw new MatrixRuntimeException();
-        }
-    }
-
+    /**
+     * Send a message into an existing room
+     * @param roomId non nullable string
+     * @param message non nullable string
+     * @throws MatrixRuntimeException if message is not sent
+     */
     public void sendMessage(String roomId, String message) {
         try{
             SendMessageBody messageBody = new SendMessageBody(message);
@@ -72,6 +86,11 @@ public class RoomService {
         }
     }
 
+    /**
+     * Leave an existing room
+     * @param roomId non nullable string
+     * @throws MatrixRuntimeException if can not leave room
+     */
     public void leaveRoom(String roomId) {
         try{
             roomClient.leaveRoom(roomId);
@@ -79,4 +98,14 @@ public class RoomService {
             throw new MatrixRuntimeException();
         }
     }
+
+    private boolean hasARoomWithUser(String destMatrixId, DirectRoomsResource rooms) {
+        try{
+            return rooms.getDirectRoomsForMId(destMatrixId) != null && rooms.getDirectRoomsForMId(destMatrixId).size() > 0;
+        }catch(RuntimeException e){
+            throw new MatrixRuntimeException();
+        }
+    }
+
+    
 }

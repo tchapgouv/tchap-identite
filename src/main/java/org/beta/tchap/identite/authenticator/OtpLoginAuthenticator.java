@@ -224,10 +224,10 @@ public class OtpLoginAuthenticator implements Authenticator {
          */
         try{
 
-            String roomId =  matrixService.openDM(matrixId);
+            String roomId =  matrixService.getRoomService().createDM(matrixId);
             String serviceName = context.getAuthenticationSession().getClient().getName();
-            matrixService.sendMessage(roomId, "Voici votre code pour " + serviceName);
-            matrixService.sendMessage(roomId, friendlyCode);
+            matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
+            matrixService.getRoomService().sendMessage(roomId, friendlyCode);
         
         }catch(MatrixRuntimeException e){
             LOG.errorf(
