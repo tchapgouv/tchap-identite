@@ -131,6 +131,12 @@
       <version>${mockito.version}</version>
       <scope>test</scope>
     </dependency>
+        <dependency>
+        <groupId>io.github.cdimascio</groupId>
+        <artifactId>dotenv-java</artifactId>
+        <version>2.2.4</version>
+        <scope>test</scope>
+    </dependency>
     <!-- spotless-->
     <dependency>
       <groupId>com.diffplug.spotless</groupId>
