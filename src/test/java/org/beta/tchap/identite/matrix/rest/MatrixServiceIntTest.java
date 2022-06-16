@@ -1,5 +1,6 @@
 package org.beta.tchap.identite.matrix.rest;
 
+import org.beta.tchap.TestSuiteUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -10,9 +11,10 @@ class MatrixServiceIntTest {
 
     @BeforeAll
     public static void setup() {
-        System.setProperty("TCHAP_HOME_SERVER_LIST", "i.tchap.gouv.fr,e.tchap.gouv.fr");
-        System.setProperty("TCHAP_SKIP_CERTIFICATE_VALIDATION", "false");
-        System.setProperty("TCHAP_UNAUTHORIZED_HOME_SERVER_LIST", "e.tchap.gouv.fr");
+        //System.setProperty("TCHAP_HOME_SERVER_LIST", "i.tchap.gouv.fr,e.tchap.gouv.fr");
+        //System.setProperty("TCHAP_SKIP_CERTIFICATE_VALIDATION", "false");
+        //System.setProperty("TCHAP_UNAUTHORIZED_HOME_SERVER_LIST", "e.tchap.gouv.fr");
+        TestSuiteUtils.loadEnvFromDotEnvFile();
 
         matrixService = new MatrixService();
     }
