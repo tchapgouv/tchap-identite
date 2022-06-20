@@ -9,9 +9,11 @@
         <form id="kc-form-login" class="${properties.kcFormClass!}" onsubmit="login.disabled = true; return true;"
               action="${url.loginAction}" method="post">
             <div class="${properties.kcFormGroupClass!}">
-                    <label for="codeInput" class="${properties.kcLabelClass!}">
-                        Renseignez le code que vous avez reçu à votre adresse mail <strong>${userEmail!}</strong>.
-                    </label>
+                                        <label for="codeInput" class="${properties.kcLabelClass!}">Renseignez le code que vous avez reçu 
+                        à votre adresse mail <strong>${userEmail!}</strong> et sur <a  href="https://www.tchap.gouv.fr/" target="_blank">Tchap</a>. 
+                                                ${client.name} utilise un service d'authentification pour assurer que seuls les agents publics utilisent les services qui
+                        leur sont réservés.
+                        </label>
 
                     <input tabindex="1" id="codeInput" class="${properties.kcInputClass!} code-input" name="codeInput" type="text"
                            autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
