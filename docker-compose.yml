@@ -41,26 +41,14 @@ services:
             - -ecx
             - |
                  /app/keycloak/bin/kc.sh start-dev --import-realm --spi-theme-static-max-age=-1 --spi-theme-cache-themes=false --spi-theme-cache-templates=false --log-level=INFO,org.beta:debug
+
+                 
         ports:
             - 8080:8080
             - 8443:8443
         depends_on:
             - postgres
 
-    oidc-client:
-        image: oidc-client
-        environment: 
-            - PORT=8000
-            - PROVIDER_URL=http://host.docker.internal:8080/realms/tchap-identite-dev/.well-known/openid-configuration
-            - CLIENT_SECRET=uXF3wgmUU1j95g778r9ODkMab9TT6RAt
-            - CLIENT_ID=tchap-identite-client-sample
-            - EMAIL_DEFAULT=aa.bb@beta.gouv.fr
-        ports:
-            - 8000:8000 
-        networks:
-            - keycloak_network
-        depends_on:
-            - keycloak
 volumes:
     db_volume:
     cache:
