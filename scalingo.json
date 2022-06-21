@@ -81,6 +81,11 @@
       "value": "",
       "required": true
     },
+    "KC_CACHE": {
+      "description": "keycloak cache configuration, local or ispn (distributed)",
+      "value": "local",
+      "required": true
+    },
     "PROVIDERS": {
       "description": "comma list providers",
       "value": "",
