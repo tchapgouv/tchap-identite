@@ -21,6 +21,11 @@ class FakeRoomClient implements RoomClient {
     }
 
     @Override
+    public Map<String, Object> getJoinedMembers(String roomId) {
+        return null;
+    }
+
+    @Override
     public Map<String, String> createDM(CreateDMBody createDMBody) {
         String invitedId = createDMBody.getInvite().get(0);
         String roomId = "123";
