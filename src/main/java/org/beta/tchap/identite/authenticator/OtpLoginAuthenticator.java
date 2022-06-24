@@ -4,6 +4,8 @@ import org.beta.tchap.identite.email.EmailSender;
 import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
 import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.user.TchapUserStorage;
+import org.beta.tchap.identite.utils.Constants;
+import org.beta.tchap.identite.utils.Environment;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.beta.tchap.identite.utils.SecureCode;
 import org.jboss.logging.Logger;
@@ -59,16 +61,16 @@ public class OtpLoginAuthenticator implements Authenticator {
      * Send a otp to the user in session and present a form
      */
     @Override
-    public void authenticate(AuthenticationFlowContext context) {        
+    public void authenticate(AuthenticationFlowContext context) {
         //user should have been set in the context before
         UserModel user = context.getUser();
-        
+
         if(user==null){
             context.failure(AuthenticationFlowError.UNKNOWN_USER);
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debugf("Authenticate OtpLoginAuthenticator with user %s %s", LoggingUtilsFactory.getInstance().logOrHash(user.getEmail()), 
+            LOG.debugf("Authenticate OtpLoginAuthenticator with user %s %s", LoggingUtilsFactory.getInstance().logOrHash(user.getEmail()),
                 user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER));
         }
 
@@ -83,6 +85,7 @@ public class OtpLoginAuthenticator implements Authenticator {
             context.challenge(
                     context.form()
                             .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, user.getUsername())
+                            .setAttribute("feature_tchap_bot", Boolean.parseBoolean(Environment.getenv(Constants.FEATURE_TCHAP_BOT_OTP)))
                             .setInfo("info.code.already.sent.wait", mailDelay)
                             .createForm(FTL_ENTER_CODE));
             return;
@@ -138,7 +141,7 @@ public class OtpLoginAuthenticator implements Authenticator {
 
         context.success();
     }
-/* 
+/*
     private UserModel getUser(AuthenticationFlowContext context) {
         return context.getSession()
                 .users()
@@ -156,9 +159,11 @@ public class OtpLoginAuthenticator implements Authenticator {
      */
     private Response otpForm(AuthenticationFlowContext context, String info) {
         String userEmail = context.getUser().getUsername();
-    
+
         /* display otp form*/
-        LoginFormsProvider form = context.form().setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail);
+        LoginFormsProvider form = context.form()
+                .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail)
+                .setAttribute("feature_tchap_bot", Boolean.parseBoolean(Environment.getenv(Constants.FEATURE_TCHAP_BOT_OTP)));
 
         if (info != null && !info.isEmpty()) {
             form.setInfo(info);
@@ -180,6 +185,7 @@ public class OtpLoginAuthenticator implements Authenticator {
         return context.form()
                 .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail)
                 .setAttribute(FORM_ATTRIBUTE_ERROR_TYPE, error)
+                .setAttribute("feature_tchap_bot", Environment.getenv(Constants.FEATURE_TCHAP_BOT_OTP))
                 .setError(error)
                 .createForm(FTL_ENTER_CODE);
     }
@@ -215,24 +221,26 @@ public class OtpLoginAuthenticator implements Authenticator {
 
         String homeServer = user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER);
         String matrixId = matrixService.getUserService().findUserInfoByEmail(user.getUsername(), homeServer).getUserId();
-        
+
         LOG.debugf(
             "Sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
 
         /*
          * botSender
          */
-        try{
+        if(Boolean.parseBoolean(Environment.getenv(Constants.FEATURE_TCHAP_BOT_OTP))) {
+            try {
 
-            String roomId =  matrixService.getRoomService().createDM(matrixId);
-            String serviceName = context.getAuthenticationSession().getClient().getName();
-            matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
-            matrixService.getRoomService().sendMessage(roomId, friendlyCode);
-        
-        }catch(MatrixRuntimeException e){
-            LOG.errorf(
-                "Error while sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
+                String roomId = matrixService.getRoomService().createDM(matrixId);
+                String serviceName = context.getAuthenticationSession().getClient().getName();
+                matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
+                matrixService.getRoomService().sendMessage(roomId, friendlyCode);
+
+            } catch (MatrixRuntimeException e) {
+                LOG.errorf(
+                        "Error while sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
                 return false;
+            }
         }
 
         setCodeTimestamp(context);

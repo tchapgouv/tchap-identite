@@ -9,8 +9,7 @@
               action="${url.loginAction}" method="post">
             <div class="${properties.kcFormGroupClass!}">
                 <label for="codeInput" class="${properties.kcLabelClass!}">
-                    Vous avez reçu le code à votre adresse mail <strong>${userEmail!}</strong> et sur
-                    <a href="https://www.tchap.gouv.fr/" target="_blank">Tchap</a>.
+                    Vous avez reçu le code à votre adresse mail <strong>${userEmail!}</strong><#if feature_tchap_bot> et sur <a href="https://www.tchap.gouv.fr/" target="_blank">Tchap</a></#if>.
                     ${client.name} utilise un service d'authentification pour assurer que seuls les agents publics
                     utilisent les services qui leur sont réservés.
                 </label>
