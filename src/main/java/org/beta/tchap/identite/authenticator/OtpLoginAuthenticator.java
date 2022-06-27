@@ -72,11 +72,10 @@ public class OtpLoginAuthenticator implements Authenticator {
                 user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER));
         }
 
-        BruteForceProtector bruteForceProtector = context.getSession().getProvider(BruteForceProtector.class);
-        if (bruteForceProtector.isTemporarilyDisabled(context.getSession(), context.getRealm(), user)){
-            LOG.warnf("User is temporarily disabled  %s", user);
-            context.failure(AuthenticationFlowError.USER_TEMPORARILY_DISABLED);
-            return;
+        if (isTemporarilyDisabled(context)){
+                LOG.warnf("User is temporarily disabled  %s", user.getId());
+                context.failure(AuthenticationFlowError.USER_TEMPORARILY_DISABLED);
+                return;
         }
 
         if (!canSendNewCode(context)) {
@@ -134,19 +133,12 @@ public class OtpLoginAuthenticator implements Authenticator {
         // trim code
         codeInput = codeInput.trim();
 
-        UserModel user = context.getUser();
-        KeycloakSession session = context.getSession();
-        RealmModel realm = context.getRealm();
 
-        BruteForceProtector bruteForceProtector = session.getProvider(BruteForceProtector.class);
-        if (bruteForceProtector.isTemporarilyDisabled(session, realm, user)){
-            LOG.warnf("User is temporarily disabled  %s", user);
-//            context.challenge(otpFormError(context, "error.invalid.code.in.session"));
+        if (isTemporarilyDisabled(context)){
+            LOG.warnf("User is temporarily disabled  %s", context.getUser().getId());
             context.failure(AuthenticationFlowError.USER_TEMPORARILY_DISABLED);
             return;
         }
-
-
 
         if (!secureCode.isValid(
                 codeInput,
@@ -322,6 +314,12 @@ public class OtpLoginAuthenticator implements Authenticator {
             return 0;
         }
         return Collections.max(timestamps);
+    }
+
+    private boolean isTemporarilyDisabled(AuthenticationFlowContext context) {
+        BruteForceProtector bruteForceProtector = context.getSession().getProvider(BruteForceProtector.class);
+        UserModel user = context.getUser();
+        return bruteForceProtector.isTemporarilyDisabled(context.getSession(), context.getRealm(), user);
     }
 
     @Override
