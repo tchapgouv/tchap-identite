@@ -7,7 +7,8 @@
     <#elseif section = "form">
         <h2>Authentification</h2>
 
-                <div class="fr-callout fr-alert fr-alert--error">
+                <div class="fr-callout fr-icon-warning-line">
+                    <p class="fr-callout__title">Erreur du service d'authentification</p>
 
                     <p class="fr-callout__text">${kcSanitize(message.summary)?no_esc}</p>
 
@@ -15,7 +16,9 @@
 
 
                 </div>
+                <div>
                     <a type="submit" class="fr-btn" href="${clientUrl}">Réessayer</a>
+                </div>
 
 
     </#if>
