@@ -1,0 +1,13 @@
+daemon off;
+
+http {
+	gzip on;
+	gzip_comp_level 2;
+	gzip_min_length 512;
+
+   
+    proxy_set_header X-Forwarded-For $proxy_protocol_addr; # To forward the original client's IP address 
+    proxy_set_header X-Forwarded-Proto $scheme; # to forward the  original protocol (HTTP or HTTPS)
+    proxy_set_header Host $host; # to forward the original host requested by the client
+
+}
