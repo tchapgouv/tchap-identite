@@ -88,12 +88,15 @@ public class OtpLoginAuthenticator implements Authenticator {
             return;
         }
 
+        //add a message if a code has already been sent
+        String info = hasSentCode(context)? "info.new.code.sent" : null;
+
         if (generateAndSendCode(context)) {
-            // code has been sent
+            // code has been sent, succes, add a timestamp in session
+            setCodeTimestamp(context);
             context.success();
         }
-
-        context.challenge(otpForm(context, null));
+        context.challenge(otpForm(context, info));
     }
 
     /**
@@ -213,35 +216,45 @@ public class OtpLoginAuthenticator implements Authenticator {
             return false;
         }
 
-        String homeServer = user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER);
-        String matrixId = matrixService.getUserService().findUserInfoByEmail(user.getUsername(), homeServer).getUserId();
+        // String homeServer = user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER);
+        // String matrixId = matrixService.getUserService().findUserInfoByEmail(user.getUsername(), homeServer).getUserId();
         
-        LOG.debugf(
-            "Sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
+        // LOG.debugf(
+        //     "Sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
 
-        /*
-         * botSender
-         */
-        try{
+        // /*
+        //  * botSender
+        //  */
+        // try{
 
-            String roomId =  matrixService.getRoomService().createDM(matrixId);
-            String serviceName = context.getAuthenticationSession().getClient().getName();
-            matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
-            matrixService.getRoomService().sendMessage(roomId, friendlyCode);
+        //     String roomId =  matrixService.getRoomService().createDM(matrixId);
+        //     String serviceName = context.getAuthenticationSession().getClient().getName();
+        //     matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
+        //     matrixService.getRoomService().sendMessage(roomId, friendlyCode);
         
-        }catch(MatrixRuntimeException e){
-            LOG.errorf(
-                "Error while sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
-                return false;
-        }
+        // }catch(MatrixRuntimeException e){
+        //     LOG.errorf(
+        //         "Error while sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
+        //         return false;
+        // }
 
-        setCodeTimestamp(context);
+      
         return true;
     }
-
     /**
-     * Check if a new code can be sent. A cool down delay must be respected.
+     * Check if a code has already been sent
      *
+     * @param context keycloak auth context
+     * @return true/false
+     */
+    private boolean hasSentCode(AuthenticationFlowContext context) {
+        return getLastCodeTimestamp(context) != 0;
+    }
+    /**
+     * IMPORTANT : This feature is not stable, do not activate
+     * 
+     * Check if a new code can be sent. A cool down delay must be respected.
+     * 
      * @param context keycloak auth context
      * @return true/false
      */
