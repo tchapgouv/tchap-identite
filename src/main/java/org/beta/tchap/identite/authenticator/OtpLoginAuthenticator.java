@@ -225,7 +225,7 @@ public class OtpLoginAuthenticator implements Authenticator {
         /*
          * botSender
          */
-        if(Boolean.parseBoolean(Environment.getenv(Constants.FEATURE_TCHAP_BOT_OTP))) {
+        if(Features.isTchapBotEnabled()) {
             try {
 
                 String roomId = matrixService.getRoomService().createDM(matrixId);
