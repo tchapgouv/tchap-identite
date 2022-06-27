@@ -243,7 +243,6 @@ public class OtpLoginAuthenticator implements Authenticator {
             }
         }
 
-        setCodeTimestamp(context);
         return true;
     }
     /**
