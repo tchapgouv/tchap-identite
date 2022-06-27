@@ -4,10 +4,7 @@ import org.beta.tchap.identite.email.EmailSender;
 import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
 import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.user.TchapUserStorage;
-import org.beta.tchap.identite.utils.Constants;
-import org.beta.tchap.identite.utils.Environment;
-import org.beta.tchap.identite.utils.LoggingUtilsFactory;
-import org.beta.tchap.identite.utils.SecureCode;
+import org.beta.tchap.identite.utils.*;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
@@ -85,7 +82,7 @@ public class OtpLoginAuthenticator implements Authenticator {
             context.challenge(
                     context.form()
                             .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, user.getUsername())
-                            .setAttribute("feature_tchap_bot", Boolean.parseBoolean(Environment.getenv(Constants.FEATURE_TCHAP_BOT_OTP)))
+                            .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled())
                             .setInfo("info.code.already.sent.wait", mailDelay)
                             .createForm(FTL_ENTER_CODE));
             return;
@@ -163,7 +160,7 @@ public class OtpLoginAuthenticator implements Authenticator {
         /* display otp form*/
         LoginFormsProvider form = context.form()
                 .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail)
-                .setAttribute("feature_tchap_bot", Boolean.parseBoolean(Environment.getenv(Constants.FEATURE_TCHAP_BOT_OTP)));
+                .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled());
 
         if (info != null && !info.isEmpty()) {
             form.setInfo(info);
@@ -185,7 +182,7 @@ public class OtpLoginAuthenticator implements Authenticator {
         return context.form()
                 .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail)
                 .setAttribute(FORM_ATTRIBUTE_ERROR_TYPE, error)
-                .setAttribute("feature_tchap_bot", Environment.getenv(Constants.FEATURE_TCHAP_BOT_OTP))
+                .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled())
                 .setError(error)
                 .createForm(FTL_ENTER_CODE);
     }
