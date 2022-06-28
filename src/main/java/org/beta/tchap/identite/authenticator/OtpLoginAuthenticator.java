@@ -219,16 +219,18 @@ public class OtpLoginAuthenticator implements Authenticator {
             return false;
         }
 
-        String homeServer = user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER);
-        String matrixId = matrixService.getUserService().findUserInfoByEmail(user.getUsername(), homeServer).getUserId();
-
-        LOG.debugf(
-            "Sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
-
-        /*
+            /*
          * botSender
          */
         if(Features.isTchapBotEnabled()) {
+   
+            String homeServer = user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER);
+            String matrixId = matrixService.getUserService().findUserInfoByEmail(user.getUsername(), homeServer).getUserId();
+    
+            LOG.debugf(
+                "Sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
+    
+       
             try {
 
                 String roomId = matrixService.getRoomService().createDM(matrixId);
