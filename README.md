@@ -25,7 +25,7 @@ Realm uptime can be found here : https://updown.io/fta9
 - TCHAP_OTP_MAIL_DELAY_IN_MINUTES= (optionnal) delay to wait to send another otp to users. default 0
 - TCHAP_CODE_TIMEOUT_IN_MINUTES= (optionnal) validity of a otp code. default 60
 - TCHAP_LOG_SENSITIVE_DATA = (optionnal) log sensitive data like username. default false
-- TCHAP_HOME_REDIRECT_URL=url to redirect the user when it hits the welcome page (/)
+- TCHAP_HOME_REDIRECT_URL=url to redirect the user when it hits the welcome page (/admin by default)
 1. build extension with maven goal. A jar is produced with the custom providers and the custom view.
 
 `mvn clean package`
