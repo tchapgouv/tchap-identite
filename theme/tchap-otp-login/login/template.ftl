@@ -99,7 +99,7 @@
 <main role="main" id="main" class="fr-container" >
   <div class="fr-container  fr-mt-4w fr-mb-4w">
     <div class="fr-grid-row fr-grid-row--center">
-      <div class="fr-col-xs-12 fr-col-sm-8 fr-col-md-8 fr-col-lg-8">
+      <div class="fr-col-xs-12 fr-col-sm-12 fr-col-md-12 fr-col-lg-10">
 
           <!--p>Domaine ${kcSanitize(msg("loginTitleHtml",(realm.displayNameHtml!'')))?no_esc}</p-->
 

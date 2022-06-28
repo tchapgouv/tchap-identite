@@ -4,19 +4,48 @@
         ${msg("loginTitle",(realm.displayName!''))}
     <#elseif section = "header">
     <#elseif section = "form">
-        <h2>Confirmez votre réservation</h2>
-        <form id="kc-form-login" class="" onsubmit="login.disabled = true; return true;"
+    <form id="kc-form-login" class="" onsubmit="login.disabled = true; return true;"
               action="${url.loginAction}" method="post">
-            <div class="${properties.kcFormGroupClass!}">
-                <label for="codeInput" class="${properties.kcLabelClass!}">
+        <!-- container without borders -->
+        <div class="fr-container--fluid">
+            <div class="fr-grid-row">
+                <div class="fr-col">
+                    <h2>Confirmez votre réservation</h2>
+                </div>
+            </div>
+            <div class="fr-grid-row">
+             <label for="codeInput" class="${properties.kcLabelClass!}">
                     Renseignez le code d'authentification que vous avez reçu à votre adresse mail <strong>${userEmail!}</strong><#if feature_tchap_bot> et sur <a href="https://www.tchap.gouv.fr/" target="_blank">Tchap</a></#if>.
                     <#--  ${client.name} utilise un service d'authentification pour assurer que seuls les agents publics
                     utilisent les services qui leur sont réservés.  -->
                 </label>
+            </div>
+            <div class="fr-grid-row fr-my-4w fr-grid-row--middle">
+                <div class="fr-col-3 hideMobile">
+                    <img src="${url.resourcesPath}/img/enter-code-envelop.png" class="fr-responsive-img fr-p-4w"/>
+                </div>
+                <div class="fr-col-1 hideMobile">
+                    <img src="${url.resourcesPath}/img/enter-code-arrow.png" class="fr-responsive-img fr-p-1w"/>
+                </div>
+                <div class="fr-col-12 fr-col-md-8 fr-p-4w fr-m-auto">
+                    <div class="fr-grid-row">
+                        <span class="fr-hint-text">Le code peut-être copié-collé avec ou sans tiret</span>
+                        <input tabindex="1" id="codeInput" class="fr-input codeInput fr-display--md fr-m-auto" name="codeInput" type="text" placeholder="xxxxxx" autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
+                    </div>
+                    <div class="fr-grid-row fr-my-4w">
+                        <input tabindex="4" class="${properties.kcButtonClass!} fr-m-auto" name="login" id="login" type="submit" value="Confirmer"/>
+                    </div>
+                </div>
+            </div>
+                   <#--   <div class="fr-grid-row fr-my-4w">
+                        Je n’ai pas reçu de code. Me renvoyer le code
+                    </div>  -->
+        </div>
+    </form>
 
-                <input tabindex="1" id="codeInput" class="${properties.kcInputClass!} code-input" name="codeInput"
-                       type="text" autofocus minlength="6" maxlength="8"
-                       required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
+            <div class="${properties.kcFormGroupClass!}">
+               
+
             </div>
 
             <#--              <div class="${properties.kcFormGroupClass!}">
@@ -28,11 +57,8 @@
                 </div>
 
                 <div id="kc-form-buttons" class="${properties.kcFormButtonsClass!}">
-                    <input tabindex="4"
-                           class="${properties.kcButtonClass!}"
-                           name="login" id="login" type="submit" value="Confirmer"/>
+                  
                 </div>
             </div>
-        </form>
     </#if>
 </@layout.registrationLayout>

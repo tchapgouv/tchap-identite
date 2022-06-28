@@ -1,3 +1,15 @@
-#codeInput {
-    width: 100px;
+.codeInput {
+    width: 200;
+    max-height: none !important;
+}
+
+.hideMobile {
+    display: none;
+}
+
+@media screen and (min-width: 768px) {
+    .hideMobile {
+        clear: both;
+        display: block;
+    }
 }
