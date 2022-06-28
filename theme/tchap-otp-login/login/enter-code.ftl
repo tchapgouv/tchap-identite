@@ -20,26 +20,31 @@
                     utilisent les services qui leur sont réservés.  -->
                 </label>
             </div>
-            <div class="fr-grid-row fr-my-4w fr-grid-row--middle">
+            <div class="fr-grid-row fr-grid-row--middle">
                 <div class="fr-col-3 hideMobile">
                     <img src="${url.resourcesPath}/img/enter-code-envelop.png" class="fr-responsive-img fr-p-4w"/>
                 </div>
                 <div class="fr-col-1 hideMobile">
                     <img src="${url.resourcesPath}/img/enter-code-arrow.png" class="fr-responsive-img fr-p-1w"/>
                 </div>
-                <div class="fr-col-12 fr-col-md-8 fr-p-4w fr-m-auto">
+                <div class="fr-col-12 fr-col-md-6 fr-p-4w fr-mt-5w">
                     <div class="fr-grid-row">
-                        <span class="fr-hint-text">Le code peut-être copié-collé avec ou sans tiret</span>
-                        <input tabindex="1" id="codeInput" class="fr-input codeInput fr-display--md fr-m-auto" name="codeInput" type="text" placeholder="xxxxxx" autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
+<#--                          <span class="fr-hint-text">Le code peut-être copié-collé avec ou sans tiret</span>
+  -->                        <input tabindex="1" id="codeInput" class="fr-input codeInput fr-m-auto" name="codeInput" type="text" placeholder="abc-def" autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
                     </div>
-                    <div class="fr-grid-row fr-my-4w">
+                    <div class="fr-grid-row fr-my-3w">
                         <input tabindex="4" class="${properties.kcButtonClass!} fr-m-auto" name="login" id="login" type="submit" value="Confirmer"/>
                     </div>
+                      <div class="fr-grid-row fr-grid-row--center">
+                        <span>Je n’ai pas reçu de code. <a href="/">Me renvoyer le code </a> </span>  
+                    </div>
                 </div>
+                <div class="fr-col-offset-md-2">
+                </div>
+            
             </div>
-                   <#--   <div class="fr-grid-row fr-my-4w">
-                        Je n’ai pas reçu de code. Me renvoyer le code
-                    </div>  -->
+                   <#--
+                      -->
         </div>
     </form>
 
