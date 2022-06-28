@@ -4,14 +4,14 @@
         ${msg("loginTitle",(realm.displayName!''))}
     <#elseif section = "header">
     <#elseif section = "form">
-        <h2>Renseignez le code que vous avez reçu</h2>
-        <form id="kc-form-login" class="${properties.kcFormClass!}" onsubmit="login.disabled = true; return true;"
+        <h2>Confirmez votre réservation</h2>
+        <form id="kc-form-login" class="" onsubmit="login.disabled = true; return true;"
               action="${url.loginAction}" method="post">
             <div class="${properties.kcFormGroupClass!}">
                 <label for="codeInput" class="${properties.kcLabelClass!}">
-                    Vous avez reçu le code à votre adresse mail <strong>${userEmail!}</strong><#if feature_tchap_bot> et sur <a href="https://www.tchap.gouv.fr/" target="_blank">Tchap</a></#if>.
-                    ${client.name} utilise un service d'authentification pour assurer que seuls les agents publics
-                    utilisent les services qui leur sont réservés.
+                    Renseignez le code d'authentification que vous avez reçu à votre adresse mail <strong>${userEmail!}</strong><#if feature_tchap_bot> et sur <a href="https://www.tchap.gouv.fr/" target="_blank">Tchap</a></#if>.
+                    <#--  ${client.name} utilise un service d'authentification pour assurer que seuls les agents publics
+                    utilisent les services qui leur sont réservés.  -->
                 </label>
 
                 <input tabindex="1" id="codeInput" class="${properties.kcInputClass!} code-input" name="codeInput"

@@ -88,12 +88,15 @@ public class OtpLoginAuthenticator implements Authenticator {
             return;
         }
 
+        
         if (generateAndSendCode(context)) {
-            // code has been sent
+            //add a message if a code has already been sent
+            String info = hasSentCode(context)? "info.new.code.sent" : null;
+            // code has been sent, succes, add a timestamp in session
+            setCodeTimestamp(context);
             context.success();
+            context.challenge(otpForm(context, info));
         }
-
-        context.challenge(otpForm(context, null));
     }
 
     /**
@@ -240,13 +243,22 @@ public class OtpLoginAuthenticator implements Authenticator {
             }
         }
 
-        setCodeTimestamp(context);
         return true;
     }
-
     /**
-     * Check if a new code can be sent. A cool down delay must be respected.
+     * Check if a code has already been sent
      *
+     * @param context keycloak auth context
+     * @return true/false
+     */
+    private boolean hasSentCode(AuthenticationFlowContext context) {
+        return getLastCodeTimestamp(context) != 0;
+    }
+    /**
+     * IMPORTANT : This feature is not stable, do not activate
+     * 
+     * Check if a new code can be sent. A cool down delay must be respected.
+     * 
      * @param context keycloak auth context
      * @return true/false
      */
