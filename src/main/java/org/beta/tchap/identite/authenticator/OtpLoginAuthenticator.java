@@ -118,6 +118,16 @@ public class OtpLoginAuthenticator implements Authenticator {
             LOG.debugf("Authenticate action OtpLoginAuthenticator %s", context);
         }
 
+        if (isTemporarilyDisabled(context)){
+            LOG.warnf("User is temporarily disabled  %s", context.getUser().getId());
+            // in case of spamming, the user will be ignored silently
+            // we still treat this scenario as an invalid code scenario to do disturb the flow for the clients
+            context.failureChallenge(
+                    AuthenticationFlowError.INVALID_CREDENTIALS,
+                    otpFormError(context, "error.invalid.code"));
+            return;
+        }
+
         /* retrieve formData*/
         MultivaluedMap<String, String> formData =
                 context.getHttpRequest().getDecodedFormParameters();
@@ -135,16 +145,6 @@ public class OtpLoginAuthenticator implements Authenticator {
 
         // trim code
         codeInput = codeInput.trim();
-
-        if (isTemporarilyDisabled(context)){
-            LOG.warnf("User is temporarily disabled  %s", context.getUser().getId());
-            // in case of spamming, the user will be ignored silently
-            // we still treat this scenario as an invalid code scenario to do disturb the flow for the clients
-            context.failureChallenge(
-                    AuthenticationFlowError.INVALID_CREDENTIALS,
-                    otpFormError(context, "error.invalid.code"));
-            return;
-        }
 
         if (!secureCode.isValid(
                 codeInput,
