@@ -74,9 +74,10 @@ public class OtpLoginAuthenticator implements Authenticator {
 
         if (isTemporarilyDisabled(context)){
                 LOG.warnf("User is temporarily disabled  %s", user.getId());
-                context.failureChallenge(
-                        AuthenticationFlowError.INVALID_CREDENTIALS,
-                        otpFormError(context, "error.invalid.code"));
+                // in case of spamming, no code will be sent and the user will be ignored silently
+                // we still treat this scenario as a success to do disturb the flow for the clients
+                context.success();
+                context.challenge(otpForm(context, null));
                 return;
         }
 
@@ -137,6 +138,8 @@ public class OtpLoginAuthenticator implements Authenticator {
 
         if (isTemporarilyDisabled(context)){
             LOG.warnf("User is temporarily disabled  %s", context.getUser().getId());
+            // in case of spamming, the user will be ignored silently
+            // we still treat this scenario as an invalid code scenario to do disturb the flow for the clients
             context.failureChallenge(
                     AuthenticationFlowError.INVALID_CREDENTIALS,
                     otpFormError(context, "error.invalid.code"));
