@@ -8,6 +8,6 @@
     </script>
 </head>
 <body>
-Si vous n'êtes pas redirigé automatiquement, suivez this <a href='${properties.tchapHomeRedirectUrl}'>link</a>.
+Si vous n'êtes pas redirigé automatiquement, suivez ce <a href='${properties.tchapHomeRedirectUrl}'>link</a>.
 </body>
 </html>
