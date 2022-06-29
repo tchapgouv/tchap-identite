@@ -106,9 +106,13 @@ public class OtpLoginAuthenticator implements Authenticator {
             String info = hasSentCode(context)? "info.new.code.sent" : null;
             // code has been sent, succes, add a timestamp in session
             setCodeTimestamp(context);
-            context.success();
             context.challenge(otpForm(context, info));
         }
+        else {
+            // error while sending email
+            otpFormError(context, "error.email.not.sent");
+        }
+        context.success();
     }
 
     /**
@@ -236,8 +240,6 @@ public class OtpLoginAuthenticator implements Authenticator {
                 context.getUser(),
                 friendlyCode,
                 String.valueOf(codeTimeout))) {
-            // error while sending email
-            otpFormError(context, "error.email.not.sent");
             return false;
         }
 
