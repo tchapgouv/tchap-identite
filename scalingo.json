@@ -95,7 +95,7 @@
       "description": "Control max memory available",
       "value": "512m"
     },
-    "KEYCLOAK_CUSTOM_PROVIDER_DIR": {
+    "KEYCLOAK_LOCAL_PROVIDER_DIR": {
       "description": "path of the custom provider path from local build",
       "value": "dev/providers"
     },
