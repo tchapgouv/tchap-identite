@@ -8,8 +8,8 @@ public class MatrixServiceFactory {
 
     public static MatrixService getInstance() {
         if (instance == null) {
-            String accountEmail = Environment.getenv(Constants.TCHAP_ACCOUNT_EMAIL);
-            String password = Environment.getenv(Constants.TCHAP_PASSWORD);
+            String accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
+            String password = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
             instance = new MatrixService(accountEmail, password);
         }
         return instance;
