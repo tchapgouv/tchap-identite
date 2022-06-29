@@ -29,7 +29,6 @@
                 </div>
                 <div class="fr-col-12 fr-col-md-6 fr-p-4w fr-mt-5w">
                     <div class="fr-grid-row">
-                          <span class="fr-hint-text">Le code peut-être copié-collé avec ou sans tiret</span>
                           <input tabindex="1" id="codeInput" class="fr-input codeInput fr-m-auto" name="codeInput" type="text" placeholder="abc-def" autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
                     </div>
                     <div class="fr-grid-row fr-my-3w">
