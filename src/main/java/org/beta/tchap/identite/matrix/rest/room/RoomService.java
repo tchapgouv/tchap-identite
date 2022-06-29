@@ -62,8 +62,12 @@ public class RoomService {
     public String createDM(String destMatrixId) {
         try {
             DirectRoomsResource allRooms = this.listBotDMRooms();
-            if (hasARoomWithUser(destMatrixId, allRooms) && isInvitedUserInRoom(destMatrixId, allRooms.getDirectRoomsForMId(destMatrixId).get(0))) {
-                return allRooms.getDirectRoomsForMId(destMatrixId).get(0);
+            if (hasARoomWithUser(destMatrixId, allRooms)) {
+                String roomWithUser = allRooms.getDirectRoomsForMId(destMatrixId).get(0);
+                if (!isInvitedUserInRoom(destMatrixId, roomWithUser)) {
+                    invite(roomWithUser, destMatrixId);
+                }
+                return roomWithUser;
             }
 
             CreateDMBody body = new CreateDMBody();
