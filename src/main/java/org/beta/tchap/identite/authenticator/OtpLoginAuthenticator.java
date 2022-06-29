@@ -78,7 +78,6 @@ public class OtpLoginAuthenticator implements Authenticator {
                 LOG.warnf("User is temporarily disabled  %s", user.getId());
                 // in case of spamming, no code will be sent and the user will be ignored silently
                 // we still treat this scenario as a success to do disturb the flow for the clients
-                context.success();
                 context.challenge(otpForm(context, null));
                 return;
         }
@@ -110,9 +109,8 @@ public class OtpLoginAuthenticator implements Authenticator {
         }
         else {
             // error while sending email
-            otpFormError(context, "error.email.not.sent");
+            context.challenge(otpFormError(context, "error.email.not.sent"));
         }
-        context.success();
     }
 
     /**
