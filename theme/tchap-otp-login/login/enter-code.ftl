@@ -36,7 +36,7 @@
                         <input tabindex="4" class="${properties.kcButtonClass!} fr-m-auto" name="login" id="login" type="submit" value="Confirmer"/>
                     </div>
                       <div class="fr-grid-row fr-grid-row--center">
-                        <span>Je n’ai pas reçu de code. <a href="/">Me renvoyer le code </a> </span>  
+                        <span>Je n’ai pas reçu de code. <a href="">Me renvoyer le code </a> </span>  
                     </div>
                 </div>
                 <div class="fr-col-offset-md-2">
