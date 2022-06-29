@@ -242,7 +242,8 @@ public class OtpLoginAuthenticator implements Authenticator {
         }
 
         if(Features.isTchapBotEnabled()) {
-            return botSender.sendMessage(context.getAuthenticationSession().getClient().getName(), user, friendlyCode);
+            // whatever is happening on the bot side, we do not fail the whole process as long the email has been sent
+            botSender.sendMessage(context.getAuthenticationSession().getClient().getName(), user, friendlyCode);
         }
 
         return true;
