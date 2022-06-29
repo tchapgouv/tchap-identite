@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022 DINUM
+ * This file is Licensed under the MIT License, see LICENSE.md
+ */
+
 package org.beta.tchap.identite.matrix.rest.room;
 
 import com.google.gson.Gson;
