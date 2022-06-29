@@ -17,10 +17,6 @@ public interface RoomClient {
     @Headers("Content-Type: application/json")
     void updateDMRoomList(@Param("userId") String userId, Map<String, List<String>> dMRoomsList);
 
-//    @RequestLine("GET /rooms/{roomId}/state/{eventType}/{stateKey}")
-//    @Headers("Content-Type: application/json")
-//    Object getRoomEvents(@Param("roomId") String roomId, @Param("eventType") String eventType);
-
     @RequestLine("GET /rooms/{roomId}/joined_members")
     @Headers("Content-Type: application/json")
     Map<String, Object> getJoinedMembers(@Param("roomId") String roomId);
