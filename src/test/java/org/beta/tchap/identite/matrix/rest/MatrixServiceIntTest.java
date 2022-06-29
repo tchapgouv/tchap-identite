@@ -1,6 +1,7 @@
 package org.beta.tchap.identite.matrix.rest;
 
 import org.beta.tchap.TestSuiteUtils;
+import org.beta.tchap.identite.matrix.MatrixUserInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -56,14 +57,16 @@ class MatrixServiceIntTest {
     }
 
     @Test
-    void shouldAccountValidOnTchapBeValid() {
-        boolean accountValidOnTchap = matrixService.isAccountValidOnTchap("i.tchap.gouv.fr", "maghen.calinghee@beta.gouv.fr");
-        Assertions.assertTrue(accountValidOnTchap);
+    void shouldFindMatrixUserInfoBeValid() {
+        MatrixUserInfo accountValidOnTchap = matrixService.findMatrixUserInfo("i.tchap.gouv.fr", "maghen.calinghee@beta.gouv.fr");
+        Assertions.assertTrue(accountValidOnTchap.isValid());
+        Assertions.assertEquals("@maghen.calinghee-beta.gouv.fr:i.tchap.gouv.fr",accountValidOnTchap.getMatrixId());
     }
 
     @Test
-    void shouldAccountValidOnTchapNotBeValid() {
-        boolean accountValidOnTchap = matrixService.isAccountValidOnTchap("e.tchap.gouv.fr", "clark.kent@gmail.com");
-        Assertions.assertFalse(accountValidOnTchap);
+    void shouldFindMatrixUserInfoNotBeValid() {
+        MatrixUserInfo accountValidOnTchap = matrixService.findMatrixUserInfo("i.tchap.gouv.fr", "clark.kent@beta.gouv.fr");
+        Assertions.assertFalse(accountValidOnTchap.isValid());
+        Assertions.assertEquals(null,accountValidOnTchap.getMatrixId());
     }
 }

@@ -1,5 +1,6 @@
 package org.beta.tchap.identite.bot;
 
+import org.beta.tchap.identite.matrix.MatrixUserInfo;
 import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
 import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.user.TchapUserStorage;
@@ -20,13 +21,13 @@ public class BotSender {
     public boolean sendMessage(String serviceName, UserModel user, String friendlyCode) {
         if(Features.isTchapBotEnabled()) {
             String homeServer = user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER);
-            String matrixId = matrixService.getUserService().findUserInfoByEmail(user.getUsername(), homeServer).getUserId();
-
-            if(!matrixService.isAccountValidOnTchap(homeServer, user.getUsername())){
+            MatrixUserInfo matrixUserInfo = matrixService.findMatrixUserInfo(homeServer, user.getUsername());
+            if(!matrixUserInfo.isValid()){
                 LOG.infof("User account is not valid on Tchap : %s", LoggingUtilsFactory.getInstance().logOrHide(user.getUsername()));
                 return false;
             }
 
+            String matrixId = matrixUserInfo.getMatrixId();
             if (LOG.isDebugEnabled()) {
                 LOG.debugf("Sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
             }
