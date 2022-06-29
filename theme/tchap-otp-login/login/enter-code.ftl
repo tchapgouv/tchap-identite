@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="fr-grid-row">
-             <label for="codeInput" class="${properties.kcLabelClass!}">
+             <label for="codeInput" class="fr-label">
                     Renseignez le code d'authentification que vous avez reçu à votre adresse mail <strong>${userEmail!}</strong><#if feature_tchap_bot> et sur <a href="https://www.tchap.gouv.fr/" target="_blank">Tchap</a></#if>.
                     <#--  ${client.name} utilise un service d'authentification pour assurer que seuls les agents publics
                     utilisent les services qui leur sont réservés.  -->
@@ -29,11 +29,11 @@
                 </div>
                 <div class="fr-col-12 fr-col-md-6 fr-p-4w fr-mt-5w">
                     <div class="fr-grid-row">
-<#--                          <span class="fr-hint-text">Le code peut-être copié-collé avec ou sans tiret</span>
-  -->                        <input tabindex="1" id="codeInput" class="fr-input codeInput fr-m-auto" name="codeInput" type="text" placeholder="abc-def" autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
+                          <span class="fr-hint-text">Le code peut-être copié-collé avec ou sans tiret</span>
+                          <input tabindex="1" id="codeInput" class="fr-input codeInput fr-m-auto" name="codeInput" type="text" placeholder="abc-def" autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
                     </div>
                     <div class="fr-grid-row fr-my-3w">
-                        <input tabindex="4" class="${properties.kcButtonClass!} fr-m-auto" name="login" id="login" type="submit" value="Confirmer"/>
+                        <input tabindex="4" class="fr-btn fr-m-auto" name="login" id="login" type="submit" value="Confirmer"/>
                     </div>
                       <div class="fr-grid-row fr-grid-row--center">
                         <span>Je n’ai pas reçu de code. <a href="">Me renvoyer le code </a> </span>  
@@ -41,29 +41,8 @@
                 </div>
                 <div class="fr-col-offset-md-2">
                 </div>
-            
             </div>
-                   <#--
-                      -->
         </div>
     </form>
-
-            <div class="${properties.kcFormGroupClass!}">
-               
-
-            </div>
-
-            <#--              <div class="${properties.kcFormGroupClass!}">
-                            <label for="email" class="${properties.kcLabelClass!}">Je n'ai pas reçu le code. <a href="/">Me renvoyer un code</a></label>
-                        </div>  -->
-
-            <div class="${properties.kcFormGroupClass!}">
-                <div id="kc-form-options" class="${properties.kcFormOptionsClass!}">
-                </div>
-
-                <div id="kc-form-buttons" class="${properties.kcFormButtonsClass!}">
-                  
-                </div>
-            </div>
     </#if>
 </@layout.registrationLayout>
