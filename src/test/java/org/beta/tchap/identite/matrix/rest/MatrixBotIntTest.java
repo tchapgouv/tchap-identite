@@ -37,17 +37,17 @@ class MatrixBotIntTest {
         || !Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS).toLowerCase().equals("false");//todo refact this
 
         testAccountMatrixId = Environment.getenv(TestSuiteUtils.TEST_USER2_MATRIXID);
-
+        
         String accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
         String password = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
-        String matrixId = Environment.getenv(Constants.TCHAP_BOT_MATRIX_ID);
-
+        //String matrixId = Environment.getenv(Constants.TCHAP_BOT_MATRIX_ID);
+        
         MatrixService botMatrixService = new MatrixService(accountEmail, password);
         botRoomService = botMatrixService.getRoomService();
 
         String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
         String userTestAccountPassword = Environment.getenv(TestSuiteUtils.TEST_USER2_PASSWORD);
-        String userTestMid = Environment.getenv(TestSuiteUtils.TEST_USER2_MATRIXID);
+        //String userTestMid = Environment.getenv(TestSuiteUtils.TEST_USER2_MATRIXID);
         userTestRoomService = new MatrixService(userTestAccountEmail, userTestAccountPassword).getRoomService();
         
     }
@@ -125,7 +125,6 @@ class MatrixBotIntTest {
         @Test
         void should_invite_user_if_user_has_left_the_room() {
             String roomId = botRoomService.createDM(testAccountMatrixId);
-
 
             //test_user join the room
             userTestRoomService.join(roomId);
