@@ -1,4 +1,4 @@
-package org.beta.tchap.identite.bot;
+package org.beta.tchap.identite.matrix.rest;
 
 import org.apache.log4j.BasicConfigurator;
 import org.beta.tchap.TestSuiteUtils;
@@ -18,8 +18,10 @@ import java.util.Map;
 // FIXME should test the events in the rooms to be sure it's ok
 // FIXME: errors to catch: feign.FeignException$Forbidden
 class MatrixBotIntTest {
-    private static RoomService roomService;
-    private static MatrixService matrixService;
+    private static RoomService botRoomService;
+    private static RoomService userTestRoomService;
+
+    //private static MatrixService botMatrixService;
     private static String testAccountMatrixId;
 
     private final List<String> createdTestRooms = new ArrayList<>();
@@ -31,23 +33,29 @@ class MatrixBotIntTest {
         TestSuiteUtils.loadEnvFromDotEnvFile();
         
         deleteRoomAfterTests = Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS) == null 
-        || !Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS).toLowerCase().equals("false");
+        || !Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS).toLowerCase().equals("false");//todo refact this
+
         testAccountMatrixId = Environment.getenv(TestSuiteUtils.ENV_TEST_BOT_TO_USER_MID);
 
-        matrixService = MatrixServiceFactory.getInstance();
-        roomService = matrixService.getRoomService();
+        MatrixService botMatrixService = MatrixServiceFactory.getInstance();
+        botRoomService = botMatrixService.getRoomService();
+
+        String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
+        String userTestAccountPassword = Environment.getenv(TestSuiteUtils.TEST_USER2_PASSWORD);
+        userTestRoomService = new MatrixService(userTestAccountEmail, userTestAccountPassword).getRoomService();
+
     }
 
     @AfterEach
     public void teardown() {
         
         if(deleteRoomAfterTests){
-            Map<String, List<String>> dmRooms = roomService.listBotDMRooms().getDirectRooms();
+            Map<String, List<String>> dmRooms = botRoomService.listBotDMRooms().getDirectRooms();
             dmRooms.remove(testAccountMatrixId);
-            roomService.updateBotDMRoomList(dmRooms);
+            botRoomService.updateBotDMRoomList(dmRooms);
 
             for (String roomId: createdTestRooms) {
-                roomService.leaveRoom(roomId);
+                botRoomService.leaveRoom(roomId);
             }
         }
     }
@@ -56,7 +64,7 @@ class MatrixBotIntTest {
     class NoEventsTest {
         @Test
         void shouldHaveNoDMEventsIfNoDM() {
-            DirectRoomsResource dmRooms = roomService.listBotDMRooms();
+            DirectRoomsResource dmRooms = botRoomService.listBotDMRooms();
             Assertions.assertNull(dmRooms.getDirectRoomsForMId(testAccountMatrixId));
         }
     }
@@ -65,9 +73,9 @@ class MatrixBotIntTest {
     class CreateDMTest {
         @Test
         void shouldCreateADMAndAddDMEvent() {
-            String roomId = roomService.createDM(testAccountMatrixId);
+            String roomId = botRoomService.createDM(testAccountMatrixId);
 
-            DirectRoomsResource dmRooms = roomService.listBotDMRooms();
+            DirectRoomsResource dmRooms = botRoomService.listBotDMRooms();
             Assertions.assertNotNull(roomId);
             Assertions.assertNotNull(dmRooms.getDirectRoomsForMId(testAccountMatrixId));
             Assertions.assertTrue(dmRooms.getDirectRoomsForMId(testAccountMatrixId).size() > 0);
@@ -77,11 +85,44 @@ class MatrixBotIntTest {
 
         @Test
         void shouldNotCreateADMIfADMWithUserExists() {
-            String roomId1 = roomService.createDM(testAccountMatrixId);
-            String roomId2 = roomService.createDM(testAccountMatrixId);
+            String roomId1 = botRoomService.createDM(testAccountMatrixId);
+            String roomId2 = botRoomService.createDM(testAccountMatrixId);
 
             Assertions.assertEquals(roomId1, roomId2);
             markForDeletion(roomId1);
+        }
+
+        @Test
+        void should_invite_user_in_room() {
+            String roomId = botRoomService.createDM(testAccountMatrixId);
+
+            Assertions.assertDoesNotThrow(() -> botRoomService.invite(roomId, testAccountMatrixId));
+            markForDeletion(roomId);
+        }
+
+        @Test
+        void user_should_join_a_room_from_invite() {
+            String roomId = botRoomService.createDM(testAccountMatrixId);
+
+            Assertions.assertDoesNotThrow(() -> botRoomService.invite(roomId, testAccountMatrixId));
+            Assertions.assertDoesNotThrow(() -> userTestRoomService.join(roomId));
+            
+            markForDeletion(roomId);
+        }
+      
+
+        @Test
+        void should_invite_user_if_user_has_left_the_room() {
+            String roomId = botRoomService.createDM(testAccountMatrixId);
+
+            //test_user join the room
+            userTestRoomService.join(roomId);
+
+            //test_user account matrix leave the room
+            userTestRoomService.leaveRoom(roomId);
+
+            //bot should re-invite the test_user before sending a message 
+            botRoomService.sendMessage(roomId, "coucou");
         }
     }
 
@@ -89,18 +130,18 @@ class MatrixBotIntTest {
     class SendingMessagesTest {
         @Test
         void shouldSendAMessageToADMRoom() {
-            String roomId = roomService.createDM(testAccountMatrixId);
-            Assertions.assertDoesNotThrow(() -> roomService.sendMessage(roomId, "Hello world"));
+            String roomId = botRoomService.createDM(testAccountMatrixId);
+            Assertions.assertDoesNotThrow(() -> botRoomService.sendMessage(roomId, "Hello world"));
             markForDeletion(roomId);
         }
 
         @Test
         void shouldSendMultipleMessageToADMRoom() {
-            String roomId = roomService.createDM(testAccountMatrixId);
+            String roomId = botRoomService.createDM(testAccountMatrixId);
 
-            Assertions.assertDoesNotThrow(() -> roomService.sendMessage(roomId, "First message 1/3"));
-            Assertions.assertDoesNotThrow(() -> roomService.sendMessage(roomId, "Second message 2/3"));
-            Assertions.assertDoesNotThrow(() -> roomService.sendMessage(roomId, "Other message 3/3"));
+            Assertions.assertDoesNotThrow(() -> botRoomService.sendMessage(roomId, "First message 1/3"));
+            Assertions.assertDoesNotThrow(() -> botRoomService.sendMessage(roomId, "Second message 2/3"));
+            Assertions.assertDoesNotThrow(() -> botRoomService.sendMessage(roomId, "Other message 3/3"));
             markForDeletion(roomId);
         }
     }

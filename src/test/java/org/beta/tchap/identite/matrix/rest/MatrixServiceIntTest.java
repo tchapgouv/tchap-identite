@@ -16,7 +16,7 @@ class MatrixServiceIntTest {
         Assertions.assertTrue(!System.getProperty("TCHAP_SKIP_CERTIFICATE_VALIDATION").isEmpty());
         Assertions.assertTrue(!System.getProperty("TCHAP_UNAUTHORIZED_HOME_SERVER_LIST").isEmpty());
         
-        matrixService = new MatrixService();
+        matrixService = MatrixServiceFactory.getInstance();
     }
 
     @Test

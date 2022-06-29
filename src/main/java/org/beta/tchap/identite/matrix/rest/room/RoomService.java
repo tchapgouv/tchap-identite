@@ -87,6 +87,23 @@ public class RoomService {
     }
 
     /**
+     * Invite a userId to an existing room
+     * @param roomId non nullable string
+     * @param userId non nullable string
+     * @throws MatrixRuntimeException if can not invite user into room
+     */
+    public void invite(String roomId, String userId) {
+        if(roomId==null || userId == null){
+            throw new IllegalArgumentException(String.format("Nor roomId nor userId must be null - roomId%s userId:%s", roomId, userId));
+        }
+        try{
+            roomClient.invite(roomId, new InviteBody(userId));
+        }catch(RuntimeException e){
+            throw new MatrixRuntimeException();
+        }
+    }
+
+    /**
      * Leave an existing room
      * @param roomId non nullable string
      * @throws MatrixRuntimeException if can not leave room
@@ -94,6 +111,22 @@ public class RoomService {
     public void leaveRoom(String roomId) {
         try{
             roomClient.leaveRoom(roomId);
+        }catch(RuntimeException e){
+            throw new MatrixRuntimeException();
+        }
+    }
+
+    /**
+     * Join an existing room
+     * @param roomId non nullable string
+     * @throws MatrixRuntimeException if can not join room
+     */
+    public void join(String roomId) {
+        if(roomId==null){
+            throw new IllegalArgumentException(String.format("RoomId must not be null - roomId%s", roomId));
+        }
+        try{
+            roomClient.join(roomId);
         }catch(RuntimeException e){
             throw new MatrixRuntimeException();
         }

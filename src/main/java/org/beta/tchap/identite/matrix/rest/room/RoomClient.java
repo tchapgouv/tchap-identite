@@ -24,6 +24,14 @@ public interface RoomClient {
     @Headers("Content-Type: application/json")
     void leaveRoom(@Param("roomId") String roomId);
 
+    @RequestLine("POST /rooms/{roomId}/join")
+    @Headers("Content-Type: application/json")
+    void join(@Param("roomId") String roomId);
+
+    @RequestLine("POST /rooms/{roomId}/invite")
+    @Headers("Content-Type: application/json")
+    void invite(@Param("roomId") String roomId, InviteBody inviteBody);
+
     @RequestLine("PUT /rooms/{roomId}/send/m.room.message/{transactionId}")
     @Headers("Content-Type: application/json")
     void sendMessage(@Param("roomId") String roomId, @Param("transactionId") String transactionId, SendMessageBody messageBody);
