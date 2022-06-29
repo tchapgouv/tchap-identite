@@ -1,10 +1,11 @@
 package org.beta.tchap.identite.authenticator;
 
+import org.beta.tchap.identite.bot.BotSender;
 import org.beta.tchap.identite.email.EmailSender;
-import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
-import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.user.TchapUserStorage;
-import org.beta.tchap.identite.utils.*;
+import org.beta.tchap.identite.utils.Features;
+import org.beta.tchap.identite.utils.LoggingUtilsFactory;
+import org.beta.tchap.identite.utils.SecureCode;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
@@ -44,15 +45,15 @@ public class OtpLoginAuthenticator implements Authenticator {
     private final EmailSender emailSender;
     private final int codeTimeout;
     private final int mailDelay;
-    private final MatrixService matrixService;
+    private final BotSender botSender;
 
     public OtpLoginAuthenticator(
-            SecureCode secureCode, EmailSender emailSender, int codeTimeout, int mailDelay, MatrixService matrixService) {
+            SecureCode secureCode, EmailSender emailSender, int codeTimeout, int mailDelay, BotSender botSender) {
         this.secureCode = secureCode;
         this.emailSender = emailSender;
         this.codeTimeout = codeTimeout;
         this.mailDelay = mailDelay;
-        this.matrixService = matrixService;
+        this.botSender = botSender;
     }
 
     /**
@@ -240,32 +241,13 @@ public class OtpLoginAuthenticator implements Authenticator {
             return false;
         }
 
-        String homeServer = user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER);
-        String matrixId = matrixService.getUserService().findUserInfoByEmail(user.getUsername(), homeServer).getUserId();
-
-        LOG.debugf(
-            "Sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
-
-        /*
-         * botSender
-         */
-        if(Features.isTchapBotEnabled()) {
-            try {
-
-                String roomId = matrixService.getRoomService().createDM(matrixId);
-                String serviceName = context.getAuthenticationSession().getClient().getName();
-                matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
-                matrixService.getRoomService().sendMessage(roomId, friendlyCode);
-
-            } catch (MatrixRuntimeException e) {
-                LOG.errorf(
-                        "Error while sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
-                return false;
-            }
+        if (!botSender.sendMessage(context.getAuthenticationSession().getClient().getName(), user, friendlyCode)){
+            return false;
         }
 
         return true;
     }
+
     /**
      * Check if a code has already been sent
      *
