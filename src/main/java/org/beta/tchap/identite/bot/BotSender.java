@@ -4,7 +4,6 @@ import org.beta.tchap.identite.matrix.MatrixUserInfo;
 import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
 import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.user.TchapUserStorage;
-import org.beta.tchap.identite.utils.Features;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.jboss.logging.Logger;
 import org.keycloak.models.UserModel;
@@ -19,7 +18,6 @@ public class BotSender {
     }
 
     public boolean sendMessage(String serviceName, UserModel user, String friendlyCode) {
-        if(Features.isTchapBotEnabled()) {
             String homeServer = user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER);
             MatrixUserInfo matrixUserInfo = matrixService.findMatrixUserInfo(homeServer, user.getUsername());
             if(!matrixUserInfo.isValid()){
@@ -41,7 +39,6 @@ public class BotSender {
                         "Error while sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
                 return false;
             }
-        }
         return true;
     }
 }

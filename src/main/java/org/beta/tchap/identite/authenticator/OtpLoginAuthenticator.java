@@ -241,8 +241,8 @@ public class OtpLoginAuthenticator implements Authenticator {
             return false;
         }
 
-        if (!botSender.sendMessage(context.getAuthenticationSession().getClient().getName(), user, friendlyCode)){
-            return false;
+        if(Features.isTchapBotEnabled()) {
+            return botSender.sendMessage(context.getAuthenticationSession().getClient().getName(), user, friendlyCode);
         }
 
         return true;
