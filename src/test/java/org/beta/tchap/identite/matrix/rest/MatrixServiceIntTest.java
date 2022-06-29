@@ -54,4 +54,16 @@ class MatrixServiceIntTest {
         boolean userValid = matrixService.isUserValid("clark.kent");
         Assertions.assertFalse(userValid);
     }
+
+    @Test
+    void shouldAccountValidOnTchapBeValid() {
+        boolean accountValidOnTchap = matrixService.isAccountValidOnTchap("i.tchap.gouv.fr", "maghen.calinghee@beta.gouv.fr");
+        Assertions.assertTrue(accountValidOnTchap);
+    }
+
+    @Test
+    void shouldAccountValidOnTchapNotBeValid() {
+        boolean accountValidOnTchap = matrixService.isAccountValidOnTchap("e.tchap.gouv.fr", "clark.kent@gmail.com");
+        Assertions.assertFalse(accountValidOnTchap);
+    }
 }

@@ -21,6 +21,12 @@ public class BotSender {
         if(Features.isTchapBotEnabled()) {
             String homeServer = user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER);
             String matrixId = matrixService.getUserService().findUserInfoByEmail(user.getUsername(), homeServer).getUserId();
+
+            if(!matrixService.isAccountValidOnTchap(homeServer, user.getUsername())){
+                LOG.infof("User account is not valid on Tchap : %s", LoggingUtilsFactory.getInstance().logOrHide(user.getUsername()));
+                return false;
+            }
+
             if (LOG.isDebugEnabled()) {
                 LOG.debugf("Sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
             }

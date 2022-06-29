@@ -216,7 +216,7 @@ public class OtpLoginAuthenticator implements Authenticator {
      * Send a OTP to the user by email
      *
      * @param context keycloak auth context
-     * @return true is email has been sent
+     * @return true if both email and tchap message have been sent
      */
     private boolean generateAndSendCode(AuthenticationFlowContext context) {
         String code = secureCode.generateCode(6);
