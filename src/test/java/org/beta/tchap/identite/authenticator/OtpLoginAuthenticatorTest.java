@@ -1,20 +1,14 @@
 package org.beta.tchap.identite.authenticator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-
-import javax.ws.rs.core.Response;
-
+import org.beta.tchap.identite.bot.BotSender;
 import org.beta.tchap.identite.email.EmailSender;
-import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.utils.SecureCode;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.keycloak.authentication.AuthenticationFlowContext;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+
+import javax.ws.rs.core.Response;
 
 public class OtpLoginAuthenticatorTest {
     
@@ -22,8 +16,8 @@ public class OtpLoginAuthenticatorTest {
     OtpLoginAuthenticator authenticator;
     
     @Mock EmailSender emailSender; 
-    @Mock SecureCode secureCode; 
-    @Mock MatrixService matrixService; 
+    @Mock SecureCode secureCode;
+    @Mock BotSender botSender;
     int codeTimeout = 0;
     int mailDelay = 0;
 
@@ -31,7 +25,7 @@ public class OtpLoginAuthenticatorTest {
 
     @BeforeEach
     public void setup() {
-        authenticator = new OtpLoginAuthenticator(secureCode, emailSender, codeTimeout, mailDelay,matrixService);
+        authenticator = new OtpLoginAuthenticator(secureCode, emailSender, codeTimeout, mailDelay,botSender);
     }
 
     //TODO, it is not implemented like this
