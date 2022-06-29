@@ -65,6 +65,7 @@ public class OtpLoginAuthenticator implements Authenticator {
 
         if(user==null){
             context.failure(AuthenticationFlowError.UNKNOWN_USER);
+            return;
         }
 
         if (LOG.isDebugEnabled()) {
