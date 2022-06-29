@@ -13,6 +13,7 @@ import org.keycloak.forms.login.LoginFormsProvider;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.services.managers.BruteForceProtector;
 import org.keycloak.sessions.AuthenticationSessionModel;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -71,6 +72,15 @@ public class OtpLoginAuthenticator implements Authenticator {
                 user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER));
         }
 
+        if (isTemporarilyDisabled(context)){
+                LOG.warnf("User is temporarily disabled  %s", user.getId());
+                // in case of spamming, no code will be sent and the user will be ignored silently
+                // we still treat this scenario as a success to do disturb the flow for the clients
+                context.success();
+                context.challenge(otpForm(context, null));
+                return;
+        }
+
         if (!canSendNewCode(context)) {
             if (LOG.isDebugEnabled()) {
                 LOG.debugf(
@@ -106,6 +116,16 @@ public class OtpLoginAuthenticator implements Authenticator {
     public void action(AuthenticationFlowContext context) {
         if (LOG.isDebugEnabled()) {
             LOG.debugf("Authenticate action OtpLoginAuthenticator %s", context);
+        }
+
+        if (isTemporarilyDisabled(context)){
+            LOG.warnf("User is temporarily disabled  %s", context.getUser().getId());
+            // in case of spamming, the user will be ignored silently
+            // we still treat this scenario as an invalid code scenario to do disturb the flow for the clients
+            context.failureChallenge(
+                    AuthenticationFlowError.INVALID_CREDENTIALS,
+                    otpFormError(context, "error.invalid.code"));
+            return;
         }
 
         /* retrieve formData*/
@@ -300,6 +320,12 @@ public class OtpLoginAuthenticator implements Authenticator {
             return 0;
         }
         return Collections.max(timestamps);
+    }
+
+    private boolean isTemporarilyDisabled(AuthenticationFlowContext context) {
+        BruteForceProtector bruteForceProtector = context.getSession().getProvider(BruteForceProtector.class);
+        UserModel user = context.getUser();
+        return bruteForceProtector.isTemporarilyDisabled(context.getSession(), context.getRealm(), user);
     }
 
     @Override
