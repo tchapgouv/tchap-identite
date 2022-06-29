@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class UsersListRessource {
-    private Set<String> users;
+    private Set<String> users = new HashSet<>();
 
     public Set<String> getUsers() {
         return users;

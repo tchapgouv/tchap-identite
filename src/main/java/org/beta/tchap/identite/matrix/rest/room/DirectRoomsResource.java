@@ -3,7 +3,7 @@ package org.beta.tchap.identite.matrix.rest.room;
 import java.util.*;
 
 public class DirectRoomsResource {
-    private Map<String, List<String>> directRooms;
+    private Map<String, List<String>> directRooms = new HashMap<>();
 
     public DirectRoomsResource() {
         directRooms = new HashMap<>();
