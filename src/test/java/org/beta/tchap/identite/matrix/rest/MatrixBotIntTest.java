@@ -6,6 +6,7 @@ import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.matrix.rest.MatrixServiceFactory;
 import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
+import org.beta.tchap.identite.matrix.rest.room.UsersListRessource;
 import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 import org.junit.jupiter.api.*;
@@ -63,6 +64,29 @@ class MatrixBotIntTest {
             for (String roomId: createdTestRooms) {
                 botRoomService.leaveRoom(roomId);
             }
+        }
+    }
+
+    @Nested
+    class MembersInRoomTest {
+        @Test
+        void shouldFetchJoinUsers() {
+            String roomId = botRoomService.createDM(testAccountMatrixId);
+
+            UsersListRessource joinedMembers = botRoomService.getJoinedMembers(roomId);
+            Assertions.assertEquals(0, joinedMembers.getUsers().size());
+
+            markForDeletion(roomId);
+        }
+
+        @Test
+        void shouldReturnFalseWhenRoomIsCreatedAndUserHasNotJoinYetOrHasLeave() {
+            String roomId = botRoomService.createDM(testAccountMatrixId);
+
+            boolean hasJoined = botRoomService.isInvitedUserInRoom(testAccountMatrixId, roomId);
+            Assertions.assertFalse(hasJoined);
+
+            markForDeletion(roomId);
         }
     }
 
@@ -127,13 +151,12 @@ class MatrixBotIntTest {
             String roomId = botRoomService.createDM(testAccountMatrixId);
 
             //test_user join the room
-            userTestRoomService.join(roomId);
+            Assertions.assertDoesNotThrow(() -> userTestRoomService.join(roomId));
 
             //test_user account matrix leave the room
-            userTestRoomService.leaveRoom(roomId);
-
-            //bot should re-invite the test_user before sending a message 
-            botRoomService.sendMessage(roomId, "coucou");
+            Assertions.assertDoesNotThrow(() -> userTestRoomService.leaveRoom(roomId));
+            
+            //use botsender
         }
     }
 
