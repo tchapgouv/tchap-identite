@@ -27,7 +27,7 @@ class MatrixBotUnitTest {
 
         roomClient = new FakeRoomClient();
         roomClient.rooms = new HashMap<>();
-        roomService = new RoomService(roomClient);
+        roomService = new RoomService(roomClient, testAccountMatrixId);
     }
 
     @AfterEach

@@ -6,6 +6,7 @@ public class DirectRoomsResource {
     private Map<String, List<String>> directRooms;
 
     public DirectRoomsResource() {
+        directRooms = new HashMap<>();
     }
 
     public Map<String, List<String>> getDirectRooms() {

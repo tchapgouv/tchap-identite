@@ -8,6 +8,7 @@ public class TestSuiteUtils {
     public static String ENV_TEST_BOT_TO_USER_MID = "TEST_BOT_TO_USER_MID";
     public static String TEST_USER2_ACCOUNT = "TEST_USER2_ACCOUNT";
     public static String TEST_USER2_PASSWORD = "TEST_USER2_PASSWORD";
+    public static String TEST_USER2_MATRIXID = "TEST_USER2_MATRIXID";
 
     public static void loadEnvFromDotEnvFile(){
         Dotenv dotenv = Dotenv.load();

@@ -6,6 +6,7 @@ import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.matrix.rest.MatrixServiceFactory;
 import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
+import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 import org.junit.jupiter.api.*;
 
@@ -35,15 +36,20 @@ class MatrixBotIntTest {
         deleteRoomAfterTests = Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS) == null 
         || !Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS).toLowerCase().equals("false");//todo refact this
 
-        testAccountMatrixId = Environment.getenv(TestSuiteUtils.ENV_TEST_BOT_TO_USER_MID);
+        testAccountMatrixId = Environment.getenv(TestSuiteUtils.TEST_USER2_MATRIXID);
 
-        MatrixService botMatrixService = MatrixServiceFactory.getInstance();
+        String accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
+        String password = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
+        String matrixId = Environment.getenv(Constants.TCHAP_BOT_MATRIX_ID);
+
+        MatrixService botMatrixService = new MatrixService(accountEmail, password);
         botRoomService = botMatrixService.getRoomService();
 
         String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
         String userTestAccountPassword = Environment.getenv(TestSuiteUtils.TEST_USER2_PASSWORD);
+        String userTestMid = Environment.getenv(TestSuiteUtils.TEST_USER2_MATRIXID);
         userTestRoomService = new MatrixService(userTestAccountEmail, userTestAccountPassword).getRoomService();
-
+        
     }
 
     @AfterEach
@@ -62,6 +68,11 @@ class MatrixBotIntTest {
 
     @Nested
     class NoEventsTest {
+        
+        @Test
+        void shouldInitiazeMatrixService() {}
+        
+        
         @Test
         void shouldHaveNoDMEventsIfNoDM() {
             DirectRoomsResource dmRooms = botRoomService.listBotDMRooms();
@@ -87,17 +98,17 @@ class MatrixBotIntTest {
         void shouldNotCreateADMIfADMWithUserExists() {
             String roomId1 = botRoomService.createDM(testAccountMatrixId);
             String roomId2 = botRoomService.createDM(testAccountMatrixId);
-
-            Assertions.assertEquals(roomId1, roomId2);
+            
             markForDeletion(roomId1);
+            Assertions.assertEquals(roomId1, roomId2);
         }
 
         @Test
         void should_invite_user_in_room() {
             String roomId = botRoomService.createDM(testAccountMatrixId);
+            markForDeletion(roomId);
 
             Assertions.assertDoesNotThrow(() -> botRoomService.invite(roomId, testAccountMatrixId));
-            markForDeletion(roomId);
         }
 
         @Test
@@ -114,6 +125,7 @@ class MatrixBotIntTest {
         @Test
         void should_invite_user_if_user_has_left_the_room() {
             String roomId = botRoomService.createDM(testAccountMatrixId);
+
 
             //test_user join the room
             userTestRoomService.join(roomId);

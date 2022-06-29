@@ -28,23 +28,29 @@ public class MatrixService {
 
     private final String accountEmail;
     private final String password;
+    private final String matrixId;
+
 
     protected MatrixService(String accountEmail, String tchapPassword) {
         //accountEmail = Environment.getenv(Constants.TCHAP_ACCOUNT_EMAIL);
         this.accountEmail = accountEmail;
         //password = Environment.getenv(Constants.TCHAP_PASSWORD);
-        password = tchapPassword;
+        this.password = tchapPassword;
+        //matrixId = matrixId;
 
         LoginService loginService = new LoginService();
         homeServerService = new HomeServerService();
 
-        String accountHomeServerUrl = buildHomeServerUrl(homeServerService.findHomeServerByEmail(this.accountEmail));
+        String homeServer = homeServerService.findHomeServerByEmail(this.accountEmail);
+        this.matrixId = UserService.emailToUserId(accountEmail, homeServer);
+    
+        String accountHomeServerUrl = buildHomeServerUrl(homeServer);
         String accessToken = loginService.findAccessToken(accountHomeServerUrl, this.accountEmail, password);
 
         userService = new UserService(accountHomeServerUrl, accessToken);
 
         RoomClient roomClient = RoomClientFactory.build(accountHomeServerUrl, accessToken);
-        roomService = new RoomService(roomClient);
+        roomService = new RoomService(roomClient, this.matrixId);
     }
 
     /*

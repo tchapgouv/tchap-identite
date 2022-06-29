@@ -10,6 +10,7 @@ public class MatrixServiceFactory {
         if (instance == null) {
             String accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
             String password = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
+            //String matrixId = Environment.getenv(Constants.TCHAP_BOT_MATRIX_ID);
             instance = new MatrixService(accountEmail, password);
         }
         return instance;

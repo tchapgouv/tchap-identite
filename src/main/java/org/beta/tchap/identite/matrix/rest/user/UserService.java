@@ -49,7 +49,7 @@ public class UserService {
         return null;
     }
 
-    public String emailToUserId(String email, String homeServer) {
+    public static String emailToUserId(String email, String homeServer) {
         if (StringUtils.isEmpty(email)) {
             return email;
         }

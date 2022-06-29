@@ -4,6 +4,8 @@ import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
 import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 
+import feign.FeignException.NotFound;
+
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +14,10 @@ public class RoomService {
     private final RoomClient roomClient;
     private final String botMatrixId;
 
-    public RoomService(RoomClient roomClient) {
+    public RoomService(RoomClient roomClient, String userId) {
         this.roomClient = roomClient;
-        this.botMatrixId = Environment.getenv(Constants.TCHAP_MATRIX_ID);
+        //this.botMatrixId = Environment.getenv(Constants.TCHAP_MATRIX_ID);
+        this.botMatrixId = userId;
     }
 
     /**
@@ -26,8 +29,10 @@ public class RoomService {
         try{
             Map<String, List<String>> rawResponse = roomClient.listDMRooms(this.botMatrixId);
             return DirectRoomsResource.toDirectRoomsResource(rawResponse);
+        }catch(NotFound e){
+            return new DirectRoomsResource();//return empty map
         }catch(RuntimeException e){
-            throw new MatrixRuntimeException();
+            throw new MatrixRuntimeException(e);
         }
     }
 
@@ -40,7 +45,7 @@ public class RoomService {
         try{
             roomClient.updateDMRoomList(this.botMatrixId, dMRoomsList);
         }catch(RuntimeException e){
-            throw new MatrixRuntimeException();
+            throw new MatrixRuntimeException(e);
         }
     }
 
@@ -66,7 +71,7 @@ public class RoomService {
 
             return response.get("room_id");
         }catch(RuntimeException e){
-            throw new MatrixRuntimeException();
+            throw new MatrixRuntimeException(e);
         }
     }
 
@@ -82,7 +87,7 @@ public class RoomService {
             String transactionId = new Timestamp(System.currentTimeMillis()).toString();
             roomClient.sendMessage(roomId, transactionId, messageBody);
         }catch(RuntimeException e){
-            throw new MatrixRuntimeException();
+            throw new MatrixRuntimeException(e);
         }
     }
 
@@ -99,7 +104,7 @@ public class RoomService {
         try{
             roomClient.invite(roomId, new InviteBody(userId));
         }catch(RuntimeException e){
-            throw new MatrixRuntimeException();
+            throw new MatrixRuntimeException(e);
         }
     }
 
@@ -112,7 +117,7 @@ public class RoomService {
         try{
             roomClient.leaveRoom(roomId);
         }catch(RuntimeException e){
-            throw new MatrixRuntimeException();
+            throw new MatrixRuntimeException(e);
         }
     }
 
@@ -128,7 +133,7 @@ public class RoomService {
         try{
             roomClient.join(roomId);
         }catch(RuntimeException e){
-            throw new MatrixRuntimeException();
+            throw new MatrixRuntimeException(e);
         }
     }
 
@@ -136,7 +141,7 @@ public class RoomService {
         try{
             return rooms.getDirectRoomsForMId(destMatrixId) != null && rooms.getDirectRoomsForMId(destMatrixId).size() > 0;
         }catch(RuntimeException e){
-            throw new MatrixRuntimeException();
+            throw new MatrixRuntimeException(e);
         }
     }
 
