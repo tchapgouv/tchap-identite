@@ -4,6 +4,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.beta.tchap.TestSuiteUtils;
 import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
+import org.beta.tchap.identite.matrix.rest.room.UsersListRessource;
 import org.beta.tchap.identite.utils.Environment;
 import org.junit.jupiter.api.*;
 
@@ -52,6 +53,25 @@ class MatrixBotUnitTest {
         void shouldHaveNoDMEventsIfNoDM() {
             DirectRoomsResource dmRooms = roomService.listBotDMRooms();
             Assertions.assertNull(dmRooms.getDirectRoomsForMId(testAccountMatrixId));
+        }
+    }
+
+    @Nested
+    class MembersInRoomTest {
+        @Test
+        void shouldFetchJoinUsers() {
+            String roomId = roomService.createDM(testAccountMatrixId);
+
+            UsersListRessource joinedMembers = roomService.getJoinedMembers(roomId);
+            Assertions.assertEquals(0, joinedMembers.getUsers().size());
+        }
+
+        @Test
+        void shouldReturnFalseWhenRoomIsCreatedAndUserHasNotJoinYetOrHasLeave() {
+            String roomId = roomService.createDM(testAccountMatrixId);
+
+            boolean hasJoined = roomService.isInvitedUserInRoom(testAccountMatrixId, roomId);
+            Assertions.assertFalse(hasJoined);
         }
     }
 
