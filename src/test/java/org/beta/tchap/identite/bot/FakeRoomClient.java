@@ -9,6 +9,7 @@ import java.util.*;
 class FakeRoomClient implements RoomClient {
     public Map<String, List<String>> rooms;
     public String lastMessage = null;
+    public List<String> joinedMembers = new ArrayList<>();
 
     @Override
     public Map<String, List<String>> listDMRooms(String userId) {
@@ -22,7 +23,15 @@ class FakeRoomClient implements RoomClient {
 
     @Override
     public Map<String, Object> getJoinedMembers(String roomId) {
-        return null;
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> joined = new HashMap<>();
+        for (String member: joinedMembers) {
+            joined.put(member, null);
+        }
+
+        map.put("joined", joined);
+
+        return map;
     }
 
     @Override

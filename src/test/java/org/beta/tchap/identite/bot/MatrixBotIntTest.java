@@ -64,7 +64,7 @@ class MatrixBotIntTest {
     }
 
     @Nested
-    class SomeEventsTest {
+    class MembersInRoomTest {
         @Test
         void shouldFetchJoinUsers() {
             String roomId = roomService.createDM(testAccountMatrixId);
@@ -75,9 +75,8 @@ class MatrixBotIntTest {
             markForDeletion(roomId);
         }
 
-        // Fixme it's more an unit test
         @Test
-        void shouldReturnFalseWhenRoomIsCreatedAndUserHasNotJoinYet() {
+        void shouldReturnFalseWhenRoomIsCreatedAndUserHasNotJoinYetOrHasLeave() {
             String roomId = roomService.createDM(testAccountMatrixId);
 
             boolean hasJoined = roomService.isInvitedUserInRoom(testAccountMatrixId, roomId);
