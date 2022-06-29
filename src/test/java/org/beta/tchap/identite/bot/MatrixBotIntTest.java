@@ -1,11 +1,13 @@
 package org.beta.tchap.identite.bot;
 
+import com.openshift.internal.util.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.beta.tchap.TestSuiteUtils;
 import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.matrix.rest.MatrixServiceFactory;
 import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
+import org.beta.tchap.identite.matrix.rest.room.UsersListRessource;
 import org.beta.tchap.identite.utils.Environment;
 import org.junit.jupiter.api.*;
 
@@ -29,8 +31,8 @@ class MatrixBotIntTest {
         // Needed for logging
         BasicConfigurator.configure();
         TestSuiteUtils.loadEnvFromDotEnvFile();
-        
-        deleteRoomAfterTests = Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS) == null 
+
+        deleteRoomAfterTests = Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS) == null
         || !Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS).toLowerCase().equals("false");
         testAccountMatrixId = Environment.getenv(TestSuiteUtils.ENV_TEST_BOT_TO_USER_MID);
 
@@ -40,7 +42,7 @@ class MatrixBotIntTest {
 
     @AfterEach
     public void teardown() {
-        
+
         if(deleteRoomAfterTests){
             Map<String, List<String>> dmRooms = roomService.listBotDMRooms().getDirectRooms();
             dmRooms.remove(testAccountMatrixId);
@@ -58,6 +60,29 @@ class MatrixBotIntTest {
         void shouldHaveNoDMEventsIfNoDM() {
             DirectRoomsResource dmRooms = roomService.listBotDMRooms();
             Assertions.assertNull(dmRooms.getDirectRoomsForMId(testAccountMatrixId));
+        }
+    }
+
+    @Nested
+    class MembersInRoomTest {
+        @Test
+        void shouldFetchJoinUsers() {
+            String roomId = roomService.createDM(testAccountMatrixId);
+
+            UsersListRessource joinedMembers = roomService.getJoinedMembers(roomId);
+            Assertions.assertEquals(0, joinedMembers.getUsers().size());
+
+            markForDeletion(roomId);
+        }
+
+        @Test
+        void shouldReturnFalseWhenRoomIsCreatedAndUserHasNotJoinYetOrHasLeave() {
+            String roomId = roomService.createDM(testAccountMatrixId);
+
+            boolean hasJoined = roomService.isInvitedUserInRoom(testAccountMatrixId, roomId);
+            Assertions.assertFalse(hasJoined);
+
+            markForDeletion(roomId);
         }
     }
 
@@ -105,7 +130,7 @@ class MatrixBotIntTest {
         }
     }
 
-    /* 
+    /*
     is it needed? same than shouldSendMultipleMessageToADMRoom
     @Nested
     class SendingOTPTest {
