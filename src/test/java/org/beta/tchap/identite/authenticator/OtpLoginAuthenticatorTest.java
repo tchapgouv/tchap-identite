@@ -31,45 +31,34 @@ public class OtpLoginAuthenticatorTest {
         authenticator = new OtpLoginAuthenticator(secureCode, emailSender, codeTimeout, mailDelay, botSender);
     }
 
+    /**
+     * Send a otp to the user in session and present a form
+     */
     @Nested
     class AuthenticateFlowTest {
 
         @Test
-        public void authenticate_shouldFail_with_no_challenge_and_unknown_user_flow_error(){
+        public void authenticate_should_fail_with_unknown_user_flow_error(){
             AuthenticationFlowContext context =  new MockFactory.AuthenticationFlowContextBuilder().build();
 
             authenticator.authenticate(context);
 
-            verify(context).failure(AuthenticationFlowError.UNKNOWN_USER);
+            verify(context,times(1)).failure(AuthenticationFlowError.UNKNOWN_USER);
             verify(context,times(0)).failure(any(),any());
             verify(context,times(0)).failure(any(),any(),any(),any());
             verify(context,times(0)).failureChallenge(any(),any());
             verify(context,times(0)).success();
             verify(context,times(0)).challenge(any());
+            verify(emailSender, times(0)).sendEmail(
+                    any(),
+                    any(),
+                    any(),
+                    anyString(),
+                    anyString());
         }
 
         @Test
-        public void authenticate_should_continue_without_failure(){
-            AuthenticationFlowContext context =  new MockFactory.AuthenticationFlowContextBuilder()
-                    .withUser("myUserId")
-                    .withTemporarilyDisabled(false)
-                    .build();
-
-            doReturn("bbb-aaa").when(secureCode).generateCode(anyInt());
-
-            authenticator.authenticate(context);
-
-            verify(context,times(0)).failure(any());
-            verify(context,times(0)).failure(any(),any());
-            verify(context,times(0)).failure(any(),any(),any(),any());
-            verify(context,times(0)).failureChallenge(any(),any());
-            verify(context,times(0)).success();
-            // regular otp form
-            verify(context,times(1)).challenge(any());
-        }
-
-        @Test
-        public void authenticate_should_continue_without_failure_for_disabled_users(){
+        public void authenticate_should_not_send_otp_and_show_form_for_disabled_users(){
             AuthenticationFlowContext context =  new MockFactory.AuthenticationFlowContextBuilder()
                     .withUser("myUserId")
                     .withTemporarilyDisabled(true)
@@ -82,13 +71,19 @@ public class OtpLoginAuthenticatorTest {
             verify(context,times(0)).failure(any(),any(),any(),any());
             verify(context,times(0)).failureChallenge(any(),any());
             verify(context,times(0)).success();
-            // regular otp form
+            // regular otp form with no specific message
             verify(context,times(1)).challenge(any());
+            verify(emailSender, times(0)).sendEmail(
+                    any(),
+                    any(),
+                    any(),
+                    anyString(),
+                    anyString());
 
         }
 
         @Test
-        public void authenticate_should_continue_with_error_challenge_for_email_not_sent(){
+        public void authenticate_should_show_error_form_when_email_sending_failed(){
             AuthenticationFlowContext context =  new MockFactory.AuthenticationFlowContextBuilder()
                     .withUser("myUserId")
                     .withTemporarilyDisabled(false)
@@ -96,7 +91,13 @@ public class OtpLoginAuthenticatorTest {
 
             String code = "bbb-aaa";
             doReturn(code).when(secureCode).generateCode(anyInt());
-            doReturn(false).when(emailSender).sendEmail(any(),any(),any(),eq(code),eq(String.valueOf(codeTimeout)));
+            doReturn(code).when(secureCode).makeCodeUserFriendly(code);
+            doReturn(false).when(emailSender).sendEmail(
+                    any(),
+                    any(),
+                    any(),
+                    eq(code),
+                    eq(String.valueOf(codeTimeout)));
 
             authenticator.authenticate(context);
 
@@ -105,13 +106,59 @@ public class OtpLoginAuthenticatorTest {
             verify(context,times(0)).failure(any(),any(),any(),any());
             verify(context,times(0)).failureChallenge(any(),any());
             verify(context,times(0)).success();
-            // error otp form
+            // error otp form : "error.email.not.sent"
             verify(context,times(1)).challenge(any());
+            verify(secureCode,times(1)).generateCode(anyInt());
+            verify(secureCode,times(1)).makeCodeUserFriendly(code);
+            verify(emailSender, times(1)).sendEmail(
+                    any(),
+                    any(),
+                    any(),
+                    eq(code),
+                    eq(String.valueOf(codeTimeout)));
+        }
+
+        @Test
+        public void authenticate_should_send_otp_and_show_form(){
+            AuthenticationFlowContext context =  new MockFactory.AuthenticationFlowContextBuilder()
+                    .withUser("myUserId")
+                    .withTemporarilyDisabled(false)
+                    .build();
+
+            String code = "bbb-aaa";
+            doReturn(code).when(secureCode).generateCode(anyInt());
+            doReturn(code).when(secureCode).makeCodeUserFriendly(code);
+            doReturn(true).when(emailSender).sendEmail(
+                    any(),
+                    any(),
+                    any(),
+                    eq(code),
+                    eq(String.valueOf(codeTimeout)));
+
+            authenticator.authenticate(context);
+
+            verify(context,times(0)).failure(any());
+            verify(context,times(0)).failure(any(),any());
+            verify(context,times(0)).failure(any(),any(),any(),any());
+            verify(context,times(0)).failureChallenge(any(),any());
+            verify(context,times(0)).success();
+            // regular otp form : "info.new.code.sent"
+            verify(context,times(1)).challenge(any());
+            verify(secureCode,times(1)).generateCode(anyInt());
+            verify(secureCode,times(1)).makeCodeUserFriendly(code);
+            verify(emailSender, times(1)).sendEmail(
+                    any(),
+                    any(),
+                    any(),
+                    eq(code),
+                    eq(String.valueOf(codeTimeout)));
         }
 
     }
 
-
+    /**
+     * Wait for the otp in the form input
+     */
     @Nested
     class ActionFlowTest {
 
@@ -229,17 +276,16 @@ public class OtpLoginAuthenticatorTest {
         @Test
         public void action_should_succeed(){
             String codeInput = "ccc-ddd";
-            String codeInSession = codeInput;
             AuthenticationFlowContext context =  new MockFactory.AuthenticationFlowContextBuilder()
                     .withUser("myUserId")
                     .withTemporarilyDisabled(false)
                     .withCodeInput(codeInput)
-                    .addAuthNote(AUTH_NOTE_OTP, codeInSession)
+                    .addAuthNote(AUTH_NOTE_OTP, codeInput)
                     .build();
 
             doReturn(true).when(secureCode).isValid(
                     eq(codeInput),
-                    eq(codeInSession),
+                    eq(codeInput),
                     any(),
                     eq(codeTimeout),
                     anyInt());
@@ -254,7 +300,7 @@ public class OtpLoginAuthenticatorTest {
             verify(context,times(1)).success();
             verify(secureCode,times(1)).isValid(
                     eq(codeInput),
-                    eq(codeInSession),
+                    eq(codeInput),
                     any(),
                     eq(codeTimeout),
                     anyInt());
