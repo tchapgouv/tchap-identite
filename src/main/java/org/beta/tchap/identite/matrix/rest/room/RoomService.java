@@ -1,14 +1,18 @@
 package org.beta.tchap.identite.matrix.rest.room;
 
 import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
-import org.beta.tchap.identite.utils.Constants;
-import org.beta.tchap.identite.utils.Environment;
+import org.beta.tchap.identite.matrix.exception.RoomDoesNotExist;
+import org.beta.tchap.identite.matrix.exception.UserDoesNotExist;
 
+import feign.FeignException.BadRequest;
+import feign.FeignException.Forbidden;
 import feign.FeignException.NotFound;
 
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+
+import javax.ws.rs.ForbiddenException;
 
 public class RoomService {
     private final RoomClient roomClient;
@@ -75,6 +79,7 @@ public class RoomService {
      *
      * @param destMatrixId not nullable string
      * @return not nullable id of the room
+     * @throws UserDoesNotExist user does not exists
      * @throws MatrixRuntimeException room can not be created
      */
     public String createDM(String destMatrixId) {
@@ -88,6 +93,9 @@ public class RoomService {
             String roomId = response.get("room_id");
             this.updateRoomAccounData(destMatrixId, roomId);
             return roomId;
+        }catch(BadRequest e){
+            //todo : should be parsed to see if the problem comes from the user
+            throw new MatrixRuntimeException(e);
         }catch(RuntimeException e){
             throw new MatrixRuntimeException(e);
         }
@@ -100,6 +108,7 @@ public class RoomService {
      *
      * @param roomId  non nullable string
      * @param message non nullable string
+     * @throws RoomDoesNotExist if room does not exist
      * @throws MatrixRuntimeException if message is not sent
      */
     public void sendMessage(String roomId, String message) {
@@ -110,6 +119,8 @@ public class RoomService {
             SendMessageBody messageBody = new SendMessageBody(message);
             String transactionId = new Timestamp(System.currentTimeMillis()).toString();
             roomClient.sendMessage(roomId, transactionId, messageBody);
+        }catch(Forbidden e){
+            throw new RoomDoesNotExist(e);
         }catch(RuntimeException e){
             throw new MatrixRuntimeException(e);
         }
@@ -119,6 +130,7 @@ public class RoomService {
      * Invite a userId to an existing room
      * @param roomId non nullable string
      * @param userId non nullable string
+     * @throws RoomDoesNotExist if room does not exist
      * @throws MatrixRuntimeException if can not invite user into room
      */
     public void invite(String roomId, String userId) {
@@ -127,13 +139,35 @@ public class RoomService {
         }
         try{
             roomClient.invite(roomId, new InviteBody(userId));
+        }catch(Forbidden e){
+            throw new RoomDoesNotExist(e);
         }catch(RuntimeException e){
             throw new MatrixRuntimeException(e);
         }
     }
 
     /**
-     * Leave an existing room
+     * Return the list of users that have joined a room (including the creator of the room)
+     * @param roomId
+     * @return
+    * @throws MatrixRuntimeException if can get the list of joined members
+     */
+    public UsersListRessource getJoinedMembers(String roomId) {
+        if(roomId == null){
+            throw new IllegalArgumentException(String.format("roomId must be not null - roomId:%s",roomId));
+        }
+        try {
+            Map<String, Object> rawResponse = roomClient.getJoinedMembers(roomId);
+            return UsersListRessource.toUsersListRessource((Map<String, Object>) rawResponse.get("joined"));
+        }catch(Forbidden e){
+            throw new RoomDoesNotExist(e);
+        }catch(RuntimeException e){
+            throw new MatrixRuntimeException(e);
+        }
+    }
+
+    /**
+     * Leave an existing room (only for testing)
      *
      * @param roomId non nullable string
      * @throws MatrixRuntimeException if can not leave room
@@ -150,7 +184,7 @@ public class RoomService {
     }
 
     /**
-     * Join an existing room
+     * Join an existing room (only for testing)
      * @param roomId non nullable string
      * @throws MatrixRuntimeException if can not join room
      */
@@ -166,23 +200,13 @@ public class RoomService {
     }
 
     /**
-     * Return the list of users that have joined a room (including the creator)
-     * @param roomId
+     * Util methods. -- should not be here
+     * @param destMatrixId
+     * @param rooms
      * @return
-    * @throws MatrixRuntimeException if can get the list of joined members
      */
-    public UsersListRessource getJoinedMembers(String roomId) {
-        Map<String, Object> rawResponse = roomClient.getJoinedMembers(roomId);
-        return UsersListRessource.toUsersListRessource((Map<String, Object>) rawResponse.get("joined"));
-    }
-
-
     public static boolean hasARoomWithUser(String destMatrixId, DirectRoomsResource rooms) {
-        try {
-            return rooms.getDirectRoomsForMId(destMatrixId) != null && rooms.getDirectRoomsForMId(destMatrixId).size() > 0;
-        }catch(RuntimeException e){
-            throw new MatrixRuntimeException(e);
-        }
+        return rooms.getDirectRoomsForMId(destMatrixId) != null && rooms.getDirectRoomsForMId(destMatrixId).size() > 0;
     }
 
 

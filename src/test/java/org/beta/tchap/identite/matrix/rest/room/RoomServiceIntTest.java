@@ -3,6 +3,8 @@ package org.beta.tchap.identite.matrix.rest.room;
 import org.apache.log4j.BasicConfigurator;
 import org.beta.tchap.TestSuiteUtils;
 import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
+import org.beta.tchap.identite.matrix.exception.RoomDoesNotExist;
+import org.beta.tchap.identite.matrix.exception.UserDoesNotExist;
 import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.matrix.rest.MatrixServiceUtil;
 import org.beta.tchap.identite.utils.Constants;
@@ -25,6 +27,10 @@ class RoomServiceIntTest {
 
     private final List<String> createdTestRooms = new ArrayList<>();
     private static Boolean deleteRoomAfterTests;
+
+    String unknownUserId = "@barbabpapa:localname";
+
+
     @BeforeAll
     public static void setup() {
         // Needed for logging
@@ -72,12 +78,22 @@ class RoomServiceIntTest {
         @Test
         void shouldFetchJoinUsers() {
             String roomId = botRoomService.createDM(testAccountMatrixId);
-            waitAbit();
+            markForDeletion(roomId);
             UsersListRessource joinedMembers = botRoomService.getJoinedMembers(roomId);
             Assertions.assertEquals(1, joinedMembers.getUsers().size());
             Assertions.assertTrue(joinedMembers.getUsers().contains(botMatrixService.getMatrixId()));
+        }
 
-            markForDeletion(roomId);
+        @Test
+        void should_throw_IAE() {
+            String roomId = null;
+            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.getJoinedMembers(roomId)); 
+        }
+
+        @Test
+        void throw_exc_if_room_does_not_exists() {
+            String roomId = "thisroomdoesexist?no";
+            Assertions.assertThrows(RoomDoesNotExist.class, () -> botRoomService.getJoinedMembers(roomId)); 
         }
     }
 
@@ -99,15 +115,12 @@ class RoomServiceIntTest {
     class CreateDMTest {
         @Test
         void shouldCreateADMAndAddDMEvent() {
-            waitAbit();
             String roomId = botRoomService.createDM(testAccountMatrixId);
-            waitAbit();
+            markForDeletion(roomId);
             DirectRoomsResource dmRooms = botRoomService.listBotDMRooms();
             Assertions.assertNotNull(roomId);
             Assertions.assertNotNull(dmRooms.getDirectRoomsForMId(testAccountMatrixId));
             Assertions.assertTrue(dmRooms.getDirectRoomsForMId(testAccountMatrixId).size() > 0);
-
-            markForDeletion(roomId);
         }
 
         @Test
@@ -115,6 +128,12 @@ class RoomServiceIntTest {
             waitAbit();
             Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.createDM(null));
         }
+
+        //todo
+        /* @Test
+        void throw_ex_if_user_does_not_exists() {
+            Assertions.assertThrows(UserDoesNotExist.class, () -> botRoomService.createDM(unknownUserId));
+        } */
 
 
         @Test
@@ -159,6 +178,36 @@ class RoomServiceIntTest {
             userTestRoomService.join(roomId);
             Assertions.assertThrows(MatrixRuntimeException.class, () -> botRoomService.invite(roomId, testAccountMatrixId));
         }
+
+        @Test
+        void should_throw_if_room_does_not_exist() {
+            String roomId = "roomthatdoesnotexitsforsure";
+            Assertions.assertThrows(RoomDoesNotExist.class, () -> botRoomService.invite(roomId, testAccountMatrixId)); 
+        }
+
+        @Test
+        void should_throw_if_userId_does_not_exist() {
+            String roomId = botRoomService.createDM(testAccountMatrixId);
+            markForDeletion(roomId);
+            String unknownUserId = "@barbabpapa:localname";
+            Assertions.assertThrows(UserDoesNotExist.class, () -> botRoomService.invite(roomId, unknownUserId)); 
+        }
+
+        @Test
+        void should_throw_IAE() {
+            waitAbit();
+            String roomId = null;
+            String userMid = "user1";
+            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.invite(roomId, userMid )); 
+        }
+
+        @Test
+        void should_throw_IAE2() {
+            waitAbit();
+            String roomId = "room1";
+            String userMid = null;
+            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.updateRoomAccounData(roomId, userMid)); 
+        }
       
     }
 
@@ -175,12 +224,19 @@ class RoomServiceIntTest {
         void shouldSendMultipleMessageToADMRoom() {
             String roomId = botRoomService.createDM(testAccountMatrixId);
             waitAbit();
-            Assertions.assertDoesNotThrow(() -> botRoomService.sendMessage(roomId, "First message 1/3"));
-            Assertions.assertDoesNotThrow(() -> botRoomService.sendMessage(roomId, "Second message 2/3"));
+            botRoomService.sendMessage(roomId, "First message 1/3");
+            botRoomService.sendMessage(roomId, "Second message 2/3");
             waitAbit();
-            Assertions.assertDoesNotThrow(() -> botRoomService.sendMessage(roomId, "Other message 3/3"));
+            botRoomService.sendMessage(roomId, "Other message 3/3");
             markForDeletion(roomId);
         }
+
+        @Test
+        void throw_exc_if_room_does_not_exists() {
+            String roomId = "roooooom";
+            Assertions.assertThrows(RoomDoesNotExist.class, () -> botRoomService.sendMessage(roomId, "Hello world"));
+        }
+
         @Test
         void should_throw_IAE() {
             waitAbit();
