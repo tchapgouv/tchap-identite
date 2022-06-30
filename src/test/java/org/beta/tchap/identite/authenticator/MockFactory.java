@@ -68,7 +68,7 @@ public class MockFactory {
 
         public AuthenticationFlowContext build() {
             AuthenticationFlowContext contextMock = spy(AuthenticationFlowContext.class);
-            AuthenticationSessionModel sessionMock = buildAuthenticationSessionModel(authNoteMap);
+            AuthenticationSessionModel sessionMock = buildAuthenticationSessionModel(loginHint,authNoteMap);
             RootAuthenticationSessionModel rootSessionMock = spy(RootAuthenticationSessionModel.class);
             KeycloakSession keycloakSession = spy(KeycloakSession.class);
             LoginFormsProvider loginFormsProvider = buildLoginFormsProvider();
@@ -78,13 +78,11 @@ public class MockFactory {
             UserModel userModelMock = buildUserModel(username);
             HttpRequest httpRequestMock = buildHttpRequest(codeInput);
 
-            if(loginHint != null){
-                doReturn(loginHint).when(sessionMock).getClientNote(OIDCLoginProtocol.LOGIN_HINT_PARAM);
-            }
-
+            // keycloak session
             doReturn(userProviderMock).when(keycloakSession).users();
             doReturn(bruteForceProtectorMock).when(keycloakSession).getProvider(BruteForceProtector.class);
 
+            // context
             doReturn(loginFormsProvider).when(contextMock).form();
             doReturn(sessionMock).when(contextMock).getAuthenticationSession();
             doReturn(keycloakSession).when(contextMock).getSession();
@@ -92,8 +90,8 @@ public class MockFactory {
             doReturn(userModelMock).when(contextMock).getUser();
             doReturn(httpRequestMock).when(contextMock).getHttpRequest();
 
+            // authentication session
             doReturn(rootSessionMock).when(sessionMock).getParentSession();
-
 
             return contextMock;
         }
@@ -151,12 +149,18 @@ public class MockFactory {
     }
 
 
-    static AuthenticationSessionModel buildAuthenticationSessionModel(Map<String,String> authNoteMap){
+    static AuthenticationSessionModel buildAuthenticationSessionModel(String loginHint, Map<String,String> authNoteMap){
         AuthenticationSessionModel sessionMock = spy(AuthenticationSessionModel.class);
+
+        if(loginHint != null){
+            doReturn(loginHint).when(sessionMock).getClientNote(OIDCLoginProtocol.LOGIN_HINT_PARAM);
+        }
+
         doAnswer((Answer<String>) invocation -> {
             String authNoteKeyParam = (String) invocation.getArguments()[0];
             return authNoteMap.get(authNoteKeyParam);
         }).when(sessionMock).getAuthNote(anyString());
+
         return sessionMock;
     }
  
