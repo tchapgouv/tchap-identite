@@ -18,7 +18,7 @@ class RoomServiceTest {
 
     @Test
     void emailToUserId() {
-        String userId = userService.emailToUserId("clark.kent@beta.gouv.fr", "i.tchap.gouv.fr");
+        String userId = UserService.emailToUserId("clark.kent@beta.gouv.fr", "i.tchap.gouv.fr");
         Assertions.assertEquals("@clark.kent-beta.gouv.fr:i.tchap.gouv.fr", userId);
     }
 }

@@ -12,8 +12,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.ForbiddenException;
-
 public class RoomService {
     private final RoomClient roomClient;
     private final String botMatrixId;

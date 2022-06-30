@@ -1,6 +1,5 @@
 package org.beta.tchap.identite.matrix.rest.login;
 
-import org.apache.commons.lang.StringUtils;
 
 public class LoginService {
 
