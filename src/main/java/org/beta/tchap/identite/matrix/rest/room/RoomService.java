@@ -43,32 +43,9 @@ public class RoomService {
      * @param dMRoomsList not nullable
      * @throws MatrixRuntimeException direct rooms listing can not be updated
      */
-    public void updateBotDMRoomList(Map<String, List<String>> dMRoomsList) {
+    protected void updateBotDMRoomList(Map<String, List<String>> dMRoomsList) {
         try {
             roomClient.updateDMRoomList(this.botMatrixId, dMRoomsList);
-        }catch(RuntimeException e){
-            throw new MatrixRuntimeException(e);
-        }
-    }
-
-    /**
-     * Create a new direct message room with a user if not exists
-     *
-     * @param destMatrixId not nullable string
-     * @return not nullable id of the room
-     * @throws MatrixRuntimeException room can not be created
-     */
-    public String createDM(String destMatrixId) {
-        if(destMatrixId == null){
-            throw new IllegalArgumentException(String.format("destMatrixId must be not null - userId:%s",destMatrixId));
-        }
-        try {
-            CreateDMBody body = new CreateDMBody();
-            body.addInvite(destMatrixId);
-            Map<String, String> response = roomClient.createDM(body);
-            String roomId = response.get("room_id");
-            this.updateRoomAccounData(destMatrixId, roomId);
-            return roomId;
         }catch(RuntimeException e){
             throw new MatrixRuntimeException(e);
         }
@@ -94,6 +71,31 @@ public class RoomService {
     }
 
     /**
+     * Create a new direct message room with a user if not exists, an invit is sent
+     *
+     * @param destMatrixId not nullable string
+     * @return not nullable id of the room
+     * @throws MatrixRuntimeException room can not be created
+     */
+    public String createDM(String destMatrixId) {
+        if(destMatrixId == null){
+            throw new IllegalArgumentException(String.format("destMatrixId must be not null - userId:%s",destMatrixId));
+        }
+        try {
+            CreateDMBody body = new CreateDMBody();
+            body.addInvite(destMatrixId);
+            Map<String, String> response = roomClient.createDM(body);
+            String roomId = response.get("room_id");
+            this.updateRoomAccounData(destMatrixId, roomId);
+            return roomId;
+        }catch(RuntimeException e){
+            throw new MatrixRuntimeException(e);
+        }
+    }
+
+
+
+    /**
      * Send a message into an existing room
      *
      * @param roomId  non nullable string
@@ -101,6 +103,9 @@ public class RoomService {
      * @throws MatrixRuntimeException if message is not sent
      */
     public void sendMessage(String roomId, String message) {
+        if(roomId == null|| message == null){
+            throw new IllegalArgumentException(String.format("Nor roomId nor message must be null - roomId%s message:%s", roomId, message));
+        }
         try {
             SendMessageBody messageBody = new SendMessageBody(message);
             String transactionId = new Timestamp(System.currentTimeMillis()).toString();
@@ -134,6 +139,9 @@ public class RoomService {
      * @throws MatrixRuntimeException if can not leave room
      */
     public void leaveRoom(String roomId) {
+        if(roomId == null){
+            throw new IllegalArgumentException(String.format("roomId must be not null - roomId:%s",roomId));
+        }
         try {
             roomClient.leaveRoom(roomId);
         }catch(RuntimeException e){
@@ -147,8 +155,8 @@ public class RoomService {
      * @throws MatrixRuntimeException if can not join room
      */
     public void join(String roomId) {
-        if(roomId==null){
-            throw new IllegalArgumentException(String.format("RoomId must not be null - roomId%s", roomId));
+        if(roomId == null){
+            throw new IllegalArgumentException(String.format("roomId must be not null - roomId:%s",roomId));
         }
         try{
             roomClient.join(roomId);
@@ -157,6 +165,12 @@ public class RoomService {
         }
     }
 
+    /**
+     * Return the list of users that have joined a room (including the creator)
+     * @param roomId
+     * @return
+    * @throws MatrixRuntimeException if can get the list of joined members
+     */
     public UsersListRessource getJoinedMembers(String roomId) {
         Map<String, Object> rawResponse = roomClient.getJoinedMembers(roomId);
         return UsersListRessource.toUsersListRessource((Map<String, Object>) rawResponse.get("joined"));

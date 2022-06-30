@@ -34,11 +34,8 @@ public class MatrixService {
 
 
     protected MatrixService(String accountEmail, String tchapPassword) {
-        //accountEmail = Environment.getenv(Constants.TCHAP_ACCOUNT_EMAIL);
         this.accountEmail = accountEmail;
-        //password = Environment.getenv(Constants.TCHAP_PASSWORD);
         this.password = tchapPassword;
-        //matrixId = matrixId;
 
         LoginService loginService = new LoginService();
         homeServerService = new HomeServerService();
@@ -145,6 +142,14 @@ public class MatrixService {
         }
         boolean isValid = !userInfoByEmail.isDeactivated() && !userInfoByEmail.isExpired();
         return new MatrixUserInfo(userInfoByEmail.getUserId(),isValid);
+    }
+
+    /**
+     * Return the matrixId of the connected user
+     * @return not null string
+     */ 
+    public String getMatrixId(){
+        return matrixId;
     }
 
 }
