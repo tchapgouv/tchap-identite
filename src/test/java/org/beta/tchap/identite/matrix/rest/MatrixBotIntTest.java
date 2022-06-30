@@ -45,7 +45,7 @@ class MatrixBotIntTest {
         
         MatrixService botMatrixService = new MatrixService(accountEmail, password);
         botRoomService = botMatrixService.getRoomService();
-
+        waitAbit();
         String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
         String userTestAccountPassword = Environment.getenv(TestSuiteUtils.TEST_USER2_PASSWORD);
         //String userTestMid = Environment.getenv(TestSuiteUtils.TEST_USER2_MATRIXID);
@@ -62,6 +62,7 @@ class MatrixBotIntTest {
             botRoomService.updateBotDMRoomList(dmRooms);
 
             for (String roomId: createdTestRooms) {
+                waitAbit();
                 botRoomService.leaveRoom(roomId);
             }
         }
@@ -72,7 +73,7 @@ class MatrixBotIntTest {
         @Test
         void shouldFetchJoinUsers() {
             String roomId = botRoomService.createDM(testAccountMatrixId);
-
+            waitAbit();
             UsersListRessource joinedMembers = botRoomService.getJoinedMembers(roomId);
             Assertions.assertEquals(0, joinedMembers.getUsers().size());
 
@@ -82,7 +83,7 @@ class MatrixBotIntTest {
         @Test
         void shouldReturnFalseWhenRoomIsCreatedAndUserHasNotJoinYetOrHasLeave() {
             String roomId = botRoomService.createDM(testAccountMatrixId);
-
+            waitAbit();
             boolean hasJoined = botRoomService.isInvitedUserInRoom(testAccountMatrixId, roomId);
             Assertions.assertFalse(hasJoined);
 
@@ -109,7 +110,7 @@ class MatrixBotIntTest {
         @Test
         void shouldCreateADMAndAddDMEvent() {
             String roomId = botRoomService.createDM(testAccountMatrixId);
-
+            waitAbit();
             DirectRoomsResource dmRooms = botRoomService.listBotDMRooms();
             Assertions.assertNotNull(roomId);
             Assertions.assertNotNull(dmRooms.getDirectRoomsForMId(testAccountMatrixId));
@@ -121,6 +122,7 @@ class MatrixBotIntTest {
         @Test
         void shouldNotCreateADMIfADMWithUserExists() {
             String roomId1 = botRoomService.createDM(testAccountMatrixId);
+            waitAbit();
             String roomId2 = botRoomService.createDM(testAccountMatrixId);
             
             markForDeletion(roomId1);
@@ -138,8 +140,9 @@ class MatrixBotIntTest {
         @Test
         void user_should_join_a_room_from_invite() {
             String roomId = botRoomService.createDM(testAccountMatrixId);
-
+            waitAbit();
             Assertions.assertDoesNotThrow(() -> botRoomService.invite(roomId, testAccountMatrixId));
+            waitAbit();
             Assertions.assertDoesNotThrow(() -> userTestRoomService.join(roomId));
             
             markForDeletion(roomId);
@@ -152,7 +155,7 @@ class MatrixBotIntTest {
 
             //test_user join the room
             Assertions.assertDoesNotThrow(() -> userTestRoomService.join(roomId));
-
+            waitAbit();
             //test_user account matrix leave the room
             Assertions.assertDoesNotThrow(() -> userTestRoomService.leaveRoom(roomId));
             
@@ -165,6 +168,7 @@ class MatrixBotIntTest {
         @Test
         void shouldSendAMessageToADMRoom() {
             String roomId = botRoomService.createDM(testAccountMatrixId);
+            waitAbit();
             Assertions.assertDoesNotThrow(() -> botRoomService.sendMessage(roomId, "Hello world"));
             markForDeletion(roomId);
         }
@@ -172,9 +176,11 @@ class MatrixBotIntTest {
         @Test
         void shouldSendMultipleMessageToADMRoom() {
             String roomId = botRoomService.createDM(testAccountMatrixId);
-
+            waitAbit();
             Assertions.assertDoesNotThrow(() -> botRoomService.sendMessage(roomId, "First message 1/3"));
+            waitAbit();
             Assertions.assertDoesNotThrow(() -> botRoomService.sendMessage(roomId, "Second message 2/3"));
+            waitAbit();
             Assertions.assertDoesNotThrow(() -> botRoomService.sendMessage(roomId, "Other message 3/3"));
             markForDeletion(roomId);
         }
@@ -197,5 +203,14 @@ class MatrixBotIntTest {
 
     private void markForDeletion(String room) {
         createdTestRooms.add(room);
+    }
+
+    static private void waitAbit(){
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }
