@@ -190,6 +190,17 @@
                   <filtering>true</filtering>
                 </resource>
               </resources>
+              <!-- exclude text files from filtering to avoid corruption 
+              https://github.com/tchapgouv/tchap-identite/issues/116
+              
+              -->
+              <nonFilteredFileExtensions>
+                <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+                <nonFilteredFileExtension>woff</nonFilteredFileExtension>
+                <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
+                <nonFilteredFileExtension>eot</nonFilteredFileExtension>
+                <nonFilteredFileExtension>svg</nonFilteredFileExtension>
+              </nonFilteredFileExtensions>
             </configuration>
           </execution>
         </executions>
