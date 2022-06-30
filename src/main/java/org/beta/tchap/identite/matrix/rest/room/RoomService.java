@@ -9,7 +9,6 @@ import feign.FeignException.NotFound;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class RoomService {
     private final RoomClient roomClient;
@@ -60,24 +59,35 @@ public class RoomService {
      * @throws MatrixRuntimeException room can not be created
      */
     public String createDM(String destMatrixId) {
+        if(destMatrixId == null){
+            throw new IllegalArgumentException(String.format("destMatrixId must be not null - userId:%s",destMatrixId));
+        }
         try {
-            DirectRoomsResource allRooms = this.listBotDMRooms();
-            if (hasARoomWithUser(destMatrixId, allRooms)) {
-                String roomWithUser = allRooms.getDirectRoomsForMId(destMatrixId).get(0);
-                if (!isInvitedUserInRoom(destMatrixId, roomWithUser)) {
-                    invite(roomWithUser, destMatrixId);
-                }
-                return roomWithUser;
-            }
-
             CreateDMBody body = new CreateDMBody();
             body.addInvite(destMatrixId);
             Map<String, String> response = roomClient.createDM(body);
+            String roomId = response.get("room_id");
+            this.updateRoomAccounData(destMatrixId, roomId);
+            return roomId;
+        }catch(RuntimeException e){
+            throw new MatrixRuntimeException(e);
+        }
+    }
 
-            allRooms.addDirectRoomForMatrixId(destMatrixId, response.get("room_id"));
+    /**
+     * update the room account data
+     * @param destMatrixId
+     * @param roomId
+     */
+    protected void updateRoomAccounData(String destMatrixId, String roomId){
+        if(roomId==null || destMatrixId == null){
+            throw new IllegalArgumentException(String.format("Nor roomId nor destMatrixId must be null - roomId%s userId:%s", roomId, destMatrixId));
+        }
+        try {
+            //update account data
+            DirectRoomsResource allRooms = this.listBotDMRooms();
+            allRooms.addDirectRoomForMatrixId(destMatrixId, roomId);
             roomClient.updateDMRoomList(this.botMatrixId, allRooms.getDirectRooms());
-
-            return response.get("room_id");
         }catch(RuntimeException e){
             throw new MatrixRuntimeException(e);
         }
@@ -152,11 +162,8 @@ public class RoomService {
         return UsersListRessource.toUsersListRessource((Map<String, Object>) rawResponse.get("joined"));
     }
 
-    public boolean isInvitedUserInRoom(String userMId, String roomId) {
-        return getJoinedMembers(roomId).getUsers().contains(userMId);
-    }
 
-    private boolean hasARoomWithUser(String destMatrixId, DirectRoomsResource rooms) {
+    public static boolean hasARoomWithUser(String destMatrixId, DirectRoomsResource rooms) {
         try {
             return rooms.getDirectRoomsForMId(destMatrixId) != null && rooms.getDirectRoomsForMId(destMatrixId).size() > 0;
         }catch(RuntimeException e){

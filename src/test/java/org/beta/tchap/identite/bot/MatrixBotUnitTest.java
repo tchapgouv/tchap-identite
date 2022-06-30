@@ -66,13 +66,13 @@ class MatrixBotUnitTest {
             Assertions.assertEquals(0, joinedMembers.getUsers().size());
         }
 
-        @Test
+/*         @Test
         void shouldReturnFalseWhenRoomIsCreatedAndUserHasNotJoinYetOrHasLeave() {
             String roomId = roomService.createDM(testAccountMatrixId);
 
             boolean hasJoined = roomService.isInvitedUserInRoom(testAccountMatrixId, roomId);
             Assertions.assertFalse(hasJoined);
-        }
+        } */
     }
 
     @Nested

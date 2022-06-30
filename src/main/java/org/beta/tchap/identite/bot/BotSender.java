@@ -3,6 +3,8 @@ package org.beta.tchap.identite.bot;
 import org.beta.tchap.identite.matrix.MatrixUserInfo;
 import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
 import org.beta.tchap.identite.matrix.rest.MatrixService;
+import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
+import org.beta.tchap.identite.matrix.rest.room.RoomService;
 import org.beta.tchap.identite.user.TchapUserStorage;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.jboss.logging.Logger;
@@ -30,7 +32,11 @@ public class BotSender {
                 LOG.debugf("Sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
             }
             try {
-                String roomId = matrixService.getRoomService().createDM(matrixId);
+                String roomId = ensureUserIsInRoom(matrixId);
+                if(roomId ==null ){
+                    roomId = matrixService.getRoomService().createDM(matrixId);   
+                }
+
                 matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
                 matrixService.getRoomService().sendMessage(roomId, friendlyCode);
 
@@ -40,5 +46,26 @@ public class BotSender {
                 return false;
             }
         return true;
+    }
+
+        /**
+     * Ensure there is a room where user is invited, if room existed, invitation is sent
+     * @param destMatrixId
+     * @return roomId or null if no existing room
+     */
+    private String ensureUserIsInRoom(String destMatrixId) {
+        DirectRoomsResource allRooms = this.matrixService.getRoomService().listBotDMRooms();
+        if (RoomService.hasARoomWithUser(destMatrixId, allRooms)) {
+            String roomWithUser = allRooms.getDirectRoomsForMId(destMatrixId).get(0);
+            if (!isInvitedUserInRoom(destMatrixId, roomWithUser)) {
+                this.matrixService.getRoomService().invite(roomWithUser, destMatrixId);
+            }
+            return roomWithUser;
+        }
+        return null;
+    }
+
+    private boolean isInvitedUserInRoom(String userMId, String roomId) {
+        return this.matrixService.getRoomService().getJoinedMembers(roomId).getUsers().contains(userMId);
     }
 }

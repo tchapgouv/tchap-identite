@@ -45,7 +45,7 @@ class MatrixBotIntTest {
         
         MatrixService botMatrixService = new MatrixService(accountEmail, password);
         botRoomService = botMatrixService.getRoomService();
-        waitAbit();
+        
         String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
         String userTestAccountPassword = Environment.getenv(TestSuiteUtils.TEST_USER2_PASSWORD);
         //String userTestMid = Environment.getenv(TestSuiteUtils.TEST_USER2_MATRIXID);
@@ -55,14 +55,18 @@ class MatrixBotIntTest {
 
     @AfterEach
     public void teardown() {
-        
+        waitAbit();
+
         if(deleteRoomAfterTests){
             Map<String, List<String>> dmRooms = botRoomService.listBotDMRooms().getDirectRooms();
             dmRooms.remove(testAccountMatrixId);
+            waitAbit();
+
             botRoomService.updateBotDMRoomList(dmRooms);
 
             for (String roomId: createdTestRooms) {
                 waitAbit();
+
                 botRoomService.leaveRoom(roomId);
             }
         }
@@ -109,6 +113,7 @@ class MatrixBotIntTest {
     class CreateDMTest {
         @Test
         void shouldCreateADMAndAddDMEvent() {
+            waitAbit();
             String roomId = botRoomService.createDM(testAccountMatrixId);
             waitAbit();
             DirectRoomsResource dmRooms = botRoomService.listBotDMRooms();
@@ -205,7 +210,7 @@ class MatrixBotIntTest {
         createdTestRooms.add(room);
     }
 
-    static private void waitAbit(){
+    private void waitAbit(){
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
