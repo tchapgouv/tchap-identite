@@ -1,5 +1,6 @@
 package org.beta.tchap.identite.authenticator;
 
+import org.jboss.resteasy.spi.HttpRequest;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.forms.login.LoginFormsProvider;
 import org.keycloak.models.KeycloakSession;
@@ -10,11 +11,14 @@ import org.keycloak.protocol.oidc.OIDCLoginProtocol;
 import org.keycloak.services.managers.BruteForceProtector;
 import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.sessions.RootAuthenticationSessionModel;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -24,10 +28,11 @@ public class MockFactory {
 
     public static class AuthenticationFlowContextBuilder {
         String loginHint;
-        String authNote;
         String username;
+        String codeInput;
         boolean temporarilyDisabled;
         List<String> usernames = new ArrayList<>();
+        Map<String,String> authNoteMap = new HashMap<>();
 
         public AuthenticationFlowContextBuilder(){}
 
@@ -41,6 +46,11 @@ public class MockFactory {
             return this;
         }
 
+        public AuthenticationFlowContextBuilder withCodeInput(String codeInput){
+            this.codeInput = codeInput;
+            return this;
+        }
+
         public AuthenticationFlowContextBuilder withUser(String username){
             this.username = username;
             return this;
@@ -51,14 +61,14 @@ public class MockFactory {
             return this;
         }
 
-        public AuthenticationFlowContextBuilder addAuthNote(String authNote){
-            this.authNote = authNote;
+        public AuthenticationFlowContextBuilder addAuthNote(String authNoteKey,String authNoteValue){
+            this.authNoteMap.put(authNoteKey,authNoteValue);
             return this;
         }
 
         public AuthenticationFlowContext build() {
             AuthenticationFlowContext contextMock = spy(AuthenticationFlowContext.class);
-            AuthenticationSessionModel sessionMock = spy(AuthenticationSessionModel.class);
+            AuthenticationSessionModel sessionMock = buildAuthenticationSessionModel(authNoteMap);
             RootAuthenticationSessionModel rootSessionMock = spy(RootAuthenticationSessionModel.class);
             KeycloakSession keycloakSession = spy(KeycloakSession.class);
             LoginFormsProvider loginFormsProvider = buildLoginFormsProvider();
@@ -66,6 +76,7 @@ public class MockFactory {
             UserProvider userProviderMock = buildUserProvider(usernames);
             BruteForceProtector bruteForceProtectorMock = buildBruteForceProtector(temporarilyDisabled);
             UserModel userModelMock = buildUserModel(username);
+            HttpRequest httpRequestMock = buildHttpRequest(codeInput);
 
             if(loginHint != null){
                 doReturn(loginHint).when(sessionMock).getClientNote(OIDCLoginProtocol.LOGIN_HINT_PARAM);
@@ -79,6 +90,7 @@ public class MockFactory {
             doReturn(keycloakSession).when(contextMock).getSession();
             doReturn(realmModel).when(contextMock).getRealm();
             doReturn(userModelMock).when(contextMock).getUser();
+            doReturn(httpRequestMock).when(contextMock).getHttpRequest();
 
             doReturn(rootSessionMock).when(sessionMock).getParentSession();
 
@@ -128,6 +140,24 @@ public class MockFactory {
         doReturn(loginFormsProviderMock).when(loginFormsProviderMock).setAttribute(anyString(),any());
         doReturn(loginFormsProviderMock).when(loginFormsProviderMock).setError(anyString(),any());
         return loginFormsProviderMock;
+    }
+
+    static HttpRequest buildHttpRequest(String codeInput){
+        HttpRequest httpRequestMock = mock(HttpRequest.class);
+        MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
+        formData.add("codeInput",codeInput);
+        doReturn(formData).when(httpRequestMock).getDecodedFormParameters();
+        return httpRequestMock;
+    }
+
+
+    static AuthenticationSessionModel buildAuthenticationSessionModel(Map<String,String> authNoteMap){
+        AuthenticationSessionModel sessionMock = spy(AuthenticationSessionModel.class);
+        doAnswer((Answer<String>) invocation -> {
+            String authNoteKeyParam = (String) invocation.getArguments()[0];
+            return authNoteMap.get(authNoteKeyParam);
+        }).when(sessionMock).getAuthNote(anyString());
+        return sessionMock;
     }
  
 }
