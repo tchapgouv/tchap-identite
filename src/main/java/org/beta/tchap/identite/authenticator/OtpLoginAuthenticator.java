@@ -127,7 +127,7 @@ public class OtpLoginAuthenticator implements Authenticator {
             // in case of spamming, the user will be ignored silently
             // we still treat this scenario as an invalid code scenario to do disturb the flow for the clients
             context.failureChallenge(
-                    AuthenticationFlowError.INVALID_CREDENTIALS,
+                        AuthenticationFlowError.INVALID_CREDENTIALS,
                     otpFormError(context, "error.invalid.code"));
             return;
         }
