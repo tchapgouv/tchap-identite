@@ -28,23 +28,19 @@ public class MatrixService {
     private final UserService userService;
     private final RoomService roomService;
 
-    private final String accountEmail;
-    private final String password;
     private final String matrixId;
 
 
     protected MatrixService(String accountEmail, String tchapPassword) {
-        this.accountEmail = accountEmail;
-        this.password = tchapPassword;
 
         LoginService loginService = new LoginService();
         homeServerService = new HomeServerService();
 
-        String homeServer = homeServerService.findHomeServerByEmail(this.accountEmail);
+        String homeServer = homeServerService.findHomeServerByEmail(accountEmail);
         this.matrixId = UserService.emailToUserId(accountEmail, homeServer);
 
         String accountHomeServerUrl = buildHomeServerUrl(homeServer);
-        String accessToken = loginService.findAccessToken(accountHomeServerUrl, this.accountEmail, password);
+        String accessToken = loginService.findAccessToken(accountHomeServerUrl, accountEmail, tchapPassword);
 
         userService = new UserService(accountHomeServerUrl, accessToken);
 
@@ -124,7 +120,6 @@ public class MatrixService {
                 : Collections.emptyList();
     }
 
-    /* only for testing */
     public RoomService getRoomService() {
         return roomService;
     }

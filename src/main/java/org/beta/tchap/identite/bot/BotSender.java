@@ -5,10 +5,8 @@ import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
 import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
 import org.beta.tchap.identite.matrix.rest.room.RoomService;
-import org.beta.tchap.identite.user.TchapUserStorage;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.jboss.logging.Logger;
-import org.keycloak.models.UserModel;
 
 public class BotSender {
 
@@ -48,7 +46,7 @@ public class BotSender {
         return true;
     }
 
-        /**
+    /**
      * Ensure there is a room where user is invited, if room existed, invitation is sent
      * @param destMatrixId
      * @return roomId or null if no existing room
