@@ -3,9 +3,10 @@ package org.beta.tchap.identite.matrix.rest.room;
 import java.util.*;
 
 public class DirectRoomsResource {
-    private Map<String, List<String>> directRooms;
+    private Map<String, List<String>> directRooms = new HashMap<>();
 
     public DirectRoomsResource() {
+        directRooms = new HashMap<>();
     }
 
     public Map<String, List<String>> getDirectRooms() {
@@ -19,6 +20,7 @@ public class DirectRoomsResource {
     public List<String> getDirectRoomsForMId(String matrixId) {
         return directRooms.get(matrixId);
     }
+
 
     public void addDirectRoomForMatrixId(String matrixId, String roomId) {
         List<String> newRoomsId = Optional.ofNullable(getDirectRoomsForMId(matrixId)).map(ArrayList::new).orElse(new ArrayList<>());

@@ -99,7 +99,7 @@
 <main role="main" id="main" class="fr-container" >
   <div class="fr-container  fr-mt-4w fr-mb-4w">
     <div class="fr-grid-row fr-grid-row--center">
-      <div class="fr-col-xs-12 fr-col-sm-8 fr-col-md-6 fr-col-lg-8">
+      <div class="fr-col-xs-12 fr-col-sm-12 fr-col-md-12 fr-col-lg-10">
 
           <!--p>Domaine ${kcSanitize(msg("loginTitleHtml",(realm.displayNameHtml!'')))?no_esc}</p-->
 
@@ -172,7 +172,7 @@
               <#-- App-initiated actions should not see warning messages about the need to complete the action -->
               <#-- during login.                                                                               -->
               <#if displayMessage && message?has_content && (message.type != 'warning' || !isAppInitiatedAction??)>
-                  <div class="fr-alert fr-alert--${message.type} fr-alert--sm">
+                  <div class="fr-alert fr-alert--${message.type} fr-alert--sm fr-mb-3w">
                       <#if message.type = 'success'><span class="${properties.kcFeedbackSuccessIcon!}"></span></#if>
                       <#if message.type = 'warning'><span class="${properties.kcFeedbackWarningIcon!}"></span></#if>
                       <#if message.type = 'error'><span class="${properties.kcFeedbackErrorIcon!}"></span></#if>
@@ -183,14 +183,16 @@
 
               <#nested "form">
 
-              <#if auth?has_content && auth.showTryAnotherWayLink() && showAnotherWayIfPresent>
+ <#--               
+    not used
+    <#if auth?has_content && auth.showTryAnotherWayLink() && showAnotherWayIfPresent>
               <form id="kc-select-try-another-way-form" action="${url.loginAction}" method="post" <#if displayWide>class="${properties.kcContentWrapperClass!}"</#if>>
                   <div class="${properties.kcFormGroupClass!}">
                     <input type="hidden" name="tryAnotherWay" value="on" />
                     <a href="#" id="try-another-way" class="fr-link" onclick="document.forms['kc-select-try-another-way-form'].submit();return false;">${msg("doTryAnotherWay")}</a>
                   </div>
               </form>
-              </#if>
+              </#if>  -->
 
 
             </div>

@@ -1,10 +1,11 @@
 package org.beta.tchap.identite.authenticator;
 
+import org.beta.tchap.identite.bot.BotSender;
 import org.beta.tchap.identite.email.EmailSender;
-import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
-import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.user.TchapUserStorage;
-import org.beta.tchap.identite.utils.*;
+import org.beta.tchap.identite.utils.Features;
+import org.beta.tchap.identite.utils.LoggingUtilsFactory;
+import org.beta.tchap.identite.utils.SecureCode;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
@@ -13,6 +14,7 @@ import org.keycloak.forms.login.LoginFormsProvider;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.services.managers.BruteForceProtector;
 import org.keycloak.sessions.AuthenticationSessionModel;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -43,15 +45,15 @@ public class OtpLoginAuthenticator implements Authenticator {
     private final EmailSender emailSender;
     private final int codeTimeout;
     private final int mailDelay;
-    private final MatrixService matrixService;
+    private final BotSender botSender;
 
     public OtpLoginAuthenticator(
-            SecureCode secureCode, EmailSender emailSender, int codeTimeout, int mailDelay, MatrixService matrixService) {
+            SecureCode secureCode, EmailSender emailSender, int codeTimeout, int mailDelay, BotSender botSender) {
         this.secureCode = secureCode;
         this.emailSender = emailSender;
         this.codeTimeout = codeTimeout;
         this.mailDelay = mailDelay;
-        this.matrixService = matrixService;
+        this.botSender = botSender;
     }
 
     /**
@@ -62,13 +64,22 @@ public class OtpLoginAuthenticator implements Authenticator {
         //user should have been set in the context before
         UserModel user = context.getUser();
 
-        if(user==null){
+        if (user == null) {
             context.failure(AuthenticationFlowError.UNKNOWN_USER);
+            return;
         }
 
         if (LOG.isDebugEnabled()) {
             LOG.debugf("Authenticate OtpLoginAuthenticator with user %s %s", LoggingUtilsFactory.getInstance().logOrHash(user.getEmail()),
-                user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER));
+                    user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER));
+        }
+
+        if (isTemporarilyDisabled(context)) {
+            LOG.warnf("User is temporarily disabled  %s", user.getId());
+            // in case of spamming, no code will be sent and the user will be ignored silently
+            // we still treat this scenario as a success to do disturb the flow for the clients
+            context.challenge(otpForm(context, null));
+            return;
         }
 
         if (!canSendNewCode(context)) {
@@ -88,12 +99,17 @@ public class OtpLoginAuthenticator implements Authenticator {
             return;
         }
 
-        if (generateAndSendCode(context)) {
-            // code has been sent
-            context.success();
-        }
 
-        context.challenge(otpForm(context, null));
+        if (generateAndSendCode(context)) {
+            //add a message if a code has already been sent
+            String info = hasSentCode(context) ? "info.new.code.sent" : null;
+            // code has been sent, succes, add a timestamp in session
+            setCodeTimestamp(context);
+            context.challenge(otpForm(context, info));
+        } else {
+            // error while sending email
+            context.challenge(otpFormError(context, "error.email.not.sent"));
+        }
     }
 
     /**
@@ -103,6 +119,16 @@ public class OtpLoginAuthenticator implements Authenticator {
     public void action(AuthenticationFlowContext context) {
         if (LOG.isDebugEnabled()) {
             LOG.debugf("Authenticate action OtpLoginAuthenticator %s", context);
+        }
+
+        if (isTemporarilyDisabled(context)) {
+            LOG.warnf("User is temporarily disabled  %s", context.getUser().getId());
+            // in case of spamming, the user will be ignored silently
+            // we still treat this scenario as an invalid code scenario to do disturb the flow for the clients
+            context.failureChallenge(
+                    AuthenticationFlowError.INVALID_CREDENTIALS,
+                    otpFormError(context, "error.invalid.code"));
+            return;
         }
 
         /* retrieve formData*/
@@ -147,6 +173,7 @@ public class OtpLoginAuthenticator implements Authenticator {
                         context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL));
     }
  */
+
     /**
      * Prepare the view of the otp form
      *
@@ -191,7 +218,7 @@ public class OtpLoginAuthenticator implements Authenticator {
      * Send a OTP to the user by email
      *
      * @param context keycloak auth context
-     * @return true is email has been sent
+     * @return true if both email and tchap message have been sent
      */
     private boolean generateAndSendCode(AuthenticationFlowContext context) {
         String code = secureCode.generateCode(6);
@@ -211,40 +238,34 @@ public class OtpLoginAuthenticator implements Authenticator {
                 context.getUser(),
                 friendlyCode,
                 String.valueOf(codeTimeout))) {
-            // error while sending email
-            otpFormError(context, "error.email.not.sent");
             return false;
         }
 
-        String homeServer = user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER);
-        String matrixId = matrixService.getUserService().findUserInfoByEmail(user.getUsername(), homeServer).getUserId();
-
-        LOG.debugf(
-            "Sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
-
-        /*
-         * botSender
-         */
-        if(Features.isTchapBotEnabled()) {
-            try {
-
-                String roomId = matrixService.getRoomService().createDM(matrixId);
-                String serviceName = context.getAuthenticationSession().getClient().getName();
-                matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
-                matrixService.getRoomService().sendMessage(roomId, friendlyCode);
-
-            } catch (MatrixRuntimeException e) {
-                LOG.errorf(
-                        "Error while sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
-                return false;
-            }
+        if (Features.isTchapBotEnabled()) {
+            // whatever is happening on the bot side, we do not fail the whole process as long the email has been sent
+            botSender.sendMessage(
+                    context.getAuthenticationSession().getClient().getName(),
+                    user.getUsername(),
+                    friendlyCode
+            );
         }
 
-        setCodeTimestamp(context);
         return true;
     }
 
     /**
+     * Check if a code has already been sent
+     *
+     * @param context keycloak auth context
+     * @return true/false
+     */
+    private boolean hasSentCode(AuthenticationFlowContext context) {
+        return getLastCodeTimestamp(context) != 0;
+    }
+
+    /**
+     * IMPORTANT : This feature is not stable, do not activate
+     * <p>
      * Check if a new code can be sent. A cool down delay must be respected.
      *
      * @param context keycloak auth context
@@ -288,6 +309,12 @@ public class OtpLoginAuthenticator implements Authenticator {
             return 0;
         }
         return Collections.max(timestamps);
+    }
+
+    private boolean isTemporarilyDisabled(AuthenticationFlowContext context) {
+        BruteForceProtector bruteForceProtector = context.getSession().getProvider(BruteForceProtector.class);
+        UserModel user = context.getUser();
+        return bruteForceProtector.isTemporarilyDisabled(context.getSession(), context.getRealm(), user);
     }
 
     @Override
