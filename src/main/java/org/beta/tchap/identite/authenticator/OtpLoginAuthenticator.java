@@ -64,22 +64,22 @@ public class OtpLoginAuthenticator implements Authenticator {
         //user should have been set in the context before
         UserModel user = context.getUser();
 
-        if(user==null){
+        if (user == null) {
             context.failure(AuthenticationFlowError.UNKNOWN_USER);
             return;
         }
 
         if (LOG.isDebugEnabled()) {
             LOG.debugf("Authenticate OtpLoginAuthenticator with user %s %s", LoggingUtilsFactory.getInstance().logOrHash(user.getEmail()),
-                user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER));
+                    user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER));
         }
 
-        if (isTemporarilyDisabled(context)){
-                LOG.warnf("User is temporarily disabled  %s", user.getId());
-                // in case of spamming, no code will be sent and the user will be ignored silently
-                // we still treat this scenario as a success to do disturb the flow for the clients
-                context.challenge(otpForm(context, null));
-                return;
+        if (isTemporarilyDisabled(context)) {
+            LOG.warnf("User is temporarily disabled  %s", user.getId());
+            // in case of spamming, no code will be sent and the user will be ignored silently
+            // we still treat this scenario as a success to do disturb the flow for the clients
+            context.challenge(otpForm(context, null));
+            return;
         }
 
         if (!canSendNewCode(context)) {
@@ -99,15 +99,14 @@ public class OtpLoginAuthenticator implements Authenticator {
             return;
         }
 
-        
+
         if (generateAndSendCode(context)) {
             //add a message if a code has already been sent
-            String info = hasSentCode(context)? "info.new.code.sent" : null;
+            String info = hasSentCode(context) ? "info.new.code.sent" : null;
             // code has been sent, succes, add a timestamp in session
             setCodeTimestamp(context);
             context.challenge(otpForm(context, info));
-        }
-        else {
+        } else {
             // error while sending email
             context.challenge(otpFormError(context, "error.email.not.sent"));
         }
@@ -122,7 +121,7 @@ public class OtpLoginAuthenticator implements Authenticator {
             LOG.debugf("Authenticate action OtpLoginAuthenticator %s", context);
         }
 
-        if (isTemporarilyDisabled(context)){
+        if (isTemporarilyDisabled(context)) {
             LOG.warnf("User is temporarily disabled  %s", context.getUser().getId());
             // in case of spamming, the user will be ignored silently
             // we still treat this scenario as an invalid code scenario to do disturb the flow for the clients
@@ -174,6 +173,7 @@ public class OtpLoginAuthenticator implements Authenticator {
                         context.getAuthenticationSession().getAuthNote(AUTH_NOTE_USER_EMAIL));
     }
  */
+
     /**
      * Prepare the view of the otp form
      *
@@ -241,9 +241,13 @@ public class OtpLoginAuthenticator implements Authenticator {
             return false;
         }
 
-        if(Features.isTchapBotEnabled()) {
+        if (Features.isTchapBotEnabled()) {
             // whatever is happening on the bot side, we do not fail the whole process as long the email has been sent
-            botSender.sendMessage(context.getAuthenticationSession().getClient().getName(), user, friendlyCode);
+            botSender.sendMessage(
+                    context.getAuthenticationSession().getClient().getName(),
+                    user.getUsername(),
+                    friendlyCode
+            );
         }
 
         return true;
@@ -258,11 +262,12 @@ public class OtpLoginAuthenticator implements Authenticator {
     private boolean hasSentCode(AuthenticationFlowContext context) {
         return getLastCodeTimestamp(context) != 0;
     }
+
     /**
      * IMPORTANT : This feature is not stable, do not activate
-     * 
+     * <p>
      * Check if a new code can be sent. A cool down delay must be respected.
-     * 
+     *
      * @param context keycloak auth context
      * @return true/false
      */

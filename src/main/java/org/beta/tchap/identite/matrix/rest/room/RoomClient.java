@@ -6,7 +6,6 @@ import feign.RequestLine;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface RoomClient {
     @RequestLine("GET /user/{userId}/account_data/m.direct")
@@ -28,6 +27,14 @@ public interface RoomClient {
     @RequestLine("POST /rooms/{roomId}/leave")
     @Headers("Content-Type: application/json")
     void leaveRoom(@Param("roomId") String roomId);
+
+    @RequestLine("POST /rooms/{roomId}/join")
+    @Headers("Content-Type: application/json")
+    void join(@Param("roomId") String roomId);
+
+    @RequestLine("POST /rooms/{roomId}/invite")
+    @Headers("Content-Type: application/json")
+    void invite(@Param("roomId") String roomId, InviteBody inviteBody);
 
     @RequestLine("PUT /rooms/{roomId}/send/m.room.message/{transactionId}")
     @Headers("Content-Type: application/json")

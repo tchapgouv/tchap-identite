@@ -1,6 +1,7 @@
 package org.beta.tchap.identite.bot;
 
 import org.beta.tchap.identite.matrix.rest.room.CreateDMBody;
+import org.beta.tchap.identite.matrix.rest.room.InviteBody;
 import org.beta.tchap.identite.matrix.rest.room.RoomClient;
 import org.beta.tchap.identite.matrix.rest.room.SendMessageBody;
 
@@ -47,11 +48,23 @@ class FakeRoomClient implements RoomClient {
 
     @Override
     public void leaveRoom(String roomId) {
-
+        //TODO
     }
 
     @Override
     public void sendMessage(String roomId, String transactionId, SendMessageBody messageBody) {
         lastMessage = messageBody.getBody();
+    }
+
+    @Override
+    public void join(String roomId) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void invite(String roomId, InviteBody inviteBody) {
+        // TODO Auto-generated method stub
+        
     }
 }

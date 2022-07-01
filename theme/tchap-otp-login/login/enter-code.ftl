@@ -22,7 +22,7 @@
             </div>
             <div class="fr-grid-row fr-grid-row--middle">
                 <div class="fr-col-3 hideMobile">
-                    <img src="${url.resourcesPath}/img/enter-code-envelop.png" class="fr-responsive-img fr-p-4w"/>
+                    <img src="${url.resourcesPath}/img/icon-envelop-code.png" class="fr-responsive-img fr-p-4w"/>
                 </div>
                 <div class="fr-col-1 hideMobile">
                     <img src="${url.resourcesPath}/img/enter-code-arrow.png" class="fr-responsive-img fr-p-1w"/>

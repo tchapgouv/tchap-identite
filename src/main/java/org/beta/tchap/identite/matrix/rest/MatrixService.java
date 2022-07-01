@@ -28,19 +28,24 @@ public class MatrixService {
     private final UserService userService;
     private final RoomService roomService;
 
-    protected MatrixService() {
-        String account = Environment.getenv(Constants.TCHAP_ACCOUNT);
-        String password = Environment.getenv(Constants.TCHAP_PASSWORD);
+    private final String matrixId;
+
+
+    protected MatrixService(String accountEmail, String tchapPassword) {
+
         LoginService loginService = new LoginService();
         homeServerService = new HomeServerService();
 
-        String accountHomeServerUrl = buildHomeServerUrl(homeServerService.findHomeServerByEmail(account));
-        String accessToken = loginService.findAccessToken(accountHomeServerUrl, account, password);
+        String homeServer = homeServerService.findHomeServerByEmail(accountEmail);
+        this.matrixId = UserService.emailToUserId(accountEmail, homeServer);
+
+        String accountHomeServerUrl = buildHomeServerUrl(homeServer);
+        String accessToken = loginService.findAccessToken(accountHomeServerUrl, accountEmail, tchapPassword);
 
         userService = new UserService(accountHomeServerUrl, accessToken);
 
         RoomClient roomClient = RoomClientFactory.build(accountHomeServerUrl, accessToken);
-        roomService = new RoomService(roomClient);
+        roomService = new RoomService(roomClient, this.matrixId);
     }
 
     /*
@@ -83,7 +88,7 @@ public class MatrixService {
 
      /**
      * Check if the home server is accepted on tchap
-     * @param email
+     * @param userHomeServer
      * @return not null value
      */
     public boolean isHomeServerAcceptedOnTchap(String userHomeServer) {
@@ -115,7 +120,6 @@ public class MatrixService {
                 : Collections.emptyList();
     }
 
-    /* only for testing */
     public RoomService getRoomService() {
         return roomService;
     }
@@ -133,6 +137,14 @@ public class MatrixService {
         }
         boolean isValid = !userInfoByEmail.isDeactivated() && !userInfoByEmail.isExpired();
         return new MatrixUserInfo(userInfoByEmail.getUserId(),isValid);
+    }
+
+    /**
+     * Return the matrixId of the connected user
+     * @return not null string
+     */
+    public String getMatrixId(){
+        return matrixId;
     }
 
 }
