@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ */
+
 package org.beta.tchap.identite.utils;
 
 import static org.beta.tchap.identite.utils.Constants.TCHAP_LOG_SENSITIVE_DATA;

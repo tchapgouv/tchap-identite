@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ */
+
 package org.beta.tchap.identite.matrix.rest.room;
 
 import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;

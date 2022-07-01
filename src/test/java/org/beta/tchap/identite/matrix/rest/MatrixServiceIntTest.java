@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ */
+
 package org.beta.tchap.identite.matrix.rest;
 
 import org.beta.tchap.TestSuiteUtils;
@@ -16,7 +20,7 @@ class MatrixServiceIntTest {
         Assertions.assertTrue(!System.getProperty("TCHAP_HOME_SERVER_LIST").isEmpty());
         Assertions.assertTrue(!System.getProperty("TCHAP_SKIP_CERTIFICATE_VALIDATION").isEmpty());
         Assertions.assertTrue(!System.getProperty("TCHAP_UNAUTHORIZED_HOME_SERVER_LIST").isEmpty());
-        
+
         matrixService = MatrixServiceFactory.getInstance();
     }
 

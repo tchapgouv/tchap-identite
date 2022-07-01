@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ */
+
 package org.beta.tchap.identite.utils;
 
 public class Features {

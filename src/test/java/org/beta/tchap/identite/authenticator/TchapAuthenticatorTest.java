@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ */
+
 package org.beta.tchap.identite.authenticator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,10 +25,10 @@ import org.mockito.quality.Strictness;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.WARN)
 public class TchapAuthenticatorTest {
-    
+
 
     TchapAuthenticator authenticator = new TchapAuthenticator();
-    
+
     @Captor ArgumentCaptor<Response> responseCaptor;
     @Captor ArgumentCaptor<String> userErrorCaptor;
     @Captor ArgumentCaptor<String> authNote;
@@ -57,10 +61,10 @@ public class TchapAuthenticatorTest {
         assertEquals(TchapAuthenticator.ERROR_UNKNOWN_USER,userErrorCaptor.getValue());
 
     }
-    
+
     @Test
     public void whenUserExists_shouldSetAuthNote_andSuccess(){
-        AuthenticationFlowContext context =  
+        AuthenticationFlowContext context =
             new MockFactory.AuthenticationFlowContextBuilder()
                 .withLoginHint(username)
                 .addValidUser(username)

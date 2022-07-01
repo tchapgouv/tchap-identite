@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ */
+
 package org.beta.tchap.identite.authenticator;
 
 import org.jboss.resteasy.spi.HttpRequest;
@@ -121,8 +125,8 @@ public class MockFactory {
              }
              return null;
          }).when(userProviderMock).getUserByEmail(any(RealmModel.class), anyString());
-                    
-        return userProviderMock; 
+
+        return userProviderMock;
     }
 
     static BruteForceProtector buildBruteForceProtector(boolean temporarilyDisabled){
@@ -163,5 +167,5 @@ public class MockFactory {
 
         return sessionMock;
     }
- 
+
 }

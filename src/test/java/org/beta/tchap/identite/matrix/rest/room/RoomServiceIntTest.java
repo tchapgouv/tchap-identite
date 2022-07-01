@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ */
+
 package org.beta.tchap.identite.matrix.rest.room;
 
 import org.apache.log4j.BasicConfigurator;
@@ -36,24 +40,24 @@ class RoomServiceIntTest {
         // Needed for logging
         BasicConfigurator.configure();
         TestSuiteUtils.loadEnvFromDotEnvFile();
-        
-        deleteRoomAfterTests = Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS) == null 
+
+        deleteRoomAfterTests = Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS) == null
         || !Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS).toLowerCase().equals("false");//todo refact this
 
         testAccountMatrixId = Environment.getenv(TestSuiteUtils.TEST_USER2_MATRIXID);
-        
+
         String accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
         String password = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
         //String matrixId = Environment.getenv(Constants.TCHAP_BOT_MATRIX_ID);
-        
+
         botMatrixService = MatrixServiceUtil.getMatrixService(accountEmail, password);
         botRoomService = botMatrixService.getRoomService();
-        
+
         String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
         String userTestAccountPassword = Environment.getenv(TestSuiteUtils.TEST_USER2_PASSWORD);
         //String userTestMid = Environment.getenv(TestSuiteUtils.TEST_USER2_MATRIXID);
         userTestRoomService = MatrixServiceUtil.getMatrixService(userTestAccountEmail, userTestAccountPassword).getRoomService();
-        
+
     }
 
     @AfterEach
@@ -87,23 +91,23 @@ class RoomServiceIntTest {
         @Test
         void should_throw_IAE() {
             String roomId = null;
-            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.getJoinedMembers(roomId)); 
+            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.getJoinedMembers(roomId));
         }
 
         @Test
         void throw_exc_if_room_does_not_exists() {
             String roomId = "thisroomdoesexist?no";
-            Assertions.assertThrows(RoomDoesNotExist.class, () -> botRoomService.getJoinedMembers(roomId)); 
+            Assertions.assertThrows(RoomDoesNotExist.class, () -> botRoomService.getJoinedMembers(roomId));
         }
     }
 
     @Nested
     class NoEventsTest {
-        
+
         @Test
         void shouldInitiazeMatrixService() {}
-        
-        
+
+
         @Test
         void shouldHaveNoDMEventsIfNoDM() {
             DirectRoomsResource dmRooms = botRoomService.listBotDMRooms();
@@ -150,7 +154,7 @@ class RoomServiceIntTest {
             waitAbit();
             String roomId = null;
             String userMid = "user1";
-            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.updateRoomAccounData(userMid, roomId)); 
+            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.updateRoomAccounData(userMid, roomId));
         }
 
         @Test
@@ -158,7 +162,7 @@ class RoomServiceIntTest {
             waitAbit();
             String roomId = "room1";
             String userMid = null;
-            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.updateRoomAccounData(userMid, roomId)); 
+            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.updateRoomAccounData(userMid, roomId));
         }
     }
     @Nested
@@ -182,7 +186,7 @@ class RoomServiceIntTest {
         @Test
         void should_throw_if_room_does_not_exist() {
             String roomId = "roomthatdoesnotexitsforsure";
-            Assertions.assertThrows(RoomDoesNotExist.class, () -> botRoomService.invite(roomId, testAccountMatrixId)); 
+            Assertions.assertThrows(RoomDoesNotExist.class, () -> botRoomService.invite(roomId, testAccountMatrixId));
         }
 
         @Test
@@ -190,7 +194,7 @@ class RoomServiceIntTest {
             String roomId = botRoomService.createDM(testAccountMatrixId);
             markForDeletion(roomId);
             String unknownUserId = "@barbabpapa:localname";
-            Assertions.assertThrows(UserDoesNotExist.class, () -> botRoomService.invite(roomId, unknownUserId)); 
+            Assertions.assertThrows(UserDoesNotExist.class, () -> botRoomService.invite(roomId, unknownUserId));
         }
 
         @Test
@@ -198,7 +202,7 @@ class RoomServiceIntTest {
             waitAbit();
             String roomId = null;
             String userMid = "user1";
-            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.invite(roomId, userMid )); 
+            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.invite(roomId, userMid ));
         }
 
         @Test
@@ -206,9 +210,9 @@ class RoomServiceIntTest {
             waitAbit();
             String roomId = "room1";
             String userMid = null;
-            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.updateRoomAccounData(roomId, userMid)); 
+            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.updateRoomAccounData(roomId, userMid));
         }
-      
+
     }
 
     @Nested
@@ -242,7 +246,7 @@ class RoomServiceIntTest {
             waitAbit();
             String roomId = null;
             String message = "message";
-            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.sendMessage(roomId, message)); 
+            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.sendMessage(roomId, message));
         }
 
         @Test
@@ -250,7 +254,7 @@ class RoomServiceIntTest {
             waitAbit();
             String roomId = "room1";
             String message = null;
-            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.updateRoomAccounData(roomId, message)); 
+            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.updateRoomAccounData(roomId, message));
         }
     }
 

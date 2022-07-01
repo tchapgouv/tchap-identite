@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2022 DINUM
- * This file is Licensed under the MIT License, see LICENSE.md
+ * Copyright (c) 2022. DINUM
  */
 
 package org.beta.tchap.identite.matrix.rest.room;

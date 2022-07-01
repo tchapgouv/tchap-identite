@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ */
+
 package org.beta.tchap.identite.authenticator;
 
 import org.beta.tchap.identite.bot.BotSender;
@@ -18,8 +22,8 @@ import static org.mockito.Mockito.*;
 public class OtpLoginAuthenticatorTest {
 
     OtpLoginAuthenticator authenticator;
-    
-    @Mock EmailSender emailSender; 
+
+    @Mock EmailSender emailSender;
     @Mock SecureCode secureCode;
     @Mock BotSender botSender;
     int codeTimeout = 0;

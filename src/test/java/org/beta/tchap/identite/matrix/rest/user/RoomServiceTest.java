@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ */
+
 package org.beta.tchap.identite.matrix.rest.user;
 
 import org.beta.tchap.identite.matrix.rest.login.LoginResource;

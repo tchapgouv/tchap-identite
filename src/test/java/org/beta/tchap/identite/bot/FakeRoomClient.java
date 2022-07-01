@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ */
+
 package org.beta.tchap.identite.bot;
 
 import org.beta.tchap.identite.matrix.rest.room.CreateDMBody;
@@ -59,12 +63,12 @@ class FakeRoomClient implements RoomClient {
     @Override
     public void join(String roomId) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void invite(String roomId, InviteBody inviteBody) {
         // TODO Auto-generated method stub
-        
+
     }
 }

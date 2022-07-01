@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ */
+
 package org.beta.tchap.identite.authenticator;
 
 import static org.beta.tchap.identite.authenticator.OtpLoginAuthenticator.*;
@@ -33,7 +37,7 @@ public class TchapAuthenticator implements Authenticator {
     @Override
     public void authenticate(AuthenticationFlowContext context) {
         AuthenticationSessionModel session = context.getAuthenticationSession();
-        
+
         //retrieve login hint from a standard note injected by oidc
         String loginHint = session.getClientNote(OIDCLoginProtocol.LOGIN_HINT_PARAM);
 
