@@ -203,11 +203,6 @@ public class RoomService {
      * @param rooms
      * @return
      */
-    public UsersListRessource getJoinedMembers(String roomId) {
-         Map<String, Object> rawResponse = roomClient.getJoinedMembers(roomId);
-        return UsersListRessource.toUsersListRessource((Map<String, Object>) rawResponse.get("joined"));
-    }
-
     public static boolean hasARoomWithUser(String destMatrixId, DirectRoomsResource rooms) {
         return rooms.getDirectRoomsForMId(destMatrixId) != null && rooms.getDirectRoomsForMId(destMatrixId).size() > 0;
     }
