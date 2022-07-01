@@ -19,11 +19,11 @@ public class BotSender {
         this.matrixService = matrixService;
     }
 
-    public boolean sendMessage(String serviceName, UserModel user, String friendlyCode) {
-            String homeServer = user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER);
-            MatrixUserInfo matrixUserInfo = matrixService.findMatrixUserInfo(homeServer, user.getUsername());
+    public boolean sendMessage(String serviceName, String username, String friendlyCode) {
+            String homeServer = matrixService.getUserHomeServer(username);
+            MatrixUserInfo matrixUserInfo = matrixService.findMatrixUserInfo(homeServer, username);
             if(!matrixUserInfo.isValid()){
-                LOG.infof("User account is not valid on Tchap : %s", LoggingUtilsFactory.getInstance().logOrHide(user.getUsername()));
+                LOG.infof("User account is not valid on Tchap : %s", LoggingUtilsFactory.getInstance().logOrHide(username));
                 return false;
             }
 
@@ -34,7 +34,7 @@ public class BotSender {
             try {
                 String roomId = ensureUserIsInRoom(matrixId);
                 if(roomId ==null ){
-                    roomId = matrixService.getRoomService().createDM(matrixId);   
+                    roomId = matrixService.getRoomService().createDM(matrixId);
                 }
 
                 matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);

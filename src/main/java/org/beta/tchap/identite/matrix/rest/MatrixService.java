@@ -42,7 +42,7 @@ public class MatrixService {
 
         String homeServer = homeServerService.findHomeServerByEmail(this.accountEmail);
         this.matrixId = UserService.emailToUserId(accountEmail, homeServer);
-    
+
         String accountHomeServerUrl = buildHomeServerUrl(homeServer);
         String accessToken = loginService.findAccessToken(accountHomeServerUrl, this.accountEmail, password);
 
@@ -92,7 +92,7 @@ public class MatrixService {
 
      /**
      * Check if the home server is accepted on tchap
-     * @param email
+     * @param userHomeServer
      * @return not null value
      */
     public boolean isHomeServerAcceptedOnTchap(String userHomeServer) {
@@ -147,7 +147,7 @@ public class MatrixService {
     /**
      * Return the matrixId of the connected user
      * @return not null string
-     */ 
+     */
     public String getMatrixId(){
         return matrixId;
     }

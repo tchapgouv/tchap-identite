@@ -45,7 +45,7 @@ public class RoomService {
      * @param dMRoomsList not nullable
      * @throws MatrixRuntimeException direct rooms listing can not be updated
      */
-    protected void updateBotDMRoomList(Map<String, List<String>> dMRoomsList) {
+    public void updateBotDMRoomList(Map<String, List<String>> dMRoomsList) {
         try {
             roomClient.updateDMRoomList(this.botMatrixId, dMRoomsList);
         }catch(RuntimeException e){
@@ -203,6 +203,11 @@ public class RoomService {
      * @param rooms
      * @return
      */
+    public UsersListRessource getJoinedMembers(String roomId) {
+         Map<String, Object> rawResponse = roomClient.getJoinedMembers(roomId);
+        return UsersListRessource.toUsersListRessource((Map<String, Object>) rawResponse.get("joined"));
+    }
+
     public static boolean hasARoomWithUser(String destMatrixId, DirectRoomsResource rooms) {
         return rooms.getDirectRoomsForMId(destMatrixId) != null && rooms.getDirectRoomsForMId(destMatrixId).size() > 0;
     }
