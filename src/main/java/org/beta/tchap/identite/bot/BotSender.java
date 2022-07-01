@@ -38,9 +38,10 @@ public class BotSender {
                 matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
                 matrixService.getRoomService().sendMessage(roomId, friendlyCode);
 
-            } catch (MatrixRuntimeException e) {
-                LOG.errorf(
-                        "Error while sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
+            } catch (MatrixRuntimeException exception) {
+                LOG.errorf(exception,
+                        "Error while sending OTP to tchap user: %s",
+                        LoggingUtilsFactory.getInstance().logOrHide(matrixId));
                 return false;
             }
         return true;
