@@ -204,7 +204,8 @@ public class RoomService {
      * @return
      */
     public static boolean hasARoomWithUser(String destMatrixId, DirectRoomsResource rooms) {
-        return rooms.getDirectRoomsForMId(destMatrixId) != null && rooms.getDirectRoomsForMId(destMatrixId).size() > 0;
+        List<String> directRoomsForMId = rooms.getDirectRoomsForMId(destMatrixId);
+        return directRoomsForMId != null && directRoomsForMId.size() > 0;
     }
 
 
