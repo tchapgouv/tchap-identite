@@ -16,7 +16,9 @@ public class MatrixServiceFactory {
             if (StringUtils.isEmpty(accountEmail) || StringUtils.isEmpty(password)) {
                 throw new IllegalArgumentException(
                         "No account or password has been set. Please define the following"
-                                + " environment variables : TCHAP_BOT_ACCOUNT_EMAIL and TCHAP_BOT_PASSWORD");
+                                + " environment variables : "
+                                + Constants.TCHAP_BOT_ACCOUNT_EMAIL
+                                + " and " + Constants.TCHAP_BOT_PASSWORD);
             }
             instance = new MatrixService(accountEmail, password);
         }
