@@ -29,7 +29,7 @@ public class BotSender {
 
             String matrixId = matrixUserInfo.getMatrixId();
             if (LOG.isDebugEnabled()) {
-                LOG.debugf("Sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
+                LOG.debugf("Prepare sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
             }
             try {
                 String roomId = ensureUserIsInRoom(matrixId);
