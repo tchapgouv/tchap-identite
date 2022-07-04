@@ -267,11 +267,14 @@
             <!-- make sure every file has the following copyright header.
               optionally, Spotless can set copyright years by digging
               through git history (see "license" section below)
-            <licenseHeader>
-              <content>/* (C)$YEAR */</content>
-              or <file>${project.basedir}/license-header</file>
-            </licenseHeader>
             -->
+            <!-- No black line after header https://github.com/google/google-java-format/issues/434 -->
+            <licenseHeader>
+              <content>/*
+ * Copyright (c) 2022. DINUM
+ */
+              </content>
+            </licenseHeader>
           </java>
         </configuration>
       </plugin>
