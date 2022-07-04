@@ -1,4 +1,6 @@
 /dev/providers/*.jar
+/dev/quarkus-extensions/tchap-identite-0.0.1.jar
+/dev/quarkus-extentions/tchap-identite-0.0.1.jar
 .env 
 
 ##############################
@@ -6,7 +8,7 @@
 ##############################
 .mtj.tmp/
 *.class
-*.jar
+#*.jar
 *.war
 *.ear
 *.nar
@@ -75,3 +77,5 @@ nb-configuration.xml
 ## OS X
 ##############################
 .DS_Store
+
+

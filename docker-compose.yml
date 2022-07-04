@@ -27,9 +27,10 @@ services:
         networks:
             - keycloak_network
         volumes:
-            - ./dev/providers/:/app/keycloak/providers/
-            - ./dev/import:/app/keycloak/data/import
-            - ./theme/tchap-otp-login:/app/keycloak/themes/tchap-otp-login
+            - ./dev/import:/app/keycloak/data/import:ro
+            - ./theme/tchap-otp-login:/app/keycloak/themes/tchap-otp-login:ro
+            - ./dev/quarkus-extensions/:/app/keycloak/providers/
+            - ./dev/providers/tchap-identite-0.0.1.jar:/app/keycloak/providers/tchap-identite-0.0.1.jar:ro #can it be cleaner?
             #- .:/buildpack
             #- cache:/cache
             #- build:/build
@@ -49,11 +50,11 @@ services:
         depends_on:
             - postgres
 volumes:
-    db_volume:
-    cache:
-    build:
-    env:
-    app:
+    db_volume: #not used?
+    cache: #not used?
+    build: #not used?
+    env: #not used?
+    app: #not used?
 networks:
     keycloak_network:
         driver: bridge
