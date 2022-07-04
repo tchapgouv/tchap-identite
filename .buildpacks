@@ -1,2 +1,2 @@
 https://github.com/Scalingo/java-buildpack
-https://github.com/tchapgouv/keycloak-buildpack#master
+https://github.com/tchapgouv/keycloak-buildpack#5-enable-installation-of-quarkus-extensions-from-local-dir
