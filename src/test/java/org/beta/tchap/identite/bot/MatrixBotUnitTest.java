@@ -23,6 +23,7 @@ class MatrixBotUnitTest {
     static void setup() {
         // Needed for logging
         BasicConfigurator.configure();
+        TestSuiteUtils.loadEnvFromDotEnvFile();
         testAccountMatrixId = Environment.getenv(TestSuiteUtils.ENV_TEST_BOT_TO_USER_MID);
 
 
