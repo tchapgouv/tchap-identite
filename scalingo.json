@@ -86,6 +86,11 @@
       "value": "local",
       "required": true
     },
+    "KC_SPI_THEME_WELCOME_THEME": {
+      "description": "keycloak welcome theme by default (home page)",
+      "value": "tchap-otp-login",
+      "required": true
+    },
     "PROVIDERS": {
       "description": "comma list providers",
       "value": "",
