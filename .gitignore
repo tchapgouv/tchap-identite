@@ -1,6 +1,5 @@
 /dev/providers/*.jar
-/dev/quarkus-extensions/tchap-identite-0.0.1.jar
-/dev/quarkus-extentions/tchap-identite-0.0.1.jar
+/dev/quarkus-extensions/tchap-identite-*.jar
 .env 
 
 ##############################
