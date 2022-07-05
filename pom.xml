@@ -1,3 +1,8 @@
+<!--
+  ~ Copyright (c) 2022. DINUM
+  ~ This·file·is·licensed·under·the·MIT·License,·see·LICENSE.md
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -271,7 +276,8 @@
             <!-- No black line after header https://github.com/google/google-java-format/issues/434 -->
             <licenseHeader>
               <content>/*
- * Copyright (c) 2022. DINUM
+ * Copyright (c) $YEAR. DINUM
+ * This file is licensed under the MIT License, see LICENSE.md
  */
               </content>
             </licenseHeader>
