@@ -39,7 +39,7 @@ public class EmailSender {
             }
             emailSender.setUser(user);
             emailSender.send(
-                    "Confirmez la réservation de votre conférence audio",
+                    "login.code.email.title",
                     "loginCodeEmail.html",
                     createCodeLoginAttributes(code, codeTimeout));
         } catch (EmailException e) {
