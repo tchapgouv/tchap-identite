@@ -1,12 +1,10 @@
 /*
  * Copyright (c) 2022. DINUM
- * This·file·is·licensed·under·the·MIT·License,·see·LICENSE.md
+ * This file is licensed under the MIT License, see LICENSE.md
  */
-
 package org.beta.tchap.identite.matrix.rest.room;
 
 import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,17 +16,23 @@ public class CreateDMBody {
     private final String preset = "trusted_private_chat";
     private final String visibility = "private";
     private final String access_rules = "direct";
-    private final List<Object> initial_state = new Gson().fromJson("[\n" +
-            "                {\"content\":{\"guest_access\":\"forbidden\"},\n" +
-            "                    \"type\":\"m.room.guest_access\",\"state_key\":\"\"},\n" +
-            "                {\"content\":{\"history_visibility\":\"invited\"},\n" +
-            "                    \"type\":\"m.room.history_visibility\",\"state_key\":\"\"},\n" +
-            "                {\"content\":{\"rule\":\"direct\"},\n" +
-            "                    \"type\":\"im.vector.room.access_rules\",\"state_key\":\"\"}]", ArrayList.class);
+    private final List<Object> initial_state =
+            new Gson()
+                    .fromJson(
+                            "[\n"
+                                + "                {\"content\":{\"guest_access\":\"forbidden\"},\n"
+                                + "                   "
+                                + " \"type\":\"m.room.guest_access\",\"state_key\":\"\"},\n"
+                                + "               "
+                                + " {\"content\":{\"history_visibility\":\"invited\"},\n"
+                                + "                   "
+                                + " \"type\":\"m.room.history_visibility\",\"state_key\":\"\"},\n"
+                                + "                {\"content\":{\"rule\":\"direct\"},\n"
+                                + "                   "
+                                + " \"type\":\"im.vector.room.access_rules\",\"state_key\":\"\"}]",
+                            ArrayList.class);
 
-
-    public CreateDMBody() {
-    }
+    public CreateDMBody() {}
 
     public void addInvite(String matrixId) {
         this.invite.add(matrixId);

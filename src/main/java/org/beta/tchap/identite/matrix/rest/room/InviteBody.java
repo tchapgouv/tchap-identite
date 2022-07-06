@@ -1,8 +1,7 @@
 /*
  * Copyright (c) 2022. DINUM
- * This·file·is·licensed·under·the·MIT·License,·see·LICENSE.md
+ * This file is licensed under the MIT License, see LICENSE.md
  */
-
 package org.beta.tchap.identite.matrix.rest.room;
 
 public class InviteBody {
@@ -19,5 +18,4 @@ public class InviteBody {
     public InviteBody(String user_id) {
         this.user_id = user_id;
     }
-
 }

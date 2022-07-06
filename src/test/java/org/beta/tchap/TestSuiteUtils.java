@@ -1,8 +1,7 @@
 /*
  * Copyright (c) 2022. DINUM
- * This·file·is·licensed·under·the·MIT·License,·see·LICENSE.md
+ * This file is licensed under the MIT License, see LICENSE.md
  */
-
 package org.beta.tchap;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -15,7 +14,7 @@ public class TestSuiteUtils {
     public static String TEST_USER2_PASSWORD = "TEST_USER2_PASSWORD";
     public static String TEST_USER2_MATRIXID = "TEST_USER2_MATRIXID";
 
-    public static void loadEnvFromDotEnvFile(){
+    public static void loadEnvFromDotEnvFile() {
         Dotenv dotenv = Dotenv.load();
         dotenv.entries().forEach(e -> System.setProperty(e.getKey(), e.getValue()));
     }

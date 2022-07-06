@@ -1,8 +1,7 @@
 /*
  * Copyright (c) 2022. DINUM
- * This·file·is·licensed·under·the·MIT·License,·see·LICENSE.md
+ * This file is licensed under the MIT License, see LICENSE.md
  */
-
 package org.beta.tchap.identite.matrix.rest.user;
 
 import org.beta.tchap.identite.matrix.rest.login.LoginResource;
@@ -17,8 +16,9 @@ class RoomServiceTest {
     @BeforeAll
     public static void setup() {
         LoginResource loginResource = new LoginResource();
-//        loginResource.setAccessToken("fakeToken");
-        userService = new UserService("https://matrix.i.tchap.gouv.fr", loginResource.getAccessToken());
+        //        loginResource.setAccessToken("fakeToken");
+        userService =
+                new UserService("https://matrix.i.tchap.gouv.fr", loginResource.getAccessToken());
     }
 
     @Test

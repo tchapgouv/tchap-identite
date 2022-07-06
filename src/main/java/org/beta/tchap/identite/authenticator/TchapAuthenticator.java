@@ -1,8 +1,7 @@
 /*
  * Copyright (c) 2022. DINUM
- * This·file·is·licensed·under·the·MIT·License,·see·LICENSE.md
+ * This file is licensed under the MIT License, see LICENSE.md
  */
-
 package org.beta.tchap.identite.authenticator;
 
 import static org.beta.tchap.identite.authenticator.OtpLoginAuthenticator.*;
@@ -33,13 +32,12 @@ public class TchapAuthenticator implements Authenticator {
     public static final String ERROR_TOO_MANY_REQUESTS = "too many requests";
     public static final String ERROR_MALFORMED_REQUEST = "request is malformed";
 
-
     /** Verify that user in login hint is found in users federation (tchap) */
     @Override
     public void authenticate(AuthenticationFlowContext context) {
         AuthenticationSessionModel session = context.getAuthenticationSession();
 
-        //retrieve login hint from a standard note injected by oidc
+        // retrieve login hint from a standard note injected by oidc
         String loginHint = session.getClientNote(OIDCLoginProtocol.LOGIN_HINT_PARAM);
 
         if (loginHint == null) {
@@ -74,7 +72,8 @@ public class TchapAuthenticator implements Authenticator {
             return;
         }
 
-        // retrieve user from loginHint in keycloak authentication session (attached to browser>tab via cookie)
+        // retrieve user from loginHint in keycloak authentication session (attached to browser>tab
+        // via cookie)
         UserModel user = getUser(context, loginHint);
 
         if (user == null) {
@@ -118,8 +117,7 @@ public class TchapAuthenticator implements Authenticator {
                 AuthenticationFlowError.GENERIC_AUTHENTICATION_ERROR,
                 context.form().createForm(FTL_UNAUTHORIZED_USER),
                 ERROR_UNKNOWN_USER,
-                ERROR_UNKNOWN_USER
-                );
+                ERROR_UNKNOWN_USER);
     }
 
     /**
@@ -129,11 +127,7 @@ public class TchapAuthenticator implements Authenticator {
      * @return userModel retrieved by the user storage
      */
     private UserModel getUser(AuthenticationFlowContext context, String loginHint) {
-        return context.getSession()
-                .users()
-                .getUserByEmail(
-                        context.getRealm(),
-                        loginHint);
+        return context.getSession().users().getUserByEmail(context.getRealm(), loginHint);
     }
 
     @Override

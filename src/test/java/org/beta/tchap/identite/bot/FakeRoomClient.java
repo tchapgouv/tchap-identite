@@ -1,16 +1,14 @@
 /*
  * Copyright (c) 2022. DINUM
- * This·file·is·licensed·under·the·MIT·License,·see·LICENSE.md
+ * This file is licensed under the MIT License, see LICENSE.md
  */
-
 package org.beta.tchap.identite.bot;
 
+import java.util.*;
 import org.beta.tchap.identite.matrix.rest.room.CreateDMBody;
 import org.beta.tchap.identite.matrix.rest.room.InviteBody;
 import org.beta.tchap.identite.matrix.rest.room.RoomClient;
 import org.beta.tchap.identite.matrix.rest.room.SendMessageBody;
-
-import java.util.*;
 
 class FakeRoomClient implements RoomClient {
     public Map<String, List<String>> rooms;
@@ -31,7 +29,7 @@ class FakeRoomClient implements RoomClient {
     public Map<String, Object> getJoinedMembers(String roomId) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> joined = new HashMap<>();
-        for (String member: joinedMembers) {
+        for (String member : joinedMembers) {
             joined.put(member, null);
         }
 
@@ -53,7 +51,7 @@ class FakeRoomClient implements RoomClient {
 
     @Override
     public void leaveRoom(String roomId) {
-        //TODO
+        // TODO
     }
 
     @Override

@@ -1,8 +1,7 @@
 /*
  * Copyright (c) 2022. DINUM
- * This·file·is·licensed·under·the·MIT·License,·see·LICENSE.md
+ * This file is licensed under the MIT License, see LICENSE.md
  */
-
 package org.beta.tchap.identite.matrix.rest.room;
 
 import feign.Feign;
@@ -19,10 +18,9 @@ public class RoomClientFactory {
     public static RoomClient build(String homeServerBaseUrl, String accessToken) {
         return Feign.builder()
                 .client(new OkHttpClient(OkHttpClientFactory.getClient()))
-                .requestInterceptor(requestTemplate ->
-                        requestTemplate.header(
-                                "Authorization",
-                                "Bearer " + accessToken))
+                .requestInterceptor(
+                        requestTemplate ->
+                                requestTemplate.header("Authorization", "Bearer " + accessToken))
                 .encoder(new GsonEncoder(GsonFactory.getInstance()))
                 .decoder(new GsonDecoder(GsonFactory.getInstance()))
                 .logger(new Slf4jLogger(RoomClient.class))
