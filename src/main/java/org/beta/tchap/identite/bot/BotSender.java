@@ -17,7 +17,16 @@ public class BotSender {
         this.matrixService = matrixService;
     }
 
+    /**
+     * Send a otp code via a tchap bot
+     * @param serviceName
+     * @param username
+     * @param friendlyCode
+     * @return true if code has been sent successfully
+     * @throws MatrixRuntimeException if message is not sent 
+     */
     public boolean sendMessage(String serviceName, String username, String friendlyCode) {
+        try{
             String homeServer = matrixService.getUserHomeServer(username);
             MatrixUserInfo matrixUserInfo = matrixService.findMatrixUserInfo(homeServer, username);
             if(!matrixUserInfo.isValid()){
@@ -29,22 +38,19 @@ public class BotSender {
             if (LOG.isDebugEnabled()) {
                 LOG.debugf("Prepare sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
             }
-            try {
-                String roomId = ensureUserIsInRoom(matrixId);
-                if(roomId ==null ){
-                    roomId = matrixService.getRoomService().createDM(matrixId);
-                }
-
-                matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
-                matrixService.getRoomService().sendMessage(roomId, friendlyCode);
-
-            } catch (MatrixRuntimeException exception) {
-                LOG.errorf(exception,
-                        "Error while sending OTP to tchap user: %s",
-                        LoggingUtilsFactory.getInstance().logOrHide(matrixId));
-                return false;
+            String roomId = ensureUserIsInRoom(matrixId);
+            if(roomId ==null ){
+                roomId = matrixService.getRoomService().createDM(matrixId);
             }
-        return true;
+
+            matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
+            matrixService.getRoomService().sendMessage(roomId, friendlyCode);
+
+            return true;
+
+        }catch(RuntimeException e){
+            throw new MatrixRuntimeException(e);
+        }
     }
 
     /**
