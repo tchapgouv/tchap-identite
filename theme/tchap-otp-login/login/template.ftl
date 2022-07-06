@@ -57,11 +57,11 @@
                                 <br>Française
                             </p>
                         </div>
-                        <div class="fr-header__navbar">
+                        <#--  <div class="fr-header__navbar">
                             <button class="fr-btn--menu fr-btn" data-fr-opened="false" aria-controls="modal-menu" aria-haspopup="menu" title="Menu">
                                 Menu
                             </button>
-                        </div>
+                        </div>  -->
                     </div>
                     <div class="fr-header__service">
                         <a href="${clientUrl}" title="Accueil - ${clientName}">
@@ -172,7 +172,7 @@
               <#-- App-initiated actions should not see warning messages about the need to complete the action -->
               <#-- during login.                                                                               -->
               <#if displayMessage && message?has_content && (message.type != 'warning' || !isAppInitiatedAction??)>
-                  <div class="fr-alert fr-alert--${message.type} fr-alert--sm fr-mb-3w">
+                  <div class="fr-alert fr-alert--${message.type} fr-alert--sm fr-mb-1w fr-mb-md-2w">
                       <#if message.type = 'success'><span class="${properties.kcFeedbackSuccessIcon!}"></span></#if>
                       <#if message.type = 'warning'><span class="${properties.kcFeedbackWarningIcon!}"></span></#if>
                       <#if message.type = 'error'><span class="${properties.kcFeedbackErrorIcon!}"></span></#if>
