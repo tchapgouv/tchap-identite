@@ -86,6 +86,11 @@
       "value": "local",
       "required": true
     },
+    "KC_SPI_THEME_WELCOME_THEME": {
+      "description": "keycloak welcome theme by default (home page)",
+      "value": "tchap-otp-login",
+      "required": true
+    },
     "PROVIDERS": {
       "description": "comma list providers",
       "value": "",
@@ -130,6 +135,22 @@
     "TCHAP_CODE_TIMEOUT_IN_MINUTES": {
       "description": "define the otp code time validity in minutes (optional, default 60)",
       "value": "false"
+    },
+    "quarkus_log_sentry": {
+      "description": "enable sentry",
+      "value": "true"
+    },
+    "quarkus_log_sentry_dsn": {
+      "description": "define the dsn where sentry logs are sent to",
+      "value": "https://xxx@sentry.incubateur.net/yy"
+    },
+    "quarkus_log_sentry_server_name": {
+      "description": "define server name in sentry logs",
+      "value": "scalingo-server-name?"
+    },
+    "quarkus_log_sentry_minimum_event_level": {
+      "description": "define event level minimum",
+      "value": "WARN"
     }
   },
   "addons": ["postgresql:postgresql-sandbox"],
