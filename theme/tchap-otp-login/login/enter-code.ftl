@@ -29,7 +29,8 @@
                 </div>
                 <div class="fr-col-12 fr-col-md-6 fr-p-4w fr-mt-5w">
                     <div class="fr-grid-row">
-                          <input tabindex="1" id="codeInput" class="fr-input codeInput fr-m-auto" name="codeInput" type="text" placeholder="abc-def" autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
+                        <span class="fr-hint-text">exemple de code: abc-def</span>
+                          <input tabindex="1" id="codeInput" class="fr-input codeInput fr-m-auto" name="codeInput" type="text" autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
                     </div>
                     <div class="fr-grid-row fr-my-3w">
                         <input tabindex="4" class="fr-btn fr-m-auto" name="login" id="login" type="submit" value="Confirmer"/>
