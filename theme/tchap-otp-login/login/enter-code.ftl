@@ -27,7 +27,7 @@
                 <div class="fr-col-1 hideMobile">
                     <img src="${url.resourcesPath}/img/enter-code-arrow.png" class="fr-responsive-img fr-p-1w"/>
                 </div>
-                <div class="fr-col-12 fr-col-md-6 fr-p-4w fr-mt-5w">
+                <div class="fr-col-12 fr-col-md-6 fr-p-1w fr-p-md-4w fr-mt-md-5w">
                     <div class="fr-grid-row">
                         <span class="fr-hint-text">exemple de code: abc-def</span>
                           <input tabindex="1" id="codeInput" class="fr-input codeInput fr-m-auto" name="codeInput" type="text" autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
