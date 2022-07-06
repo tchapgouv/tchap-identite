@@ -57,11 +57,11 @@
                                 <br>Française
                             </p>
                         </div>
-                        <div class="fr-header__navbar">
+                        <#--  <div class="fr-header__navbar">
                             <button class="fr-btn--menu fr-btn" data-fr-opened="false" aria-controls="modal-menu" aria-haspopup="menu" title="Menu">
                                 Menu
                             </button>
-                        </div>
+                        </div>  -->
                     </div>
                     <div class="fr-header__service">
                         <a href="${clientUrl}" title="Accueil - ${clientName}">
