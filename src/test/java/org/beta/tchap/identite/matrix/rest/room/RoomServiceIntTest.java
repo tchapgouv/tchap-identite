@@ -4,7 +4,6 @@ import org.apache.log4j.BasicConfigurator;
 import org.beta.tchap.TestSuiteUtils;
 import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
 import org.beta.tchap.identite.matrix.exception.RoomDoesNotExist;
-import org.beta.tchap.identite.matrix.exception.UserDoesNotExist;
 import org.beta.tchap.identite.matrix.rest.MatrixService;
 import org.beta.tchap.identite.matrix.rest.MatrixServiceUtil;
 import org.beta.tchap.identite.utils.Constants;
@@ -16,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 
-
-// FIXME should test the events in the rooms to be sure it's ok
 class RoomServiceIntTest {
+
+
     private static RoomService botRoomService;
     private static RoomService userTestRoomService;
 
@@ -58,16 +57,17 @@ class RoomServiceIntTest {
 
     @AfterEach
     public void teardown() {
-        waitAbit();
+        
+        TestSuiteUtils.wait2second();
 
         if(deleteRoomAfterTests){
             Map<String, List<String>> dmRooms = botRoomService.listBotDMRooms().getDirectRooms();
-            waitAbit();
+            TestSuiteUtils.waitAbit();
             dmRooms.remove(testAccountMatrixId);
             botRoomService.updateBotDMRoomList(dmRooms);
 
             for (String roomId: createdTestRooms) {
-                waitAbit();
+                TestSuiteUtils.waitAbit();
                 botRoomService.leaveRoom(roomId);
             }
         }
@@ -125,7 +125,7 @@ class RoomServiceIntTest {
 
         @Test
         void shouldThrowIAE_whenUserIdIsNull() {
-            waitAbit();
+            TestSuiteUtils.waitAbit();
             Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.createDM(null));
         }
 
@@ -138,7 +138,6 @@ class RoomServiceIntTest {
 
         @Test
         void shouldUpdateRoomAccountData() {
-            waitAbit();
             String roomId = "room1";
             String userMid = "user1";
             botRoomService.updateRoomAccounData(userMid, roomId);
@@ -147,7 +146,6 @@ class RoomServiceIntTest {
 
         @Test
         void should_throw_IAE() {
-            waitAbit();
             String roomId = null;
             String userMid = "user1";
             Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.updateRoomAccounData(userMid, roomId)); 
@@ -155,7 +153,6 @@ class RoomServiceIntTest {
 
         @Test
         void should_throw_IAE2() {
-            waitAbit();
             String roomId = "room1";
             String userMid = null;
             Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.updateRoomAccounData(userMid, roomId)); 
@@ -179,23 +176,22 @@ class RoomServiceIntTest {
             Assertions.assertThrows(MatrixRuntimeException.class, () -> botRoomService.invite(roomId, testAccountMatrixId));
         }
 
-        @Test
+         @Test
         void should_throw_if_room_does_not_exist() {
             String roomId = "roomthatdoesnotexitsforsure";
-            Assertions.assertThrows(RoomDoesNotExist.class, () -> botRoomService.invite(roomId, testAccountMatrixId)); 
-        }
+            Assertions.assertThrows(MatrixRuntimeException.class, () -> botRoomService.invite(roomId, testAccountMatrixId)); 
+        } 
 
         @Test
         void should_throw_if_userId_does_not_exist() {
             String roomId = botRoomService.createDM(testAccountMatrixId);
             markForDeletion(roomId);
             String unknownUserId = "@barbabpapa:localname";
-            Assertions.assertThrows(UserDoesNotExist.class, () -> botRoomService.invite(roomId, unknownUserId)); 
+            Assertions.assertThrows(MatrixRuntimeException.class, () -> botRoomService.invite(roomId, unknownUserId)); 
         }
 
         @Test
         void should_throw_IAE() {
-            waitAbit();
             String roomId = null;
             String userMid = "user1";
             Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.invite(roomId, userMid )); 
@@ -203,7 +199,6 @@ class RoomServiceIntTest {
 
         @Test
         void should_throw_IAE2() {
-            waitAbit();
             String roomId = "room1";
             String userMid = null;
             Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.updateRoomAccounData(roomId, userMid)); 
@@ -223,10 +218,8 @@ class RoomServiceIntTest {
         @Test
         void shouldSendMultipleMessageToADMRoom() {
             String roomId = botRoomService.createDM(testAccountMatrixId);
-            waitAbit();
             botRoomService.sendMessage(roomId, "First message 1/3");
             botRoomService.sendMessage(roomId, "Second message 2/3");
-            waitAbit();
             botRoomService.sendMessage(roomId, "Other message 3/3");
             markForDeletion(roomId);
         }
@@ -239,7 +232,6 @@ class RoomServiceIntTest {
 
         @Test
         void should_throw_IAE() {
-            waitAbit();
             String roomId = null;
             String message = "message";
             Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.sendMessage(roomId, message)); 
@@ -247,7 +239,7 @@ class RoomServiceIntTest {
 
         @Test
         void should_throw_IAE2() {
-            waitAbit();
+            TestSuiteUtils.waitAbit();
             String roomId = "room1";
             String message = null;
             Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.updateRoomAccounData(roomId, message)); 
@@ -259,11 +251,5 @@ class RoomServiceIntTest {
         createdTestRooms.add(room);
     }
 
-    private void waitAbit(){
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
 }
