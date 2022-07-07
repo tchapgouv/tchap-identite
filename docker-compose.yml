@@ -30,7 +30,7 @@ services:
             - ./dev/import:/app/keycloak/data/import:ro
             - ./theme/tchap-otp-login:/app/keycloak/themes/tchap-otp-login:ro
             - ./dev/quarkus-extensions/:/app/keycloak/providers/
-            - ./dev/providers/tchap-identite-0.0.1.jar:/app/keycloak/providers/tchap-identite-0.0.1.jar:ro #can it be cleaner?
+            - ./dev/providers/tchap-otp-login-0.0.1.jar:/app/keycloak/providers/tchap-otp-login-0.0.1.jar:ro #can it be cleaner?
             #- .:/buildpack
             #- cache:/cache
             #- build:/build

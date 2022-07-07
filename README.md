@@ -1,5 +1,5 @@
-# tchap-identite
-Le projet Tchap identité publie un service d'authentification qui utilise un canal tchap pour identifier les utilisateurs.
+# Authentification
+Le projet Authentification otp publie un service d'authentification qui se base sur un envoi d'otp par email et par [Tchap](https://tchap.beta.gouv.fr/), la messagerie de l'Etat
 
 ## Monitoring
 

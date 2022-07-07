@@ -1,4 +1,4 @@
-name: Build jar of tchap-identite #major #minor #patch
+name: Build jar of tchap-otp-login #major #minor #patch
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Auto tag version of tchap-identite
+      - name: Auto tag version of tchap-otp-login
         id: tag_version
         uses: anothrNick/github-tag-action@1.36.0
         env:
@@ -37,10 +37,10 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn -Drevision=${{ needs.tag-version.outputs.new_version }} -B package --file pom.xml
-      - name: Create tchap-identite release
+      - name: Create tchap-otp-login release
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ needs.tag-version.outputs.new_version }}
           generateReleaseNotes: true
-          artifacts: "/home/runner/work/tchap-identite/tchap-identite/dev/providers/tchap-identite-${{ needs.tag-version.outputs.new_version }}.jar"
+          artifacts: "/home/runner/work/tchap-identite/tchap-identite/dev/providers/tchap-otp-login-${{ needs.tag-version.outputs.new_version }}.jar"
           token: ${{ secrets.GITHUB_TOKEN }}
