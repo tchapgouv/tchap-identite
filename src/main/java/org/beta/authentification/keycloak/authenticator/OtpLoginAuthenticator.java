@@ -17,6 +17,7 @@ import org.beta.authentification.keycloak.user.TchapUserStorage;
 import org.beta.authentification.keycloak.utils.Features;
 import org.beta.authentification.keycloak.utils.LoggingUtilsFactory;
 import org.beta.authentification.keycloak.utils.SecureCode;
+import org.beta.authentification.matrix.exception.MatrixRuntimeException;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
@@ -249,10 +250,14 @@ public class OtpLoginAuthenticator implements Authenticator {
         if (Features.isTchapBotEnabled()) {
             // whatever is happening on the bot side, we do not fail the whole process as long the
             // email has been sent
-            botSender.sendMessage(
+            try{
+                botSender.sendMessage(
                     context.getAuthenticationSession().getClient().getName(),
                     user.getUsername(),
                     friendlyCode);
+            }catch(MatrixRuntimeException e){
+                LOG.error(String.format("Sending otp via tchap bot failed for user %s", LoggingUtilsFactory.getInstance().logOrHash(user.getUsername())), e);
+            }
         }
 
         return true;
