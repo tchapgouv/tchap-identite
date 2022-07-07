@@ -25,7 +25,7 @@ class BotSenderIntTest {
     private static Boolean deleteRoomAfterTests;
 
     @BeforeAll
-    public static void setup() {
+    static void setUp() {
         BasicConfigurator.configure();
         TestSuiteUtils.loadEnvFromDotEnvFile();
 
