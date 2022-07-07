@@ -22,16 +22,15 @@ public class BotSender {
      * @param serviceName
      * @param username
      * @param friendlyCode
-     * @return true if code has been sent successfully
      * @throws MatrixRuntimeException if message is not sent 
      */
-    public boolean sendMessage(String serviceName, String username, String friendlyCode) {
+    public void sendMessage(String serviceName, String username, String friendlyCode) {
         try{
             String homeServer = matrixService.getUserHomeServer(username);
             MatrixUserInfo matrixUserInfo = matrixService.findMatrixUserInfo(homeServer, username);
             if(!matrixUserInfo.isValid()){
-                LOG.infof("User account is not valid on Tchap : %s", LoggingUtilsFactory.getInstance().logOrHide(username));
-                return false;
+                String errorMessage = String.format("User account is not valid on Tchap : %", LoggingUtilsFactory.getInstance().logOrHide(username));
+                throw new MatrixRuntimeException(errorMessage);
             }
 
             String matrixId = matrixUserInfo.getMatrixId();
@@ -45,8 +44,6 @@ public class BotSender {
 
             matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
             matrixService.getRoomService().sendMessage(roomId, friendlyCode);
-
-            return true;
 
         }catch(RuntimeException e){
             throw new MatrixRuntimeException(e);

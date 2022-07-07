@@ -68,11 +68,10 @@ class BotSenderIntTest {
         void shouldSendAnOTPToANewUser() {
             String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
 
-            boolean success = botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room = getRoomWithUser(testAccountMatrixId);
             boolean isUserInRoom = isInvitedUserInRoom(testAccountMatrixId, room);
 
-            Assertions.assertTrue(success);
             Assertions.assertNotNull(room);
             Assertions.assertFalse(isUserInRoom);
             markForDeletion(room);
@@ -82,19 +81,18 @@ class BotSenderIntTest {
         void shouldNotCreateADMIfADMWithJoinedUserExists() {
             String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
 
-            boolean success1 = botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room1 = getRoomWithUser(testAccountMatrixId);
             TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
             userTestRoomService.join(room1);
             TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
 
-            boolean success2 = botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room2 = getRoomWithUser(testAccountMatrixId);
 
             boolean isUserInRoom = isInvitedUserInRoom(testAccountMatrixId, room1);
 
-            Assertions.assertTrue(success1);
-            Assertions.assertTrue(success2);
+        
             Assertions.assertTrue(isUserInRoom);
             assertNoNewRoomIsCreated(room1, room2);
 
@@ -121,7 +119,7 @@ class BotSenderIntTest {
         void shouldSendAnInviteIfUserHasRefusedInvitation() {
             String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
 
-            boolean success1 = botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
             String room1 = getRoomWithUser(testAccountMatrixId);
             TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
@@ -129,13 +127,11 @@ class BotSenderIntTest {
             userTestRoomService.leaveRoom(room1);
             TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
 
-            boolean success2 = botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room2 = getRoomWithUser(testAccountMatrixId);
 
             boolean isUserInRoom = isInvitedUserInRoom(testAccountMatrixId, room1);
 
-            Assertions.assertTrue(success1);
-            Assertions.assertTrue(success2);
             Assertions.assertFalse(isUserInRoom);
             assertNoNewRoomIsCreated(room1, room2);
             markForDeletion(room1);
@@ -146,19 +142,17 @@ class BotSenderIntTest {
         void shouldSendAnInviteIfUserHasLeaveTheRoom() {
             String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
 
-            boolean success1 = botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room1 = getRoomWithUser(testAccountMatrixId);
             userTestRoomService.join(room1);
             TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
             userTestRoomService.leaveRoom(room1);
             TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
-            boolean success2 = botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room2 = getRoomWithUser(testAccountMatrixId);
 
             boolean isUserInRoom = isInvitedUserInRoom(testAccountMatrixId, room1);
 
-            Assertions.assertTrue(success1);
-            Assertions.assertTrue(success2);
             Assertions.assertFalse(isUserInRoom);
             Assertions.assertNotNull(room1);
             Assertions.assertEquals(room1, room2);
