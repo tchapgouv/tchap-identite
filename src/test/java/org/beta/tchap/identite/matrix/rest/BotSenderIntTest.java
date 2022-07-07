@@ -24,8 +24,8 @@ class BotSenderIntTest {
     private final List<String> createdTestRooms = new ArrayList<>();
     private static Boolean deleteRoomAfterTests;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    public static void setup() {
         BasicConfigurator.configure();
         TestSuiteUtils.loadEnvFromDotEnvFile();
 
@@ -48,15 +48,15 @@ class BotSenderIntTest {
 
     @AfterEach
     void tearDown() {
-        waitAbit();
+        TestSuiteUtils.wait2second();
         if (deleteRoomAfterTests) {
             Map<String, List<String>> dmRooms = botRoomService.listBotDMRooms().getDirectRooms();
             dmRooms.remove(testAccountMatrixId);
-            waitAbit();
+            TestSuiteUtils.waitAbit();
             botRoomService.updateBotDMRoomList(dmRooms);
 
             createdTestRooms.forEach(roomId -> {
-                waitAbit();
+                TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
                 botRoomService.leaveRoom(roomId);
             });
         }
@@ -84,7 +84,9 @@ class BotSenderIntTest {
 
             boolean success1 = botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room1 = getRoomWithUser(testAccountMatrixId);
+            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
             userTestRoomService.join(room1);
+            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
 
             boolean success2 = botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room2 = getRoomWithUser(testAccountMatrixId);
@@ -120,9 +122,12 @@ class BotSenderIntTest {
             String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
 
             boolean success1 = botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
             String room1 = getRoomWithUser(testAccountMatrixId);
+            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
             // leaving without joining is the same as declining an invitation
             userTestRoomService.leaveRoom(room1);
+            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
 
             boolean success2 = botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room2 = getRoomWithUser(testAccountMatrixId);
@@ -144,8 +149,9 @@ class BotSenderIntTest {
             boolean success1 = botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room1 = getRoomWithUser(testAccountMatrixId);
             userTestRoomService.join(room1);
+            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
             userTestRoomService.leaveRoom(room1);
-
+            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
             boolean success2 = botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room2 = getRoomWithUser(testAccountMatrixId);
 
@@ -180,14 +186,5 @@ class BotSenderIntTest {
 
     private void markForDeletion(String room) {
         createdTestRooms.add(room);
-    }
-
-    private void waitAbit() {
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 }
