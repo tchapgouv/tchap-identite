@@ -1,6 +1,6 @@
 /dev/providers/*.jar
 #/dev/quarkus-extensions/tchap-identite-*.jar
-/dev/quarkus-extensions/otp-*.jar
+/dev/quarkus-extensions/tchap-otp-*.jar
 .env 
 
 ##############################
