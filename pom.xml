@@ -11,7 +11,7 @@
 
   <version>${revision}${changelist}</version>
 
-  <artifactId>authentification-core</artifactId>
+  <artifactId>tchap-identite</artifactId>
   <packaging>jar</packaging>
 
   <name>Authentification via otp login</name>
