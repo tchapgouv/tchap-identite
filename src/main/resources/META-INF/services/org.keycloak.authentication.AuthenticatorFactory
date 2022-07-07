@@ -3,5 +3,5 @@
 # This·file·is·licensed·under·the·MIT·License,·see·LICENSE.md
 #
 
-org.beta.keycloak.authenticator.OtpLoginAuthenticatorFactory
-org.beta.keycloak.authenticator.TchapAuthenticatorFactory
+org.beta.authentification.keycloak.authenticator.OtpLoginAuthenticatorFactory
+org.beta.authentification.keycloak.authenticator.TchapAuthenticatorFactory

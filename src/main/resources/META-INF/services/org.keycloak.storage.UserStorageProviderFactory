@@ -3,4 +3,4 @@
 # This·file·is·licensed·under·the·MIT·License,·see·LICENSE.md
 #
 
-org.beta.keycloak.user.TchapUserStorageFactory
+org.beta.authentification.keycloak.user.TchapUserStorageFactory
