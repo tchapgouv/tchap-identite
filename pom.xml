@@ -7,15 +7,15 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.beta.keycloak</groupId>
+  <groupId>org.beta.authentification</groupId>
 
   <version>${revision}${changelist}</version>
 
-  <artifactId>tchap-otp-login</artifactId>
+  <artifactId>authentification-core</artifactId>
   <packaging>jar</packaging>
 
-  <name>Tchap OTP login</name>
-  <description>Tchap OTP login authenticators via email and tchap bot</description>
+  <name>Authentification via otp login</name>
+  <description>Authentification via login email and tchap bot</description>
 
   <properties>
     <revision>0.0.1</revision>
