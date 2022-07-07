@@ -1,6 +1,7 @@
 /dev/providers/*.jar
 #/dev/quarkus-extensions/tchap-identite-*.jar
-/dev/quarkus-extensions/authentification-core-*.jar
+#/dev/quarkus-extensions/authentification-core-*.jar
+/dev/quarkus-extensions/tchap-identite-*.jar
 .env 
 
 ##############################
