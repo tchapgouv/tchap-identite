@@ -104,6 +104,10 @@
       "description": "path of the custom provider path from local build",
       "value": "dev/providers"
     },
+    "QUARKUS_EXTENSIONS_DIR": {
+      "description": "path of to quarkus extensions directory",
+      "value": "dev/quarkus-extensions"
+    },
     "DATABASE_URL": {
       "description": "database url",
       "value": "$SCALINGO_POSTGRESQL_URL"
@@ -130,11 +134,11 @@
     },
     "TCHAP_OTP_MAIL_DELAY_IN_MINUTES": {
       "description": "define the delay to wait before sending a new otp by email in minutes (optional, default 0)",
-      "value": "false"
+      "value": "0"
     },
     "TCHAP_CODE_TIMEOUT_IN_MINUTES": {
       "description": "define the otp code time validity in minutes (optional, default 60)",
-      "value": "false"
+      "value": "60"
     },
     "quarkus_log_sentry": {
       "description": "enable sentry",
@@ -157,7 +161,7 @@
   "formation": {
     "web": {
       "amount": 1,
-      "size": "S"
+      "size": "M"
     }
   }
 }
