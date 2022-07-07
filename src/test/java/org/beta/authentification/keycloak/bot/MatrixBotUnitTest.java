@@ -4,15 +4,14 @@
  */
 package org.beta.authentification.keycloak.bot;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import org.apache.log4j.BasicConfigurator;
-import org.beta.authentification.keycloak.TestSuiteUtils;
-import org.beta.authentification.keycloak.utils.Environment;
 import org.beta.authentification.matrix.rest.room.DirectRoomsResource;
 import org.beta.authentification.matrix.rest.room.RoomService;
 import org.beta.authentification.matrix.rest.room.UsersListRessource;
 import org.junit.jupiter.api.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 // FIXME need cleanup of rooms before/after each test
 class MatrixBotUnitTest {
@@ -24,8 +23,7 @@ class MatrixBotUnitTest {
     static void setup() {
         // Needed for logging
         BasicConfigurator.configure();
-        TestSuiteUtils.loadEnvFromDotEnvFile();
-        testAccountMatrixId = Environment.getenv(TestSuiteUtils.TEST_BOT_TO_USER_MID);
+        testAccountMatrixId = "123";
 
         roomClient = new FakeRoomClient();
         roomClient.rooms = new HashMap<>();
