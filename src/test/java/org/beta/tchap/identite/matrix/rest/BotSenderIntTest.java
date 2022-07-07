@@ -1,5 +1,12 @@
+/*
+ * Copyright (c) 2022. DINUM
+ * This file is licensed under the MIT License, see LICENSE.md
+ */
 package org.beta.tchap.identite.matrix.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.apache.log4j.BasicConfigurator;
 import org.beta.tchap.TestSuiteUtils;
 import org.beta.tchap.identite.bot.BotSender;
@@ -9,16 +16,12 @@ import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 import org.junit.jupiter.api.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 class BotSenderIntTest {
     private static RoomService botRoomService;
     private static RoomService userTestRoomService;
     private static BotSender botSender;
 
-    //private static MatrixService botMatrixService;
+    // private static MatrixService botMatrixService;
     private static String testAccountMatrixId;
 
     private final List<String> createdTestRooms = new ArrayList<>();
@@ -29,8 +32,10 @@ class BotSenderIntTest {
         BasicConfigurator.configure();
         TestSuiteUtils.loadEnvFromDotEnvFile();
 
-        deleteRoomAfterTests = Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS) == null
-                || !Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS).equalsIgnoreCase("false");//todo refact this
+        deleteRoomAfterTests =
+                Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS) == null
+                        || !Environment.getenv(TestSuiteUtils.ENV_DELETE_ROOM_AFTER_TESTS)
+                                .equalsIgnoreCase("false"); // todo refact this
 
         testAccountMatrixId = Environment.getenv(TestSuiteUtils.TEST_USER2_MATRIXID);
 
@@ -41,7 +46,8 @@ class BotSenderIntTest {
 
         String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
         String userTestAccountPassword = Environment.getenv(TestSuiteUtils.TEST_USER2_PASSWORD);
-        userTestRoomService = new MatrixService(userTestAccountEmail, userTestAccountPassword).getRoomService();
+        userTestRoomService =
+                new MatrixService(userTestAccountEmail, userTestAccountPassword).getRoomService();
 
         botSender = new BotSender(botMatrixService);
     }
@@ -55,10 +61,13 @@ class BotSenderIntTest {
             TestSuiteUtils.waitAbit();
             botRoomService.updateBotDMRoomList(dmRooms);
 
-            createdTestRooms.forEach(roomId -> {
-                TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
-                botRoomService.leaveRoom(roomId);
-            });
+            createdTestRooms.forEach(
+                    roomId -> {
+                        TestSuiteUtils
+                                .wait2second(); // required, else "too many requests", can it be
+                        // less? maybe..
+                        botRoomService.leaveRoom(roomId);
+                    });
         }
     }
 
@@ -83,16 +92,17 @@ class BotSenderIntTest {
 
             botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room1 = getRoomWithUser(testAccountMatrixId);
-            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
+            TestSuiteUtils
+                    .wait2second(); // required, else "too many requests", can it be less? maybe..
             userTestRoomService.join(room1);
-            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
+            TestSuiteUtils
+                    .wait2second(); // required, else "too many requests", can it be less? maybe..
 
             botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room2 = getRoomWithUser(testAccountMatrixId);
 
             boolean isUserInRoom = isInvitedUserInRoom(testAccountMatrixId, room1);
 
-        
             Assertions.assertTrue(isUserInRoom);
             assertNoNewRoomIsCreated(room1, room2);
 
@@ -120,12 +130,15 @@ class BotSenderIntTest {
             String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
 
             botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
-            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
+            TestSuiteUtils
+                    .wait2second(); // required, else "too many requests", can it be less? maybe..
             String room1 = getRoomWithUser(testAccountMatrixId);
-            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
+            TestSuiteUtils
+                    .wait2second(); // required, else "too many requests", can it be less? maybe..
             // leaving without joining is the same as declining an invitation
             userTestRoomService.leaveRoom(room1);
-            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
+            TestSuiteUtils
+                    .wait2second(); // required, else "too many requests", can it be less? maybe..
 
             botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room2 = getRoomWithUser(testAccountMatrixId);
@@ -145,9 +158,11 @@ class BotSenderIntTest {
             botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room1 = getRoomWithUser(testAccountMatrixId);
             userTestRoomService.join(room1);
-            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
+            TestSuiteUtils
+                    .wait2second(); // required, else "too many requests", can it be less? maybe..
             userTestRoomService.leaveRoom(room1);
-            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
+            TestSuiteUtils
+                    .wait2second(); // required, else "too many requests", can it be less? maybe..
             botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room2 = getRoomWithUser(testAccountMatrixId);
 

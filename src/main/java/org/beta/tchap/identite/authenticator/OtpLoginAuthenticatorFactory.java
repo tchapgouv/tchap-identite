@@ -1,5 +1,11 @@
+/*
+ * Copyright (c) 2022. DINUM
+ * This file is licensed under the MIT License, see LICENSE.md
+ */
 package org.beta.tchap.identite.authenticator;
 
+import java.util.Collections;
+import java.util.List;
 import org.beta.tchap.identite.bot.BotSenderFactory;
 import org.beta.tchap.identite.email.EmailSenderFactory;
 import org.beta.tchap.identite.utils.Constants;
@@ -13,9 +19,6 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.provider.ProviderConfigProperty;
 
-import java.util.Collections;
-import java.util.List;
-
 public class OtpLoginAuthenticatorFactory implements AuthenticatorFactory {
 
     public static final String ID = "tchap-otp-login";
@@ -26,8 +29,8 @@ public class OtpLoginAuthenticatorFactory implements AuthenticatorFactory {
     private static final int TCHAP_OTP_MAIL_DELAY_IN_MINUTES_DEFAULT = 0;
 
     private static final AuthenticationExecutionModel.Requirement[] REQUIREMENT_CHOICES = {
-            AuthenticationExecutionModel.Requirement.REQUIRED,
-            AuthenticationExecutionModel.Requirement.DISABLED
+        AuthenticationExecutionModel.Requirement.REQUIRED,
+        AuthenticationExecutionModel.Requirement.DISABLED
     };
 
     private int codeTimeout;
@@ -88,13 +91,13 @@ public class OtpLoginAuthenticatorFactory implements AuthenticatorFactory {
         mailDelay =
                 Environment.getenv(Constants.TCHAP_OTP_MAIL_DELAY_IN_MINUTES) != null
                         ? Integer.parseInt(
-                        Environment.getenv(Constants.TCHAP_OTP_MAIL_DELAY_IN_MINUTES))
+                                Environment.getenv(Constants.TCHAP_OTP_MAIL_DELAY_IN_MINUTES))
                         : TCHAP_OTP_MAIL_DELAY_IN_MINUTES_DEFAULT;
 
         codeTimeout =
                 Environment.getenv(Constants.TCHAP_CODE_TIMEOUT_IN_MINUTES) != null
                         ? Integer.parseInt(
-                        Environment.getenv(Constants.TCHAP_CODE_TIMEOUT_IN_MINUTES))
+                                Environment.getenv(Constants.TCHAP_CODE_TIMEOUT_IN_MINUTES))
                         : TCHAP_CODE_TIMEOUT_IN_MINUTES_DEFAULT;
     }
 

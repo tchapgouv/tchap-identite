@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ * This file is licensed under the MIT License, see LICENSE.md
+ */
 package org.beta.tchap.identite.bot;
 
 import org.beta.tchap.identite.matrix.MatrixUserInfo;
@@ -19,39 +23,48 @@ public class BotSender {
 
     /**
      * Send a otp code via a tchap bot
+     *
      * @param serviceName
      * @param username
      * @param friendlyCode
-     * @throws MatrixRuntimeException if message is not sent 
+     * @throws MatrixRuntimeException if message is not sent
      */
     public void sendMessage(String serviceName, String username, String friendlyCode) {
-        try{
+        try {
             String homeServer = matrixService.getUserHomeServer(username);
             MatrixUserInfo matrixUserInfo = matrixService.findMatrixUserInfo(homeServer, username);
-            if(!matrixUserInfo.isValid()){
-                String errorMessage = String.format("User account is not valid on Tchap : %", LoggingUtilsFactory.getInstance().logOrHide(username));
+            if (!matrixUserInfo.isValid()) {
+                String errorMessage =
+                        String.format(
+                                "User account is not valid on Tchap : %",
+                                LoggingUtilsFactory.getInstance().logOrHide(username));
                 throw new MatrixRuntimeException(errorMessage);
             }
 
             String matrixId = matrixUserInfo.getMatrixId();
             if (LOG.isDebugEnabled()) {
-                LOG.debugf("Prepare sending OTP to tchap user: %s", LoggingUtilsFactory.getInstance().logOrHide(matrixId));
+                LOG.debugf(
+                        "Prepare sending OTP to tchap user: %s",
+                        LoggingUtilsFactory.getInstance().logOrHide(matrixId));
             }
             String roomId = ensureUserIsInRoom(matrixId);
-            if(roomId ==null ){
+            if (roomId == null) {
                 roomId = matrixService.getRoomService().createDM(matrixId);
             }
 
-            matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
+            matrixService
+                    .getRoomService()
+                    .sendMessage(roomId, "Voici votre code pour " + serviceName);
             matrixService.getRoomService().sendMessage(roomId, friendlyCode);
 
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             throw new MatrixRuntimeException(e);
         }
     }
 
     /**
      * Ensure there is a room where user is invited, if room existed, invitation is sent
+     *
      * @param destMatrixId
      * @return roomId or null if no existing room
      */
@@ -68,6 +81,10 @@ public class BotSender {
     }
 
     private boolean isInvitedUserInRoom(String userMId, String roomId) {
-        return this.matrixService.getRoomService().getJoinedMembers(roomId).getUsers().contains(userMId);
+        return this.matrixService
+                .getRoomService()
+                .getJoinedMembers(roomId)
+                .getUsers()
+                .contains(userMId);
     }
 }

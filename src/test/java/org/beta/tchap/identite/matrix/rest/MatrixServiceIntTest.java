@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ * This file is licensed under the MIT License, see LICENSE.md
+ */
 package org.beta.tchap.identite.matrix.rest;
 
 import org.beta.tchap.TestSuiteUtils;
@@ -16,7 +20,7 @@ class MatrixServiceIntTest {
         Assertions.assertTrue(!System.getProperty("TCHAP_HOME_SERVER_LIST").isEmpty());
         Assertions.assertTrue(!System.getProperty("TCHAP_SKIP_CERTIFICATE_VALIDATION").isEmpty());
         Assertions.assertTrue(!System.getProperty("TCHAP_UNAUTHORIZED_HOME_SERVER_LIST").isEmpty());
-        
+
         matrixService = MatrixServiceFactory.getInstance();
     }
 
@@ -58,15 +62,20 @@ class MatrixServiceIntTest {
 
     @Test
     void shouldFindMatrixUserInfoBeValid() {
-        MatrixUserInfo accountValidOnTchap = matrixService.findMatrixUserInfo("i.tchap.gouv.fr", "maghen.calinghee@beta.gouv.fr");
+        MatrixUserInfo accountValidOnTchap =
+                matrixService.findMatrixUserInfo(
+                        "i.tchap.gouv.fr", "maghen.calinghee@beta.gouv.fr");
         Assertions.assertTrue(accountValidOnTchap.isValid());
-        Assertions.assertEquals("@maghen.calinghee-beta.gouv.fr:i.tchap.gouv.fr",accountValidOnTchap.getMatrixId());
+        Assertions.assertEquals(
+                "@maghen.calinghee-beta.gouv.fr:i.tchap.gouv.fr",
+                accountValidOnTchap.getMatrixId());
     }
 
     @Test
     void shouldFindMatrixUserInfoNotBeValid() {
-        MatrixUserInfo accountValidOnTchap = matrixService.findMatrixUserInfo("i.tchap.gouv.fr", "clark.kent@beta.gouv.fr");
+        MatrixUserInfo accountValidOnTchap =
+                matrixService.findMatrixUserInfo("i.tchap.gouv.fr", "clark.kent@beta.gouv.fr");
         Assertions.assertFalse(accountValidOnTchap.isValid());
-        Assertions.assertEquals(null,accountValidOnTchap.getMatrixId());
+        Assertions.assertEquals(null, accountValidOnTchap.getMatrixId());
     }
 }

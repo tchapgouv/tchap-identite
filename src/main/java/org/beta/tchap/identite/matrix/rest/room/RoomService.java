@@ -1,16 +1,18 @@
+/*
+ * Copyright (c) 2022. DINUM
+ * This file is licensed under the MIT License, see LICENSE.md
+ */
 package org.beta.tchap.identite.matrix.rest.room;
-
-import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
-import org.beta.tchap.identite.matrix.exception.RoomDoesNotExist;
-import org.beta.tchap.identite.matrix.exception.UserDoesNotExist;
 
 import feign.FeignException.BadRequest;
 import feign.FeignException.Forbidden;
 import feign.FeignException.NotFound;
-
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import org.beta.tchap.identite.matrix.exception.MatrixRuntimeException;
+import org.beta.tchap.identite.matrix.exception.RoomDoesNotExist;
+import org.beta.tchap.identite.matrix.exception.UserDoesNotExist;
 
 public class RoomService {
     private final RoomClient roomClient;
@@ -18,7 +20,7 @@ public class RoomService {
 
     public RoomService(RoomClient roomClient, String userId) {
         this.roomClient = roomClient;
-        //this.botMatrixId = Environment.getenv(Constants.TCHAP_MATRIX_ID);
+        // this.botMatrixId = Environment.getenv(Constants.TCHAP_MATRIX_ID);
         this.botMatrixId = userId;
     }
 
@@ -32,9 +34,9 @@ public class RoomService {
         try {
             Map<String, List<String>> rawResponse = roomClient.listDMRooms(this.botMatrixId);
             return DirectRoomsResource.toDirectRoomsResource(rawResponse);
-        }catch(NotFound e){
-            return new DirectRoomsResource();//return empty map
-        }catch(RuntimeException e){
+        } catch (NotFound e) {
+            return new DirectRoomsResource(); // return empty map
+        } catch (RuntimeException e) {
             throw new MatrixRuntimeException(e);
         }
     }
@@ -48,26 +50,30 @@ public class RoomService {
     public void updateBotDMRoomList(Map<String, List<String>> dMRoomsList) {
         try {
             roomClient.updateDMRoomList(this.botMatrixId, dMRoomsList);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             throw new MatrixRuntimeException(e);
         }
     }
 
     /**
      * update the room account data
+     *
      * @param destMatrixId
      * @param roomId
      */
-    protected void updateRoomAccounData(String destMatrixId, String roomId){
-        if(roomId==null || destMatrixId == null){
-            throw new IllegalArgumentException(String.format("Nor roomId nor destMatrixId must be null - roomId%s userId:%s", roomId, destMatrixId));
+    protected void updateRoomAccounData(String destMatrixId, String roomId) {
+        if (roomId == null || destMatrixId == null) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "Nor roomId nor destMatrixId must be null - roomId%s userId:%s",
+                            roomId, destMatrixId));
         }
         try {
-            //update account data
+            // update account data
             DirectRoomsResource allRooms = this.listBotDMRooms();
             allRooms.addDirectRoomForMatrixId(destMatrixId, roomId);
             roomClient.updateDMRoomList(this.botMatrixId, allRooms.getDirectRooms());
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             throw new MatrixRuntimeException(e);
         }
     }
@@ -81,8 +87,9 @@ public class RoomService {
      * @throws MatrixRuntimeException room can not be created
      */
     public String createDM(String destMatrixId) {
-        if(destMatrixId == null){
-            throw new IllegalArgumentException(String.format("destMatrixId must be not null - userId:%s",destMatrixId));
+        if (destMatrixId == null) {
+            throw new IllegalArgumentException(
+                    String.format("destMatrixId must be not null - userId:%s", destMatrixId));
         }
         try {
             CreateDMBody body = new CreateDMBody();
@@ -91,73 +98,81 @@ public class RoomService {
             String roomId = response.get("room_id");
             this.updateRoomAccounData(destMatrixId, roomId);
             return roomId;
-        }catch(BadRequest e){
-            //todo : should be parsed to see if the problem comes from the user
+        } catch (BadRequest e) {
+            // todo : should be parsed to see if the problem comes from the user
             throw new MatrixRuntimeException(e);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             throw new MatrixRuntimeException(e);
         }
     }
 
-
-
     /**
      * Send a message into an existing room
      *
-     * @param roomId  non nullable string
+     * @param roomId non nullable string
      * @param message non nullable string
      * @throws RoomDoesNotExist if room does not exist
      * @throws MatrixRuntimeException if message is not sent
      */
     public void sendMessage(String roomId, String message) {
-        if(roomId == null|| message == null){
-            throw new IllegalArgumentException(String.format("Nor roomId nor message must be null - roomId%s message:%s", roomId, message));
+        if (roomId == null || message == null) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "Nor roomId nor message must be null - roomId%s message:%s",
+                            roomId, message));
         }
         try {
             SendMessageBody messageBody = new SendMessageBody(message);
             String transactionId = new Timestamp(System.currentTimeMillis()).toString();
             roomClient.sendMessage(roomId, transactionId, messageBody);
-        }catch(Forbidden e){
+        } catch (Forbidden e) {
             throw new RoomDoesNotExist(e);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             throw new MatrixRuntimeException(e);
         }
     }
 
     /**
      * Invite a userId to an existing room
+     *
      * @param roomId non nullable string
      * @param userId non nullable string
      * @throws MatrixRuntimeException if can not invite user into room
      */
     public void invite(String roomId, String userId) {
-        if(roomId==null || userId == null){
-            throw new IllegalArgumentException(String.format("Nor roomId nor userId must be null - roomId%s userId:%s", roomId, userId));
+        if (roomId == null || userId == null) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "Nor roomId nor userId must be null - roomId%s userId:%s",
+                            roomId, userId));
         }
-        try{
+        try {
             roomClient.invite(roomId, new InviteBody(userId));
-        //todo: should use a subtype of exception
-        }catch(RuntimeException e){
+            // todo: should use a subtype of exception
+        } catch (RuntimeException e) {
             throw new MatrixRuntimeException(e);
         }
     }
 
     /**
      * Return the list of users that have joined a room (including the creator of the room)
+     *
      * @param roomId
      * @return
-    * @throws MatrixRuntimeException if can get the list of joined members
+     * @throws MatrixRuntimeException if can get the list of joined members
      */
     public UsersListRessource getJoinedMembers(String roomId) {
-        if(roomId == null){
-            throw new IllegalArgumentException(String.format("roomId must be not null - roomId:%s",roomId));
+        if (roomId == null) {
+            throw new IllegalArgumentException(
+                    String.format("roomId must be not null - roomId:%s", roomId));
         }
         try {
             Map<String, Object> rawResponse = roomClient.getJoinedMembers(roomId);
-            return UsersListRessource.toUsersListRessource((Map<String, Object>) rawResponse.get("joined"));
-        }catch(Forbidden e){
+            return UsersListRessource.toUsersListRessource(
+                    (Map<String, Object>) rawResponse.get("joined"));
+        } catch (Forbidden e) {
             throw new RoomDoesNotExist(e);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             throw new MatrixRuntimeException(e);
         }
     }
@@ -169,34 +184,38 @@ public class RoomService {
      * @throws MatrixRuntimeException if can not leave room
      */
     public void leaveRoom(String roomId) {
-        if(roomId == null){
-            throw new IllegalArgumentException(String.format("roomId must be not null - roomId:%s",roomId));
+        if (roomId == null) {
+            throw new IllegalArgumentException(
+                    String.format("roomId must be not null - roomId:%s", roomId));
         }
         try {
             roomClient.leaveRoom(roomId);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             throw new MatrixRuntimeException(e);
         }
     }
 
     /**
      * Join an existing room (only for testing)
+     *
      * @param roomId non nullable string
      * @throws MatrixRuntimeException if can not join room
      */
     public void join(String roomId) {
-        if(roomId == null){
-            throw new IllegalArgumentException(String.format("roomId must be not null - roomId:%s",roomId));
+        if (roomId == null) {
+            throw new IllegalArgumentException(
+                    String.format("roomId must be not null - roomId:%s", roomId));
         }
-        try{
+        try {
             roomClient.join(roomId);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             throw new MatrixRuntimeException(e);
         }
     }
 
     /**
      * Util methods. -- should not be here
+     *
      * @param destMatrixId
      * @param rooms
      * @return
@@ -205,6 +224,4 @@ public class RoomService {
         List<String> directRoomsForMId = rooms.getDirectRoomsForMId(destMatrixId);
         return directRoomsForMId != null && directRoomsForMId.size() > 0;
     }
-
-
 }

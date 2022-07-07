@@ -1,5 +1,11 @@
+/*
+ * Copyright (c) 2022. DINUM
+ * This file is licensed under the MIT License, see LICENSE.md
+ */
 package org.beta.tchap.identite.bot;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import org.apache.log4j.BasicConfigurator;
 import org.beta.tchap.TestSuiteUtils;
 import org.beta.tchap.identite.matrix.rest.room.DirectRoomsResource;
@@ -8,16 +14,11 @@ import org.beta.tchap.identite.matrix.rest.room.UsersListRessource;
 import org.beta.tchap.identite.utils.Environment;
 import org.junit.jupiter.api.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-
 // FIXME need cleanup of rooms before/after each test
 class MatrixBotUnitTest {
     private static FakeRoomClient roomClient;
     private static RoomService roomService;
     private static String testAccountMatrixId;
-
 
     @BeforeAll
     static void setup() {
@@ -25,7 +26,6 @@ class MatrixBotUnitTest {
         BasicConfigurator.configure();
         TestSuiteUtils.loadEnvFromDotEnvFile();
         testAccountMatrixId = Environment.getenv(TestSuiteUtils.TEST_BOT_TO_USER_MID);
-
 
         roomClient = new FakeRoomClient();
         roomClient.rooms = new HashMap<>();
@@ -45,7 +45,6 @@ class MatrixBotUnitTest {
             DirectRoomsResource rooms = roomService.listBotDMRooms();
             Assertions.assertTrue(rooms.getDirectRooms().size() > 0);
         }
-
     }
 
     @Nested
@@ -67,7 +66,7 @@ class MatrixBotUnitTest {
             Assertions.assertEquals(0, joinedMembers.getUsers().size());
         }
 
-/*         @Test
+        /*         @Test
         void shouldReturnFalseWhenRoomIsCreatedAndUserHasNotJoinYetOrHasLeave() {
             String roomId = roomService.createDM(testAccountMatrixId);
 

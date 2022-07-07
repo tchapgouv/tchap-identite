@@ -1,3 +1,8 @@
+<!--
+  ~ Copyright (c) 2022. DINUM
+  ~ This·file·is·licensed·under·the·MIT·License,·see·LICENSE.md
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -190,9 +195,9 @@
                   <filtering>true</filtering>
                 </resource>
               </resources>
-              <!-- exclude text files from filtering to avoid corruption 
+              <!-- exclude text files from filtering to avoid corruption
               https://github.com/tchapgouv/tchap-identite/issues/116
-              
+
               -->
               <nonFilteredFileExtensions>
                 <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
@@ -259,7 +264,7 @@
 
             <!-- apply a specific flavor of google-java-format and reflow long strings -->
             <googleJavaFormat>
-              <version>1.8</version>
+              <version>1.15.0</version>
               <style>AOSP</style>
               <reflowLongStrings>true</reflowLongStrings>
             </googleJavaFormat>
@@ -267,11 +272,15 @@
             <!-- make sure every file has the following copyright header.
               optionally, Spotless can set copyright years by digging
               through git history (see "license" section below)
-            <licenseHeader>
-              <content>/* (C)$YEAR */</content>
-              or <file>${project.basedir}/license-header</file>
-            </licenseHeader>
             -->
+            <!-- No black line after header https://github.com/google/google-java-format/issues/434 -->
+            <licenseHeader>
+              <content>/*
+ * Copyright (c) $YEAR. DINUM
+ * This file is licensed under the MIT License, see LICENSE.md
+ */
+              </content>
+            </licenseHeader>
           </java>
         </configuration>
       </plugin>

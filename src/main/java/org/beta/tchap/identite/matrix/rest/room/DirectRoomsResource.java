@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ * This file is licensed under the MIT License, see LICENSE.md
+ */
 package org.beta.tchap.identite.matrix.rest.room;
 
 import java.util.*;
@@ -21,9 +25,11 @@ public class DirectRoomsResource {
         return directRooms.get(matrixId);
     }
 
-
     public void addDirectRoomForMatrixId(String matrixId, String roomId) {
-        List<String> newRoomsId = Optional.ofNullable(getDirectRoomsForMId(matrixId)).map(ArrayList::new).orElse(new ArrayList<>());
+        List<String> newRoomsId =
+                Optional.ofNullable(getDirectRoomsForMId(matrixId))
+                        .map(ArrayList::new)
+                        .orElse(new ArrayList<>());
         newRoomsId.add(roomId);
         directRooms.put(matrixId, newRoomsId);
     }

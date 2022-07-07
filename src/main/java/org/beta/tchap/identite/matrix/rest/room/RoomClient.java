@@ -1,9 +1,12 @@
+/*
+ * Copyright (c) 2022. DINUM
+ * This file is licensed under the MIT License, see LICENSE.md
+ */
 package org.beta.tchap.identite.matrix.rest.room;
 
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
-
 import java.util.List;
 import java.util.Map;
 
@@ -38,5 +41,8 @@ public interface RoomClient {
 
     @RequestLine("PUT /rooms/{roomId}/send/m.room.message/{transactionId}")
     @Headers("Content-Type: application/json")
-    void sendMessage(@Param("roomId") String roomId, @Param("transactionId") String transactionId, SendMessageBody messageBody);
+    void sendMessage(
+            @Param("roomId") String roomId,
+            @Param("transactionId") String transactionId,
+            SendMessageBody messageBody);
 }

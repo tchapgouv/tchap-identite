@@ -1,8 +1,11 @@
+/*
+ * Copyright (c) 2022. DINUM
+ * This file is licensed under the MIT License, see LICENSE.md
+ */
 package org.beta.tchap;
 
-import org.jboss.resteasy.logging.Logger;
-
 import io.github.cdimascio.dotenv.Dotenv;
+import org.jboss.resteasy.logging.Logger;
 
 public class TestSuiteUtils {
     private static final Logger LOG = Logger.getLogger(TestSuiteUtils.class);
@@ -13,12 +16,12 @@ public class TestSuiteUtils {
     public static String TEST_USER2_PASSWORD = "TEST_USER2_PASSWORD";
     public static String TEST_USER2_MATRIXID = "TEST_USER2_MATRIXID";
 
-    public static void loadEnvFromDotEnvFile(){
+    public static void loadEnvFromDotEnvFile() {
         Dotenv dotenv = Dotenv.load();
         dotenv.entries().forEach(e -> System.setProperty(e.getKey(), e.getValue()));
     }
 
-    public static void waitAbit(){
+    public static void waitAbit() {
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
@@ -26,7 +29,7 @@ public class TestSuiteUtils {
         }
     }
 
-    public static void wait2second(){
+    public static void wait2second() {
         try {
             LOG.warn("Waiting 2 seconds...");
             Thread.sleep(2000);

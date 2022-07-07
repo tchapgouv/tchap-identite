@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. DINUM
+ * This file is licensed under the MIT License, see LICENSE.md
+ */
 package org.beta.tchap.identite.user;
 
 import java.util.HashMap;
@@ -20,7 +24,7 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
     protected Map<String, UserModel> loadedUsers = new HashMap<>();
     private MatrixService matrixService;
 
-    public  static String ATTRIBUTE_HOMESERVER = "homeServer";
+    public static String ATTRIBUTE_HOMESERVER = "homeServer";
 
     /** Public constructor */
     public TchapUserStorage(
@@ -52,7 +56,7 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
         UserModel user = loadedUsers.get(username);
         if (user == null) {
             String homeServer = matrixService.getUserHomeServer(username);
-            if(matrixService.isHomeServerAcceptedOnTchap(homeServer)){
+            if (matrixService.isHomeServerAcceptedOnTchap(homeServer)) {
                 user = new InMemoryUserAdapter(session, realm, buildId(model, username));
                 user.setEnabled(true);
                 user.setUsername(username);
@@ -70,11 +74,11 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
         return getUserByUsername(realm, email);
     }
 
-     /**
+    /**
      * Defaults to 'f:' + storageProvider.getId() + ':' + getUsername()
-     *https://www.keycloak.org/docs/latest/server_development/#storage-ids
+     * https://www.keycloak.org/docs/latest/server_development/#storage-ids
      */
-    private String buildId(ComponentModel model, String username){
+    private String buildId(ComponentModel model, String username) {
         return new StorageId(model.getId(), username).getId();
     }
     /*

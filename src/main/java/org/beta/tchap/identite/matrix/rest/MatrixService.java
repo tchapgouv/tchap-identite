@@ -1,5 +1,14 @@
+/*
+ * Copyright (c) 2022. DINUM
+ * This file is licensed under the MIT License, see LICENSE.md
+ */
 package org.beta.tchap.identite.matrix.rest;
 
+import static org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService.buildHomeServerUrl;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.beta.tchap.identite.matrix.MatrixUserInfo;
 import org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService;
@@ -14,12 +23,6 @@ import org.beta.tchap.identite.utils.Environment;
 import org.beta.tchap.identite.utils.LoggingUtilsFactory;
 import org.jboss.logging.Logger;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.beta.tchap.identite.matrix.rest.homeserver.HomeServerService.buildHomeServerUrl;
-
 public class MatrixService {
 
     private static final Logger LOG = Logger.getLogger(MatrixService.class);
@@ -30,7 +33,6 @@ public class MatrixService {
 
     private final String matrixId;
 
-
     protected MatrixService(String accountEmail, String tchapPassword) {
 
         LoginService loginService = new LoginService();
@@ -40,7 +42,8 @@ public class MatrixService {
         this.matrixId = UserService.emailToUserId(accountEmail, homeServer);
 
         String accountHomeServerUrl = buildHomeServerUrl(homeServer);
-        String accessToken = loginService.findAccessToken(accountHomeServerUrl, accountEmail, tchapPassword);
+        String accessToken =
+                loginService.findAccessToken(accountHomeServerUrl, accountEmail, tchapPassword);
 
         userService = new UserService(accountHomeServerUrl, accessToken);
 
@@ -76,18 +79,20 @@ public class MatrixService {
 
     /**
      * Get the home server of the user
+     *
      * @param email
      * @return (nullable) string of the homeserver
      */
-    public String getUserHomeServer(String email){
+    public String getUserHomeServer(String email) {
         if (StringUtils.isEmpty(email)) {
             return null;
         }
         return homeServerService.findHomeServerByEmail(email);
     }
 
-     /**
+    /**
      * Check if the home server is accepted on tchap
+     *
      * @param userHomeServer
      * @return not null value
      */
@@ -106,6 +111,7 @@ public class MatrixService {
 
     /**
      * Check if an email is accepted on Tchap based on an hardcorded domain list
+     *
      * @param userHomeServer
      * @return
      */
@@ -125,26 +131,24 @@ public class MatrixService {
     }
 
     /**
-     * Find Matrix User Informations with an email and its corresponding homeserver:
-     * - matrixId
-     * - valid : if an account has been created and still valid in Tchap
-     *
+     * Find Matrix User Informations with an email and its corresponding homeserver: - matrixId -
+     * valid : if an account has been created and still valid in Tchap
      */
     public MatrixUserInfo findMatrixUserInfo(String userHomeServer, String email) {
         UserInfoResource userInfoByEmail = userService.findUserInfoByEmail(email, userHomeServer);
-        if ( userInfoByEmail == null ){
-            return new MatrixUserInfo(null,false);
+        if (userInfoByEmail == null) {
+            return new MatrixUserInfo(null, false);
         }
         boolean isValid = !userInfoByEmail.isDeactivated() && !userInfoByEmail.isExpired();
-        return new MatrixUserInfo(userInfoByEmail.getUserId(),isValid);
+        return new MatrixUserInfo(userInfoByEmail.getUserId(), isValid);
     }
 
     /**
      * Return the matrixId of the connected user
+     *
      * @return not null string
      */
-    public String getMatrixId(){
+    public String getMatrixId() {
         return matrixId;
     }
-
 }
