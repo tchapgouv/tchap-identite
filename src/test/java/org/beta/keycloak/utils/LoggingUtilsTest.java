@@ -9,7 +9,6 @@ import static org.beta.keycloak.utils.LoggingUtils.HIDDEN_DATA;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.beta.keycloak.utils.LoggingUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

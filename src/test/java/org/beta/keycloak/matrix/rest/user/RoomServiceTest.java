@@ -5,7 +5,6 @@
 package org.beta.keycloak.matrix.rest.user;
 
 import org.beta.keycloak.matrix.rest.login.LoginResource;
-import org.beta.keycloak.matrix.rest.user.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

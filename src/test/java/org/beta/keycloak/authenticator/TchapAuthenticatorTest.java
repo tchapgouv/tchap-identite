@@ -11,8 +11,6 @@ import static org.mockito.Mockito.verify;
 
 import javax.ws.rs.core.Response;
 import org.apache.log4j.BasicConfigurator;
-import org.beta.keycloak.authenticator.OtpLoginAuthenticator;
-import org.beta.keycloak.authenticator.TchapAuthenticator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

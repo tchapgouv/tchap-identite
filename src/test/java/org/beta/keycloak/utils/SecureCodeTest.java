@@ -7,7 +7,6 @@ package org.beta.keycloak.utils;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.beta.keycloak.utils.SecureCode;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
 

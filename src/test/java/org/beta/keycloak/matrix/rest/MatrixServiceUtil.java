@@ -4,7 +4,6 @@
  */
 package org.beta.keycloak.matrix.rest;
 
-import org.beta.keycloak.matrix.rest.MatrixService;
 
 public class MatrixServiceUtil {
 

@@ -8,7 +8,6 @@ import static org.beta.keycloak.authenticator.OtpLoginAuthenticator.AUTH_NOTE_OT
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import org.beta.keycloak.authenticator.OtpLoginAuthenticator;
 import org.beta.keycloak.bot.BotSender;
 import org.beta.keycloak.email.EmailSender;
 import org.beta.keycloak.utils.SecureCode;

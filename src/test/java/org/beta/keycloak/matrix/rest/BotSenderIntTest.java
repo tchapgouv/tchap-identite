@@ -10,7 +10,6 @@ import java.util.Map;
 import org.apache.log4j.BasicConfigurator;
 import org.beta.keycloak.TestSuiteUtils;
 import org.beta.keycloak.bot.BotSender;
-import org.beta.keycloak.matrix.rest.MatrixService;
 import org.beta.keycloak.matrix.rest.room.DirectRoomsResource;
 import org.beta.keycloak.matrix.rest.room.RoomService;
 import org.beta.keycloak.utils.Constants;

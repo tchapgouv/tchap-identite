@@ -6,8 +6,6 @@ package org.beta.keycloak.matrix.rest;
 
 import org.beta.keycloak.TestSuiteUtils;
 import org.beta.keycloak.matrix.MatrixUserInfo;
-import org.beta.keycloak.matrix.rest.MatrixService;
-import org.beta.keycloak.matrix.rest.MatrixServiceFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
