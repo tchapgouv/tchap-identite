@@ -23,17 +23,21 @@ public class BotSender {
 
     /**
      * Send a otp code via a tchap bot
+     *
      * @param serviceName
      * @param username
      * @param friendlyCode
-     * @throws MatrixRuntimeException if message is not sent 
+     * @throws MatrixRuntimeException if message is not sent
      */
     public void sendMessage(String serviceName, String username, String friendlyCode) {
-        try{
+        try {
             String homeServer = matrixService.getUserHomeServer(username);
             MatrixUserInfo matrixUserInfo = matrixService.findMatrixUserInfo(homeServer, username);
-            if(!matrixUserInfo.isValid()){
-                String errorMessage = String.format("User account is not valid on Tchap : %", LoggingUtilsFactory.getInstance().logOrHide(username));
+            if (!matrixUserInfo.isValid()) {
+                String errorMessage =
+                        String.format(
+                                "User account is not valid on Tchap : %",
+                                LoggingUtilsFactory.getInstance().logOrHide(username));
                 throw new MatrixRuntimeException(errorMessage);
             }
 
@@ -44,14 +48,16 @@ public class BotSender {
                         LoggingUtilsFactory.getInstance().logOrHide(matrixId));
             }
             String roomId = ensureUserIsInRoom(matrixId);
-            if(roomId ==null ){
+            if (roomId == null) {
                 roomId = matrixService.getRoomService().createDM(matrixId);
             }
 
-            matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
+            matrixService
+                    .getRoomService()
+                    .sendMessage(roomId, "Voici votre code pour " + serviceName);
             matrixService.getRoomService().sendMessage(roomId, friendlyCode);
 
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             throw new MatrixRuntimeException(e);
         }
     }

@@ -148,8 +148,8 @@ public class RoomService {
         }
         try {
             roomClient.invite(roomId, new InviteBody(userId));
-        //todo: should use a subtype of exception
-        }catch(RuntimeException e){
+            // todo: should use a subtype of exception
+        } catch (RuntimeException e) {
             throw new MatrixRuntimeException(e);
         }
     }

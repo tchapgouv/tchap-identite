@@ -17,10 +17,7 @@ import org.beta.tchap.identite.utils.Constants;
 import org.beta.tchap.identite.utils.Environment;
 import org.junit.jupiter.api.*;
 
-
-
 class RoomServiceIntTest {
-
 
     private static RoomService botRoomService;
     private static RoomService userTestRoomService;
@@ -64,7 +61,7 @@ class RoomServiceIntTest {
 
     @AfterEach
     public void teardown() {
-        
+
         TestSuiteUtils.wait2second();
 
         if (deleteRoomAfterTests) {
@@ -73,7 +70,7 @@ class RoomServiceIntTest {
             dmRooms.remove(testAccountMatrixId);
             botRoomService.updateBotDMRoomList(dmRooms);
 
-            for (String roomId: createdTestRooms) {
+            for (String roomId : createdTestRooms) {
                 TestSuiteUtils.waitAbit();
                 botRoomService.leaveRoom(roomId);
             }
@@ -135,7 +132,8 @@ class RoomServiceIntTest {
         @Test
         void shouldThrowIAE_whenUserIdIsNull() {
             TestSuiteUtils.waitAbit();
-            Assertions.assertThrows(IllegalArgumentException.class, () -> botRoomService.createDM(null));
+            Assertions.assertThrows(
+                    IllegalArgumentException.class, () -> botRoomService.createDM(null));
         }
 
         // todo
@@ -192,18 +190,22 @@ class RoomServiceIntTest {
                     () -> botRoomService.invite(roomId, testAccountMatrixId));
         }
 
-         @Test
+        @Test
         void should_throw_if_room_does_not_exist() {
             String roomId = "roomthatdoesnotexitsforsure";
-            Assertions.assertThrows(MatrixRuntimeException.class, () -> botRoomService.invite(roomId, testAccountMatrixId)); 
-        } 
+            Assertions.assertThrows(
+                    MatrixRuntimeException.class,
+                    () -> botRoomService.invite(roomId, testAccountMatrixId));
+        }
 
         @Test
         void should_throw_if_userId_does_not_exist() {
             String roomId = botRoomService.createDM(testAccountMatrixId);
             markForDeletion(roomId);
             String unknownUserId = "@barbabpapa:localname";
-            Assertions.assertThrows(MatrixRuntimeException.class, () -> botRoomService.invite(roomId, unknownUserId)); 
+            Assertions.assertThrows(
+                    MatrixRuntimeException.class,
+                    () -> botRoomService.invite(roomId, unknownUserId));
         }
 
         @Test
@@ -273,5 +275,4 @@ class RoomServiceIntTest {
     private void markForDeletion(String room) {
         createdTestRooms.add(room);
     }
-
 }

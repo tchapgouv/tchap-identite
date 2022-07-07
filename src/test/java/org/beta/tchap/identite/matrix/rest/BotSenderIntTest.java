@@ -61,10 +61,13 @@ class BotSenderIntTest {
             TestSuiteUtils.waitAbit();
             botRoomService.updateBotDMRoomList(dmRooms);
 
-            createdTestRooms.forEach(roomId -> {
-                TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
-                botRoomService.leaveRoom(roomId);
-            });
+            createdTestRooms.forEach(
+                    roomId -> {
+                        TestSuiteUtils
+                                .wait2second(); // required, else "too many requests", can it be
+                        // less? maybe..
+                        botRoomService.leaveRoom(roomId);
+                    });
         }
     }
 
@@ -89,16 +92,17 @@ class BotSenderIntTest {
 
             botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room1 = getRoomWithUser(testAccountMatrixId);
-            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
+            TestSuiteUtils
+                    .wait2second(); // required, else "too many requests", can it be less? maybe..
             userTestRoomService.join(room1);
-            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
+            TestSuiteUtils
+                    .wait2second(); // required, else "too many requests", can it be less? maybe..
 
             botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room2 = getRoomWithUser(testAccountMatrixId);
 
             boolean isUserInRoom = isInvitedUserInRoom(testAccountMatrixId, room1);
 
-        
             Assertions.assertTrue(isUserInRoom);
             assertNoNewRoomIsCreated(room1, room2);
 
@@ -126,12 +130,15 @@ class BotSenderIntTest {
             String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
 
             botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
-            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
+            TestSuiteUtils
+                    .wait2second(); // required, else "too many requests", can it be less? maybe..
             String room1 = getRoomWithUser(testAccountMatrixId);
-            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
+            TestSuiteUtils
+                    .wait2second(); // required, else "too many requests", can it be less? maybe..
             // leaving without joining is the same as declining an invitation
             userTestRoomService.leaveRoom(room1);
-            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
+            TestSuiteUtils
+                    .wait2second(); // required, else "too many requests", can it be less? maybe..
 
             botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room2 = getRoomWithUser(testAccountMatrixId);
@@ -151,9 +158,11 @@ class BotSenderIntTest {
             botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room1 = getRoomWithUser(testAccountMatrixId);
             userTestRoomService.join(room1);
-            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
+            TestSuiteUtils
+                    .wait2second(); // required, else "too many requests", can it be less? maybe..
             userTestRoomService.leaveRoom(room1);
-            TestSuiteUtils.wait2second();//required, else "too many requests", can it be less? maybe..
+            TestSuiteUtils
+                    .wait2second(); // required, else "too many requests", can it be less? maybe..
             botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
             String room2 = getRoomWithUser(testAccountMatrixId);
 
