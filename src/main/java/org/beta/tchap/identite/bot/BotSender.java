@@ -21,41 +21,39 @@ public class BotSender {
         this.matrixService = matrixService;
     }
 
-    public boolean sendMessage(String serviceName, String username, String friendlyCode) {
-        String homeServer = matrixService.getUserHomeServer(username);
-        MatrixUserInfo matrixUserInfo = matrixService.findMatrixUserInfo(homeServer, username);
-        if (!matrixUserInfo.isValid()) {
-            LOG.infof(
-                    "User account is not valid on Tchap : %s",
-                    LoggingUtilsFactory.getInstance().logOrHide(username));
-            return false;
-        }
+    /**
+     * Send a otp code via a tchap bot
+     * @param serviceName
+     * @param username
+     * @param friendlyCode
+     * @throws MatrixRuntimeException if message is not sent 
+     */
+    public void sendMessage(String serviceName, String username, String friendlyCode) {
+        try{
+            String homeServer = matrixService.getUserHomeServer(username);
+            MatrixUserInfo matrixUserInfo = matrixService.findMatrixUserInfo(homeServer, username);
+            if(!matrixUserInfo.isValid()){
+                String errorMessage = String.format("User account is not valid on Tchap : %", LoggingUtilsFactory.getInstance().logOrHide(username));
+                throw new MatrixRuntimeException(errorMessage);
+            }
 
-        String matrixId = matrixUserInfo.getMatrixId();
-        if (LOG.isDebugEnabled()) {
-            LOG.debugf(
-                    "Prepare sending OTP to tchap user: %s",
-                    LoggingUtilsFactory.getInstance().logOrHide(matrixId));
-        }
-        try {
+            String matrixId = matrixUserInfo.getMatrixId();
+            if (LOG.isDebugEnabled()) {
+                LOG.debugf(
+                        "Prepare sending OTP to tchap user: %s",
+                        LoggingUtilsFactory.getInstance().logOrHide(matrixId));
+            }
             String roomId = ensureUserIsInRoom(matrixId);
-            if (roomId == null) {
+            if(roomId ==null ){
                 roomId = matrixService.getRoomService().createDM(matrixId);
             }
 
-            matrixService
-                    .getRoomService()
-                    .sendMessage(roomId, "Voici votre code pour " + serviceName);
+            matrixService.getRoomService().sendMessage(roomId, "Voici votre code pour " + serviceName);
             matrixService.getRoomService().sendMessage(roomId, friendlyCode);
 
-        } catch (MatrixRuntimeException exception) {
-            LOG.errorf(
-                    exception,
-                    "Error while sending OTP to tchap user: %s",
-                    LoggingUtilsFactory.getInstance().logOrHide(matrixId));
-            return false;
+        }catch(RuntimeException e){
+            throw new MatrixRuntimeException(e);
         }
-        return true;
     }
 
     /**

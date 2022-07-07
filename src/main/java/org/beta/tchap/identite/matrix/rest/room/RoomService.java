@@ -137,7 +137,6 @@ public class RoomService {
      *
      * @param roomId non nullable string
      * @param userId non nullable string
-     * @throws RoomDoesNotExist if room does not exist
      * @throws MatrixRuntimeException if can not invite user into room
      */
     public void invite(String roomId, String userId) {
@@ -149,9 +148,8 @@ public class RoomService {
         }
         try {
             roomClient.invite(roomId, new InviteBody(userId));
-        } catch (Forbidden e) {
-            throw new RoomDoesNotExist(e);
-        } catch (RuntimeException e) {
+        //todo: should use a subtype of exception
+        }catch(RuntimeException e){
             throw new MatrixRuntimeException(e);
         }
     }

@@ -1,15 +1,16 @@
 #codeInput {
-    /* width: 200px !important; */
     max-height: none !important;
     text-align: center!important;
     line-height: 3rem!important;
-    font-size: 3rem!important;
+    font-size: 2rem!important;
     font-style: normal;
 }
 
-#codeInput::placeholder {
-    font-weight: lighter;
-  }
+@media screen and (min-width: 768px) {
+    #codeInput {
+        font-size: 3rem!important;
+    }
+}
 
 .hideMobile {
     display: none;
@@ -21,3 +22,4 @@
         display: block;
     }
 }
+
