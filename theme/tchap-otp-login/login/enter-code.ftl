@@ -4,35 +4,45 @@
         ${msg("loginTitle",(realm.displayName!''))}
     <#elseif section = "header">
     <#elseif section = "form">
-
-        <h2>Renseignez le code que vous avez reçu</h2>
-        <form id="kc-form-login" class="${properties.kcFormClass!}" onsubmit="login.disabled = true; return true;"
+    <form id="kc-form-login" class="" onsubmit="login.disabled = true; return true;"
               action="${url.loginAction}" method="post">
-            <div class="${properties.kcFormGroupClass!}">
-                    <label for="codeInput" class="${properties.kcLabelClass!}">
-                        Vous avez reçu le code à votre adresse mail <strong>${userEmail!}</strong>.
-                    </label>
-
-                    <input tabindex="1" id="codeInput" class="${properties.kcInputClass!} code-input" name="codeInput" type="text"
-                           autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
-            </div>
-
-
-<#--              <div class="${properties.kcFormGroupClass!}">
-                <label for="email" class="${properties.kcLabelClass!}">Je n'ai pas reçu le code. <a href="/">Me renvoyer un code</a></label>
-            </div>  -->
-
-
-            <div class="${properties.kcFormGroupClass!}">
-                <div id="kc-form-options" class="${properties.kcFormOptionsClass!}">
-                </div>
-
-                <div id="kc-form-buttons" class="${properties.kcFormButtonsClass!}">
-                        <input tabindex="4"
-                               class="${properties.kcButtonClass!}"
-                               name="login" id="login" type="submit" value="Confirmer"/>
+        <!-- container without borders -->
+        <div class="fr-container--fluid">
+            <div class="fr-grid-row">
+                <div class="fr-col">
+                    <h2>Confirmez votre réservation</h2>
                 </div>
             </div>
-        </form>
+            <div class="fr-grid-row">
+             <label for="codeInput" class="fr-label">
+                    Renseignez le code d'authentification que vous avez reçu à votre adresse mail <strong>${userEmail!}</strong><#if feature_tchap_bot> et sur <a href="https://www.tchap.gouv.fr/" target="_blank">Tchap</a></#if>.
+                    <#--  ${client.name} utilise un service d'authentification pour assurer que seuls les agents publics
+                    utilisent les services qui leur sont réservés.  -->
+                </label>
+            </div>
+            <div class="fr-grid-row fr-grid-row--middle">
+                <div class="fr-col-3 hideMobile">
+                    <img src="${url.resourcesPath}/img/icon-envelop-code.png" class="fr-responsive-img fr-p-4w"/>
+                </div>
+                <div class="fr-col-1 hideMobile">
+                    <img src="${url.resourcesPath}/img/enter-code-arrow.png" class="fr-responsive-img fr-p-1w"/>
+                </div>
+                <div class="fr-col-12 fr-col-md-6 fr-p-1w fr-p-md-4w fr-mt-md-5w">
+                    <div class="fr-grid-row">
+                        <span class="fr-hint-text">exemple de code: abc-def</span>
+                          <input tabindex="1" id="codeInput" class="fr-input codeInput fr-m-auto" name="codeInput" type="text" autofocus minlength="6" maxlength="8" required ${(message?has_content && message.type = 'error' && errorType = 'error.email.not.sent')?then("disabled","")}/>
+                    </div>
+                    <div class="fr-grid-row fr-my-3w">
+                        <input tabindex="4" class="fr-btn fr-m-auto" name="login" id="login" type="submit" value="Confirmer"/>
+                    </div>
+                      <div class="fr-grid-row fr-grid-row--center">
+                        <span>Je n’ai pas reçu de code. <a href="">Me renvoyer le code </a> </span>  
+                    </div>
+                </div>
+                <div class="fr-col-offset-md-2">
+                </div>
+            </div>
+        </div>
+    </form>
     </#if>
 </@layout.registrationLayout>

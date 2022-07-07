@@ -1,1 +1,6 @@
-org.beta.tchap.identite.user.TchapUserStorageFactory
+#
+# Copyright (c) 2022. DINUM
+# This·file·is·licensed·under·the·MIT·License,·see·LICENSE.md
+#
+
+org.beta.authentification.keycloak.user.TchapUserStorageFactory

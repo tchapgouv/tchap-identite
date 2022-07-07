@@ -57,11 +57,11 @@
                                 <br>Française
                             </p>
                         </div>
-                        <div class="fr-header__navbar">
+                        <#--  <div class="fr-header__navbar">
                             <button class="fr-btn--menu fr-btn" data-fr-opened="false" aria-controls="modal-menu" aria-haspopup="menu" title="Menu">
                                 Menu
                             </button>
-                        </div>
+                        </div>  -->
                     </div>
                     <div class="fr-header__service">
                         <a href="${clientUrl}" title="Accueil - ${clientName}">
@@ -99,11 +99,11 @@
 <main role="main" id="main" class="fr-container" >
   <div class="fr-container  fr-mt-4w fr-mb-4w">
     <div class="fr-grid-row fr-grid-row--center">
-      <div class="fr-col-xs-12 fr-col-sm-8 fr-col-md-6 fr-col-lg-8">
+      <div class="fr-col-xs-12 fr-col-sm-12 fr-col-md-12 fr-col-lg-10">
 
           <!--p>Domaine ${kcSanitize(msg("loginTitleHtml",(realm.displayNameHtml!'')))?no_esc}</p-->
 
-              <#if realm.internationalizationEnabled  && locale.supported?size gt 1>
+<#--                <#if realm.internationalizationEnabled  && locale.supported?size gt 1>
                   <div id="kc-locale">
                       <div id="kc-locale-wrapper" class="${properties.kcLocaleWrapperClass!}">
                           <div class="kc-dropdown" id="kc-locale-dropdown">
@@ -116,8 +116,8 @@
                           </div>
                       </div>
                   </div>
-              </#if>
-              <#if !(auth?has_content && auth.showUsername() && !auth.showResetCredentials())>
+              </#if>  -->
+              <#--  <#if !(auth?has_content && auth.showUsername() && !auth.showResetCredentials())>
                   <#if displayRequiredFields>
                       <div class="${properties.kcContentWrapperClass!}">
                           <div class="${properties.kcLabelWrapperClass!} subtitle">
@@ -165,14 +165,14 @@
                           </div>
                       </div>
                   </#if>
-              </#if>
+              </#if>  -->
 
             <div id="kc-content">
             <div id="kc-content-wrapper">
               <#-- App-initiated actions should not see warning messages about the need to complete the action -->
               <#-- during login.                                                                               -->
               <#if displayMessage && message?has_content && (message.type != 'warning' || !isAppInitiatedAction??)>
-                  <div class="fr-alert fr-alert--${message.type} fr-alert--sm">
+                  <div class="fr-alert fr-alert--${message.type} fr-alert--sm fr-mb-1w fr-mb-md-2w">
                       <#if message.type = 'success'><span class="${properties.kcFeedbackSuccessIcon!}"></span></#if>
                       <#if message.type = 'warning'><span class="${properties.kcFeedbackWarningIcon!}"></span></#if>
                       <#if message.type = 'error'><span class="${properties.kcFeedbackErrorIcon!}"></span></#if>
@@ -183,14 +183,16 @@
 
               <#nested "form">
 
-              <#if auth?has_content && auth.showTryAnotherWayLink() && showAnotherWayIfPresent>
+ <#--               
+    not used
+    <#if auth?has_content && auth.showTryAnotherWayLink() && showAnotherWayIfPresent>
               <form id="kc-select-try-another-way-form" action="${url.loginAction}" method="post" <#if displayWide>class="${properties.kcContentWrapperClass!}"</#if>>
                   <div class="${properties.kcFormGroupClass!}">
                     <input type="hidden" name="tryAnotherWay" value="on" />
                     <a href="#" id="try-another-way" class="fr-link" onclick="document.forms['kc-select-try-another-way-form'].submit();return false;">${msg("doTryAnotherWay")}</a>
                   </div>
               </form>
-              </#if>
+              </#if>  -->
 
 
             </div>

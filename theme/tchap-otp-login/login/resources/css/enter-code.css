@@ -1,3 +1,25 @@
 #codeInput {
-    width: 100px;
+    max-height: none !important;
+    text-align: center!important;
+    line-height: 3rem!important;
+    font-size: 2rem!important;
+    font-style: normal;
 }
+
+@media screen and (min-width: 768px) {
+    #codeInput {
+        font-size: 3rem!important;
+    }
+}
+
+.hideMobile {
+    display: none;
+}
+
+@media screen and (min-width: 768px) {
+    .hideMobile {
+        clear: both;
+        display: block;
+    }
+}
+

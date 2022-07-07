@@ -1,2 +1,7 @@
-org.beta.tchap.identite.authenticator.OtpLoginAuthenticatorFactory
-org.beta.tchap.identite.authenticator.TchapAuthenticatorFactory
+#
+# Copyright (c) 2022. DINUM
+# This·file·is·licensed·under·the·MIT·License,·see·LICENSE.md
+#
+
+org.beta.authentification.keycloak.authenticator.OtpLoginAuthenticatorFactory
+org.beta.authentification.keycloak.authenticator.TchapAuthenticatorFactory
