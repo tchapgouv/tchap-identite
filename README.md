@@ -19,7 +19,6 @@ Realm uptime can be found here : https://updown.io/fta9
 - KC_DB_PASSWORD=password
 - TCHAP_BOT_ACCOUNT_EMAIL=service account for Tchap Identity created on Tchap Server side
 - TCHAP_BOT_PASSWORD=password for the service account
-(- TCHAP_BOT_MATRIX_ID=matrix id of the service account - not used)
 - TCHAP_HOME_SERVER_LIST=list of home servers that tchap-identity can connect to
 - TCHAP_SKIP_CERTIFICATE_VALIDATION=false
 - TCHAP_UNAUTHORIZED_HOME_SERVER_LIST=list of unauthorized home servers -- use to check if a user is valid

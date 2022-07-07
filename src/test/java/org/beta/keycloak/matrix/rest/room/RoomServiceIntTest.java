@@ -46,7 +46,6 @@ class RoomServiceIntTest {
 
         String accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
         String password = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
-        // String matrixId = Environment.getenv(Constants.TCHAP_BOT_MATRIX_ID);
 
         botMatrixService = MatrixServiceUtil.getMatrixService(accountEmail, password);
         botRoomService = botMatrixService.getRoomService();
