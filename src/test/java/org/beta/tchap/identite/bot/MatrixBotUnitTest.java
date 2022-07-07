@@ -24,7 +24,7 @@ class MatrixBotUnitTest {
         // Needed for logging
         BasicConfigurator.configure();
         TestSuiteUtils.loadEnvFromDotEnvFile();
-        testAccountMatrixId = Environment.getenv(TestSuiteUtils.ENV_TEST_BOT_TO_USER_MID);
+        testAccountMatrixId = Environment.getenv(TestSuiteUtils.TEST_BOT_TO_USER_MID);
 
 
         roomClient = new FakeRoomClient();
