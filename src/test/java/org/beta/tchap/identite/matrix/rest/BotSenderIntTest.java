@@ -24,8 +24,8 @@ class BotSenderIntTest {
     private final List<String> createdTestRooms = new ArrayList<>();
     private static Boolean deleteRoomAfterTests;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void setUp() {
         BasicConfigurator.configure();
         TestSuiteUtils.loadEnvFromDotEnvFile();
 
@@ -182,6 +182,7 @@ class BotSenderIntTest {
         createdTestRooms.add(room);
     }
 
+    // only needed if the Constants.TCHAP_BOT_ACCOUNT_EMAIL has not rate limit
     private void waitAbit() {
         try {
             Thread.sleep(200);
