@@ -17,10 +17,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.forms.login.LoginFormsProvider;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.RealmModel;
-import org.keycloak.models.UserModel;
-import org.keycloak.models.UserProvider;
+import org.keycloak.models.*;
 import org.keycloak.protocol.oidc.OIDCLoginProtocol;
 import org.keycloak.services.managers.BruteForceProtector;
 import org.keycloak.sessions.AuthenticationSessionModel;
@@ -85,7 +82,7 @@ public class MockFactory {
                     buildBruteForceProtector(temporarilyDisabled);
             UserModel userModelMock = buildUserModel(username);
             HttpRequest httpRequestMock = buildHttpRequest(codeInput);
-
+//            context.getAuthenticationSession().getClient().getName()
             // keycloak session
             doReturn(userProviderMock).when(keycloakSession).users();
             doReturn(bruteForceProtectorMock)
@@ -181,6 +178,11 @@ public class MockFactory {
                                 })
                 .when(sessionMock)
                 .getAuthNote(anyString());
+
+
+        ClientModel client = mock(ClientModel.class);
+        doReturn("Audioconf").when(client).getName();
+        doReturn(client).when(sessionMock).getClient();
 
         return sessionMock;
     }
