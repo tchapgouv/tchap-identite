@@ -36,12 +36,16 @@ public class OtpLoginAuthenticatorTest {
         authenticator =
                 new OtpLoginAuthenticator(
                         secureCode, emailSender, codeTimeout, mailDelay, botSender);
-        System.setProperty(Constants.FEATURE_TCHAP_BOT_OTP,"true");
     }
 
     /** Send a otp to the user in session and present a form */
     @Nested
     class AuthenticateFlowTest {
+
+        @BeforeEach
+        public void setup() {
+            System.setProperty(Constants.FEATURE_TCHAP_BOT_OTP,"true");
+        }
 
         @Test
         public void authenticate_should_fail_with_unknown_user_flow_error() {
@@ -140,6 +144,115 @@ public class OtpLoginAuthenticatorTest {
             verify(emailSender, times(1))
                     .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
             verify(botSender, times(1)).sendMessage(anyString(), anyString(), eq(code));
+        }
+    }
+
+    /** Run all tests of AuthenticateFlowTest with FEATURE_TCHAP_BOT_OTP=false */
+    @Nested
+    class AuthenticateFlowDisableBotTest {
+
+        @BeforeEach
+        public void setup() {
+            System.setProperty(Constants.FEATURE_TCHAP_BOT_OTP,"false");
+        }
+
+        @Test
+        public void authenticate_should_fail_with_unknown_user_flow_error() {
+            AuthenticationFlowContext context =
+                    new MockFactory.AuthenticationFlowContextBuilder().build();
+
+            authenticator.authenticate(context);
+
+            verify(context, times(1)).failure(AuthenticationFlowError.UNKNOWN_USER);
+            verify(context, times(0)).failure(any(), any());
+            verify(context, times(0)).failure(any(), any(), any(), any());
+            verify(context, times(0)).failureChallenge(any(), any());
+            verify(context, times(0)).success();
+            verify(context, times(0)).challenge(any());
+            verify(emailSender, times(0)).sendEmail(any(), any(), any(), anyString(), anyString());
+        }
+
+        @Test
+        public void authenticate_should_not_send_otp_and_show_form_for_disabled_users() {
+            AuthenticationFlowContext context =
+                    new MockFactory.AuthenticationFlowContextBuilder()
+                            .withUser("myUserId")
+                            .withTemporarilyDisabled(true)
+                            .build();
+
+            authenticator.authenticate(context);
+
+            verify(context, times(0)).failure(any());
+            verify(context, times(0)).failure(any(), any());
+            verify(context, times(0)).failure(any(), any(), any(), any());
+            verify(context, times(0)).failureChallenge(any(), any());
+            verify(context, times(0)).success();
+            // regular otp form with no specific message
+            verify(context, times(1)).challenge(any());
+            verify(emailSender, times(0)).sendEmail(any(), any(), any(), anyString(), anyString());
+            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString());
+        }
+
+        @Test
+        public void authenticate_should_show_error_form_when_email_sending_failed() {
+            AuthenticationFlowContext context =
+                    new MockFactory.AuthenticationFlowContextBuilder()
+                            .withUser("myUserId")
+                            .withTemporarilyDisabled(false)
+                            .build();
+
+            String code = "bbb-aaa";
+            doReturn(code).when(secureCode).generateCode(anyInt());
+            doReturn(code).when(secureCode).makeCodeUserFriendly(code);
+            doReturn(false)
+                    .when(emailSender)
+                    .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
+
+            authenticator.authenticate(context);
+
+            verify(context, times(0)).failure(any());
+            verify(context, times(0)).failure(any(), any());
+            verify(context, times(0)).failure(any(), any(), any(), any());
+            verify(context, times(0)).failureChallenge(any(), any());
+            verify(context, times(0)).success();
+            // error otp form : "error.email.not.sent"
+            verify(context, times(1)).challenge(any());
+            verify(secureCode, times(1)).generateCode(anyInt());
+            verify(secureCode, times(1)).makeCodeUserFriendly(code);
+            verify(emailSender, times(1))
+                    .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
+            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString());
+        }
+
+        @Test
+        public void authenticate_should_send_otp_and_show_form() {
+            AuthenticationFlowContext context =
+                    new MockFactory.AuthenticationFlowContextBuilder()
+                            .withUser("myUserId")
+                            .withTemporarilyDisabled(false)
+                            .build();
+
+            String code = "bbb-aaa";
+            doReturn(code).when(secureCode).generateCode(anyInt());
+            doReturn(code).when(secureCode).makeCodeUserFriendly(code);
+            doReturn(true)
+                    .when(emailSender)
+                    .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
+
+            authenticator.authenticate(context);
+
+            verify(context, times(0)).failure(any());
+            verify(context, times(0)).failure(any(), any());
+            verify(context, times(0)).failure(any(), any(), any(), any());
+            verify(context, times(0)).failureChallenge(any(), any());
+            verify(context, times(0)).success();
+            // regular otp form : "info.new.code.sent"
+            verify(context, times(1)).challenge(any());
+            verify(secureCode, times(1)).generateCode(anyInt());
+            verify(secureCode, times(1)).makeCodeUserFriendly(code);
+            verify(emailSender, times(1))
+                    .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
+            verify(botSender, times(0)).sendMessage(anyString(), anyString(), eq(code));
         }
     }
 
