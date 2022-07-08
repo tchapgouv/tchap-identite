@@ -34,18 +34,17 @@ public class BotSender {
             String homeServer = matrixService.getUserHomeServer(username);
             MatrixUserInfo matrixUserInfo = matrixService.findMatrixUserInfo(homeServer, username);
             if (!matrixUserInfo.isValid()) {
-                String errorMessage =
-                        String.format(
-                                "User account is not valid on Tchap : %s",
-                                LoggingUtilsFactory.getInstance().logOrHide(username));
-                throw new MatrixRuntimeException(errorMessage);
+                LOG.infof(
+                        "User account is not valid on Tchap : %s",
+                        LoggingUtilsFactory.getInstance().logOrHash(username));
+                return;
             }
 
             String matrixId = matrixUserInfo.getMatrixId();
             if (LOG.isDebugEnabled()) {
                 LOG.debugf(
                         "Prepare sending OTP to tchap user: %s",
-                        LoggingUtilsFactory.getInstance().logOrHide(matrixId));
+                        LoggingUtilsFactory.getInstance().logOrHash(matrixId));
             }
             String roomId = ensureUserIsInRoom(matrixId);
             if (roomId == null) {
