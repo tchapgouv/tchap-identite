@@ -29,7 +29,7 @@ public class BotSender {
      * @param friendlyCode
      * @throws MatrixRuntimeException if message is not sent
      */
-    public void sendMessage(String serviceName, String username, String friendlyCode) {
+    public void sendMessage(String serviceName, String username, String friendlyCode, Integer codeTimeout) {
         try {
             String homeServer = matrixService.getUserHomeServer(username);
             MatrixUserInfo matrixUserInfo = matrixService.findMatrixUserInfo(homeServer, username);
@@ -55,7 +55,10 @@ public class BotSender {
             matrixService
                     .getRoomService()
                     .sendMessage(roomId, "Voici votre code pour " + serviceName);
+            matrixService.getRoomService().sendMessage(roomId, "Vous pouvez copier et coller ce code, ou le saisir manuellement dans AudioConf.\n");
             matrixService.getRoomService().sendMessage(roomId, friendlyCode);
+            matrixService.getRoomService().sendMessage(roomId, "Ce code expirera dans " + codeTimeout + " minutes. Il annule les codes envoyés précédemment.\n");
+
 
         } catch (RuntimeException e) {
             throw new MatrixRuntimeException(e);
