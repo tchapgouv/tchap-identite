@@ -36,7 +36,7 @@ public class BotSender {
             if (!matrixUserInfo.isValid()) {
                 String errorMessage =
                         String.format(
-                                "User account is not valid on Tchap : %",
+                                "User account is not valid on Tchap : %s",
                                 LoggingUtilsFactory.getInstance().logOrHide(username));
                 throw new MatrixRuntimeException(errorMessage);
             }
