@@ -1,4 +1,4 @@
-name: Build jar of tchap-identite #major #minor #patch
+name: Create tag and release for tchap-identite #major #minor #patch
 
 on:
   push:
