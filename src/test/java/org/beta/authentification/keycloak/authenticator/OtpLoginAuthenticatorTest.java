@@ -10,6 +10,7 @@ import static org.mockito.Mockito.*;
 
 import org.beta.authentification.keycloak.bot.BotSender;
 import org.beta.authentification.keycloak.email.EmailSender;
+import org.beta.authentification.keycloak.utils.Constants;
 import org.beta.authentification.keycloak.utils.SecureCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -35,6 +36,7 @@ public class OtpLoginAuthenticatorTest {
         authenticator =
                 new OtpLoginAuthenticator(
                         secureCode, emailSender, codeTimeout, mailDelay, botSender);
+        System.setProperty(Constants.FEATURE_TCHAP_BOT_OTP,"true");
     }
 
     /** Send a otp to the user in session and present a form */
@@ -75,6 +77,7 @@ public class OtpLoginAuthenticatorTest {
             // regular otp form with no specific message
             verify(context, times(1)).challenge(any());
             verify(emailSender, times(0)).sendEmail(any(), any(), any(), anyString(), anyString());
+            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString());
         }
 
         @Test
@@ -105,6 +108,7 @@ public class OtpLoginAuthenticatorTest {
             verify(secureCode, times(1)).makeCodeUserFriendly(code);
             verify(emailSender, times(1))
                     .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
+            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString());
         }
 
         @Test
@@ -135,6 +139,7 @@ public class OtpLoginAuthenticatorTest {
             verify(secureCode, times(1)).makeCodeUserFriendly(code);
             verify(emailSender, times(1))
                     .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
+            verify(botSender, times(1)).sendMessage(anyString(), anyString(), eq(code));
         }
     }
 
