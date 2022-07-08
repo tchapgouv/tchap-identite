@@ -3,7 +3,8 @@ name: Build jar of tchap-identite
 on:
   push:
     branches:
-      - '!main'   # all branches excepted main
+      - '**'      # matches every branch
+      - '!main'   # excepted main
 
 jobs:
   build-jar:
