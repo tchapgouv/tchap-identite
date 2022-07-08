@@ -2,7 +2,7 @@ name: Build jar of tchap-identite
 
 on:
   push:
-    branches: [ develop, add-create-release-step ]
+    branches: [ develop ]
 
 jobs:
   build-jar:
