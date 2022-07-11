@@ -12,6 +12,9 @@ import org.beta.authentification.matrix.rest.room.DirectRoomsResource;
 import org.beta.authentification.matrix.rest.room.RoomService;
 import org.jboss.logging.Logger;
 
+/**
+ * Singleton class
+ */
 public class BotSender {
 
     private static final Logger LOG = Logger.getLogger(BotSender.class);

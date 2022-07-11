@@ -17,7 +17,9 @@ import org.keycloak.storage.StorageId;
 import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.adapter.InMemoryUserAdapter;
 import org.keycloak.storage.user.UserLookupProvider;
-
+/**
+ * request scoped object
+ */
 public class TchapUserStorage implements UserStorageProvider, UserLookupProvider {
 
     private static final Logger LOG = Logger.getLogger(TchapUserStorage.class);
@@ -28,8 +30,8 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
 
     public static String ATTRIBUTE_HOMESERVER = "homeServer";
 
-    /** Public constructor */
-    public TchapUserStorage(
+    /** package private constructor */
+    TchapUserStorage(
             KeycloakSession session, ComponentModel model, MatrixService matrixService) {
         this.session = session;
         this.model = model;

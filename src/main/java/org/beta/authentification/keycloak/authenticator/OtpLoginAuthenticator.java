@@ -31,7 +31,9 @@ import org.keycloak.sessions.AuthenticationSessionModel;
 
 import static org.beta.authentification.keycloak.user.TchapUserStorage.ATTRIBUTE_HOMESERVER;
 
-/** Send a OTP to the user in session authenticate() and wait for it in action() */
+/** Send a OTP to the user in session authenticate() and wait for it in action(),
+ *  request scoped object 
+ * */
 public class OtpLoginAuthenticator implements Authenticator {
     private static final Logger LOG = Logger.getLogger(OtpLoginAuthenticator.class);
 
