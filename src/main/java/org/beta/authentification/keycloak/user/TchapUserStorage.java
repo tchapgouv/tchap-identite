@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.beta.authentification.keycloak.utils.LoggingUtilsFactory;
+import org.beta.authentification.matrix.MatrixAutorizationInfo;
 import org.beta.authentification.matrix.rest.MatrixService;
 import org.jboss.logging.Logger;
 import org.keycloak.component.ComponentModel;
@@ -23,7 +24,7 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
     protected KeycloakSession session;
     protected ComponentModel model;
     protected Map<String, UserModel> loadedUsers = new HashMap<>();
-    private MatrixService matrixService;
+    private final MatrixService matrixService;
 
     public static String ATTRIBUTE_HOMESERVER = "homeServer";
 
@@ -56,13 +57,13 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
         }
         UserModel user = loadedUsers.get(username);
         if (user == null) {
-            String homeServer = matrixService.getUserHomeServer(username);
-            if (matrixService.isHomeServerAcceptedOnTchap(homeServer)) {
+            MatrixAutorizationInfo matrixAutorizationInfo = matrixService.isEmailAuthorized(username);
+            if (matrixAutorizationInfo.isAuthorized()) {
                 user = new InMemoryUserAdapter(session, realm, buildId(model, username));
                 user.setEnabled(true);
                 user.setUsername(username);
                 user.setEmail(username);
-                user.setSingleAttribute(ATTRIBUTE_HOMESERVER, homeServer);
+                user.setSingleAttribute(ATTRIBUTE_HOMESERVER, matrixAutorizationInfo.getHomeServer());
                 loadedUsers.put(username, user);
             }
         }

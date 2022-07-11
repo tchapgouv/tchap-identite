@@ -46,13 +46,11 @@ class BotSenderTest {
     @Test
     void send_message_successfully(){
         boolean isValid = true;
-        boolean getUserHomeServerFails = false;
         boolean sendMessageFails = false;
-        setupMocks(isValid, getUserHomeServerFails, sendMessageFails);
+        setupMocks(isValid, sendMessageFails);
 
-        assertDoesNotThrow(() ->botSender.sendMessage(AN_SERVICE_NAME, AN_EMAIL, A_CODE));
+        assertDoesNotThrow(() ->botSender.sendMessage(A_HOME_SERVER, AN_SERVICE_NAME, AN_EMAIL, A_CODE));
 
-        verify(matrixService,times(1)).getUserHomeServer(eq(AN_EMAIL));
         verify(matrixService,times(1)).findMatrixUserInfo(A_HOME_SERVER, AN_EMAIL);
         // TODO : a high usage of RoomService might suggest to inject RoomService in BotSender directly
         verify(matrixService,times(4)).getRoomService();
@@ -65,35 +63,12 @@ class BotSenderTest {
     @Test
     void send_message_successfully_on_illegible_account(){
         boolean isValid = false;
-        boolean getUserHomeServerFails = false;
         boolean sendMessageFails = false;
-        setupMocks(isValid, getUserHomeServerFails, sendMessageFails);
+        setupMocks(isValid, sendMessageFails);
 
-        assertDoesNotThrow(() ->botSender.sendMessage(AN_SERVICE_NAME, AN_EMAIL, A_CODE));
+        assertDoesNotThrow(() ->botSender.sendMessage(A_HOME_SERVER, AN_SERVICE_NAME, AN_EMAIL, A_CODE));
 
-        verify(matrixService,times(1)).getUserHomeServer(eq(AN_EMAIL));
         verify(matrixService,times(1)).findMatrixUserInfo(A_HOME_SERVER, AN_EMAIL);
-        verify(matrixService,times(0)).getRoomService();
-        verify(roomService,times(0)).listBotDMRooms();
-        verify(roomService,times(0)).getJoinedMembers(eq(A_ROOM_ID));
-        verify(roomService,times(0)).sendMessage(eq(A_ROOM_ID),contains(A_CODE));
-    }
-
-    @Test
-    void send_message_fail_on_get_user_home_server_failure(){
-        boolean isValid = true;
-        boolean getUserHomeServerFails = true;
-        boolean sendMessageFails = false;
-        setupMocks(isValid, getUserHomeServerFails, sendMessageFails);
-
-        assertThrows(
-                MatrixRuntimeException.class,
-                () ->botSender.sendMessage(AN_SERVICE_NAME, AN_EMAIL, A_CODE),
-                AN_ERROR
-        );
-
-        verify(matrixService,times(1)).getUserHomeServer(eq(AN_EMAIL));
-        verify(matrixService,times(0)).findMatrixUserInfo(A_HOME_SERVER, AN_EMAIL);
         verify(matrixService,times(0)).getRoomService();
         verify(roomService,times(0)).listBotDMRooms();
         verify(roomService,times(0)).getJoinedMembers(eq(A_ROOM_ID));
@@ -103,17 +78,15 @@ class BotSenderTest {
     @Test
     void send_message_fail_on_send_message_failure(){
         boolean isValid = true;
-        boolean getUserHomeServerFails = false;
         boolean sendMessageFails = true;
-        setupMocks(isValid, getUserHomeServerFails, sendMessageFails);
+        setupMocks(isValid, sendMessageFails);
 
         assertThrows(
                 MatrixRuntimeException.class,
-                () ->botSender.sendMessage(AN_SERVICE_NAME, AN_EMAIL, A_CODE),
+                () ->botSender.sendMessage(A_HOME_SERVER, AN_SERVICE_NAME, AN_EMAIL, A_CODE),
                 AN_ERROR
         );
 
-        verify(matrixService,times(1)).getUserHomeServer(eq(AN_EMAIL));
         verify(matrixService,times(1)).findMatrixUserInfo(A_HOME_SERVER, AN_EMAIL);
         verify(matrixService,times(4)).getRoomService();
         verify(roomService,times(1)).listBotDMRooms();
@@ -121,13 +94,7 @@ class BotSenderTest {
         verify(roomService,times(1)).sendMessage(eq(A_ROOM_ID),contains(A_CODE));
     }
 
-    private void setupMocks(boolean isValid, boolean getUserHomeServerFails, boolean sendMessageFails) {
-        if ( getUserHomeServerFails ){
-            doThrow(new RuntimeException(AN_ERROR)).when(matrixService).getUserHomeServer(eq(AN_EMAIL));
-        }
-        else {
-            doReturn(A_HOME_SERVER).when(matrixService).getUserHomeServer(eq(AN_EMAIL));
-        }
+    private void setupMocks(boolean isValid, boolean sendMessageFails) {
 
         MatrixUserInfo matrixUserInfo = new MatrixUserInfo(A_MATRIX_ID, isValid);
         doReturn(matrixUserInfo).when(matrixService).findMatrixUserInfo(A_HOME_SERVER, AN_EMAIL);

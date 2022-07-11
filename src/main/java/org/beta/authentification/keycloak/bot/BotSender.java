@@ -24,14 +24,15 @@ public class BotSender {
     /**
      * Send a otp code via a tchap bot
      *
+     *
+     * @param homeServer
      * @param serviceName
      * @param username
      * @param friendlyCode
      * @throws MatrixRuntimeException if message is not sent
      */
-    public void sendMessage(String serviceName, String username, String friendlyCode) {
+    public void sendMessage(String homeServer, String serviceName, String username, String friendlyCode) {
         try {
-            String homeServer = matrixService.getUserHomeServer(username);
             MatrixUserInfo matrixUserInfo = matrixService.findMatrixUserInfo(homeServer, username);
             if (!matrixUserInfo.isValid()) {
                 LOG.infof(

@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.beta.authentification.keycloak.utils.Constants;
 import org.beta.authentification.keycloak.utils.Environment;
 import org.beta.authentification.keycloak.utils.LoggingUtilsFactory;
+import org.beta.authentification.matrix.MatrixAutorizationInfo;
 import org.beta.authentification.matrix.MatrixUserInfo;
 import org.beta.authentification.matrix.rest.homeserver.HomeServerService;
 import org.beta.authentification.matrix.rest.login.LoginService;
@@ -33,11 +34,10 @@ public class MatrixService {
 
     protected MatrixService(String accountEmail, String tchapPassword) {
 
-        LoginService loginService = new LoginService();
         homeServerService = new HomeServerService();
-
         String homeServer = homeServerService.findHomeServerByEmail(accountEmail);
 
+        LoginService loginService = new LoginService();
         String accountHomeServerUrl = buildHomeServerUrl(homeServer);
         String accessToken =
                 loginService.findAccessToken(accountHomeServerUrl, accountEmail, tchapPassword);
@@ -49,43 +49,33 @@ public class MatrixService {
         roomService = new RoomService(roomClient, matrixId);
     }
 
-    /*
+    /**
      *
-     * Check if an email is accepted on Tchap based on an hardcorded domain list
-     * @param email
-     * @return
+     * Check if an email is accepted on Tchap based on a hardcorded domain list
+     * @param email that we try to validate
+     * @return true if email is accepted on Tchap otherwise false
      */
-    public boolean isUserValid(String email) {
+    public MatrixAutorizationInfo isEmailAuthorized(String email) {
         if (LOG.isDebugEnabled()) {
             LOG.debugf(
                     "Check if email is valid in tchap : %s",
                     LoggingUtilsFactory.getInstance().logOrHash(email));
         }
         if (StringUtils.isEmpty(email)) {
-            return false;
+            return new MatrixAutorizationInfo(null,false);
         }
 
         String userHomeServer = homeServerService.findHomeServerByEmail(email);
-        boolean isValid = isEmailAcceptedOnTchap(userHomeServer);
+        boolean isValid = isHomeServerAcceptedOnTchap(userHomeServer);
+        MatrixAutorizationInfo result = new MatrixAutorizationInfo(userHomeServer, isValid);
         if (LOG.isDebugEnabled()) {
             LOG.debugf(
-                    "Email[%s] is valid in tchap : %s",
-                    LoggingUtilsFactory.getInstance().logOrHash(email), isValid);
+                    "Email[%s] - HomeServer[%s] is valid in tchap : %s",
+                    LoggingUtilsFactory.getInstance().logOrHash(email),
+                    userHomeServer,
+                    result.isAuthorized());
         }
-        return isValid;
-    }
-
-    /**
-     * Get the home server of the user
-     *
-     * @param email
-     * @return (nullable) string of the homeserver
-     */
-    public String getUserHomeServer(String email) {
-        if (StringUtils.isEmpty(email)) {
-            return null;
-        }
-        return homeServerService.findHomeServerByEmail(email);
+        return result;
     }
 
     /**
@@ -94,26 +84,7 @@ public class MatrixService {
      * @param userHomeServer
      * @return not null value
      */
-    public boolean isHomeServerAcceptedOnTchap(String userHomeServer) {
-        if (StringUtils.isEmpty(userHomeServer)) {
-            return false;
-        }
-        boolean isValid = isEmailAcceptedOnTchap(userHomeServer);
-        if (LOG.isDebugEnabled()) {
-            LOG.debugf(
-                    "HomeServer [%s] is valid in tchap : %s",
-                    LoggingUtilsFactory.getInstance().logOrHash(userHomeServer), isValid);
-        }
-        return isValid;
-    }
-
-    /**
-     * Check if an email is accepted on Tchap based on an hardcorded domain list
-     *
-     * @param userHomeServer
-     * @return
-     */
-    private boolean isEmailAcceptedOnTchap(String userHomeServer) {
+    private boolean isHomeServerAcceptedOnTchap(String userHomeServer) {
         return !getInvalidHomeServers().contains(userHomeServer);
     }
 

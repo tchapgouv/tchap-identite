@@ -5,6 +5,7 @@
 package org.beta.authentification.matrix.rest;
 
 import org.beta.authentification.keycloak.TestSuiteUtils;
+import org.beta.authentification.matrix.MatrixAutorizationInfo;
 import org.beta.authentification.matrix.MatrixUserInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,38 +27,38 @@ class MatrixServiceIntTest {
 
     @Test
     void shouldExistingTchapUserBeValid() {
-        boolean userValid = matrixService.isUserValid("maghen.calinghee@beta.gouv.fr");
-        Assertions.assertTrue(userValid);
+        MatrixAutorizationInfo matrixAutorizationInfo = matrixService.isEmailAuthorized("maghen.calinghee@beta.gouv.fr");
+        Assertions.assertTrue(matrixAutorizationInfo.isAuthorized());
     }
 
     @Test
     void shouldNonExistingTchapUserBeValid() {
-        boolean userValid = matrixService.isUserValid("clark.kent@beta.gouv.fr");
-        Assertions.assertTrue(userValid);
+        MatrixAutorizationInfo matrixAutorizationInfo = matrixService.isEmailAuthorized("clark.kent@beta.gouv.fr");
+        Assertions.assertTrue(matrixAutorizationInfo.isAuthorized());
     }
 
     @Test
     void shouldEducationUserBeValid() {
-        boolean userValid = matrixService.isUserValid("clark.kent@ac-corse.fr");
-        Assertions.assertTrue(userValid);
+        MatrixAutorizationInfo matrixAutorizationInfo = matrixService.isEmailAuthorized("clark.kent@ac-corse.fr");
+        Assertions.assertTrue(matrixAutorizationInfo.isAuthorized());
     }
 
     @Test
     void shouldExternalUserNotBeValid() {
-        boolean userValid = matrixService.isUserValid("clark.kent@gmail.com");
-        Assertions.assertFalse(userValid);
+        MatrixAutorizationInfo matrixAutorizationInfo = matrixService.isEmailAuthorized("clark.kent@gmail.com");
+        Assertions.assertFalse(matrixAutorizationInfo.isAuthorized());
     }
 
     @Test
     void shouldCommunityUserNotBeValid() {
-        boolean userValid = matrixService.isUserValid("clark.kent@3t-chatellerault.fr");
-        Assertions.assertFalse(userValid);
+        MatrixAutorizationInfo matrixAutorizationInfo = matrixService.isEmailAuthorized("clark.kent@3t-chatellerault.fr");
+        Assertions.assertFalse(matrixAutorizationInfo.isAuthorized());
     }
 
     @Test
     void shouldUserWithInvalidEmailNotBeValid() {
-        boolean userValid = matrixService.isUserValid("clark.kent");
-        Assertions.assertFalse(userValid);
+        MatrixAutorizationInfo matrixAutorizationInfo = matrixService.isEmailAuthorized("clark.kent");
+        Assertions.assertFalse(matrixAutorizationInfo.isAuthorized());
     }
 
     @Test
