@@ -31,15 +31,12 @@ public class MatrixService {
     private final UserService userService;
     private final RoomService roomService;
 
-    private final String matrixId;
-
     protected MatrixService(String accountEmail, String tchapPassword) {
 
         LoginService loginService = new LoginService();
         homeServerService = new HomeServerService();
 
         String homeServer = homeServerService.findHomeServerByEmail(accountEmail);
-        this.matrixId = UserService.emailToUserId(accountEmail, homeServer);
 
         String accountHomeServerUrl = buildHomeServerUrl(homeServer);
         String accessToken =
@@ -48,7 +45,8 @@ public class MatrixService {
         userService = new UserService(accountHomeServerUrl, accessToken);
 
         RoomClient roomClient = RoomClientFactory.build(accountHomeServerUrl, accessToken);
-        roomService = new RoomService(roomClient, this.matrixId);
+        String matrixId = UserService.emailToUserId(accountEmail, homeServer);
+        roomService = new RoomService(roomClient, matrixId);
     }
 
     /*
@@ -141,14 +139,5 @@ public class MatrixService {
         }
         boolean isValid = !userInfoByEmail.isDeactivated() && !userInfoByEmail.isExpired();
         return new MatrixUserInfo(userInfoByEmail.getUserId(), isValid);
-    }
-
-    /**
-     * Return the matrixId of the connected user
-     *
-     * @return not null string
-     */
-    public String getMatrixId() {
-        return matrixId;
     }
 }
