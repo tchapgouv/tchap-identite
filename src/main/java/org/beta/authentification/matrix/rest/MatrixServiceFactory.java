@@ -9,10 +9,25 @@ import org.beta.authentification.keycloak.utils.Constants;
 import org.beta.authentification.keycloak.utils.Environment;
 
 public class MatrixServiceFactory {
-    private static MatrixService instance;
+//    private static MatrixService instance;
+//    public static MatrixService getInstance() {
+//        if (instance == null) {
+//            String accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
+//            String password = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
+//            if (StringUtils.isEmpty(accountEmail) || StringUtils.isEmpty(password)) {
+//                throw new IllegalArgumentException(
+//                        "No account or password has been set. Please define the following"
+//                                + " environment variables : "
+//                                + Constants.TCHAP_BOT_ACCOUNT_EMAIL
+//                                + " and "
+//                                + Constants.TCHAP_BOT_PASSWORD);
+//            }
+//            instance = new MatrixService(accountEmail, password);
+//        }
+//        return instance;
+//    }
 
     public static MatrixService getInstance() {
-        if (instance == null) {
             String accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
             String password = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
             if (StringUtils.isEmpty(accountEmail) || StringUtils.isEmpty(password)) {
@@ -23,8 +38,6 @@ public class MatrixServiceFactory {
                                 + " and "
                                 + Constants.TCHAP_BOT_PASSWORD);
             }
-            instance = new MatrixService(accountEmail, password);
-        }
-        return instance;
+            return new MatrixService(accountEmail, password);
     }
 }
