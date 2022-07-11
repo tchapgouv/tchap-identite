@@ -63,6 +63,7 @@ class MatrixServiceIntTest {
 
     @Test
     void shouldFindMatrixUserInfoBeValid() {
+        matrixService = MatrixServiceFactory.getAuthenticatedInstance();
         MatrixUserInfo accountValidOnTchap =
                 matrixService.findMatrixUserInfo(
                         "i.tchap.gouv.fr", "maghen.calinghee@beta.gouv.fr");
@@ -74,6 +75,7 @@ class MatrixServiceIntTest {
 
     @Test
     void shouldFindMatrixUserInfoNotBeValid() {
+        matrixService = MatrixServiceFactory.getAuthenticatedInstance();
         MatrixUserInfo accountValidOnTchap =
                 matrixService.findMatrixUserInfo("i.tchap.gouv.fr", "clark.kent@beta.gouv.fr");
         Assertions.assertFalse(accountValidOnTchap.isValid());

@@ -43,13 +43,13 @@ class BotSenderIntTest {
 
         String accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
         String password = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
-        MatrixService botMatrixService = new MatrixService(accountEmail, password);
+        MatrixService botMatrixService = MatrixServiceUtil.getMatrixService(accountEmail, password);
         botRoomService = botMatrixService.getRoomService();
 
         String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
         String userTestAccountPassword = Environment.getenv(TestSuiteUtils.TEST_USER2_PASSWORD);
         userTestRoomService =
-                new MatrixService(userTestAccountEmail, userTestAccountPassword).getRoomService();
+                MatrixServiceUtil.getMatrixService(userTestAccountEmail, userTestAccountPassword).getRoomService();
 
         botSender = new BotSender(botMatrixService);
     }

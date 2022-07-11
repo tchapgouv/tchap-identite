@@ -6,12 +6,8 @@ package org.beta.authentification.matrix.rest;
 
 import static org.beta.authentification.matrix.rest.homeserver.HomeServerService.buildHomeServerUrl;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.beta.authentification.keycloak.utils.Constants;
-import org.beta.authentification.keycloak.utils.Environment;
 import org.beta.authentification.keycloak.utils.LoggingUtilsFactory;
 import org.beta.authentification.matrix.MatrixAutorizationInfo;
 import org.beta.authentification.matrix.MatrixUserInfo;
@@ -24,6 +20,9 @@ import org.beta.authentification.matrix.rest.user.UserInfoResource;
 import org.beta.authentification.matrix.rest.user.UserService;
 import org.jboss.logging.Logger;
 
+/**
+ * Scope request object
+ */
 public class MatrixService {
 
     private static final Logger LOG = Logger.getLogger(MatrixService.class);
@@ -31,10 +30,21 @@ public class MatrixService {
     private final HomeServerService homeServerService;
     private final UserService userService;
     private final RoomService roomService;
+    private final List<String> unauthorizedList;
 
-    protected MatrixService(String accountEmail, String tchapPassword) {
 
-        homeServerService = new HomeServerService();
+    protected MatrixService(List<String> homeServerList, List<String> unauthorizedList) {
+        homeServerService = new HomeServerService(homeServerList);
+        roomService = null;
+        userService = null;
+        this.unauthorizedList = unauthorizedList;
+        //todo matrix services should be splitted into two subvervices
+    
+    }
+
+    protected MatrixService(String accountEmail, String tchapPassword, List<String> homeServerList, List<String> unauthorizedList) {
+        this.unauthorizedList = unauthorizedList;
+        homeServerService = new HomeServerService(homeServerList);
         String homeServer = homeServerService.findHomeServerByEmail(accountEmail);
 
         LoginService loginService = new LoginService();
@@ -47,7 +57,10 @@ public class MatrixService {
         RoomClient roomClient = RoomClientFactory.build(accountHomeServerUrl, accessToken);
         String matrixId = UserService.emailToUserId(accountEmail, homeServer);
         roomService = new RoomService(roomClient, matrixId);
+        //todo matrix services should be splitted into two subvervices
+
     }
+
 
     /**
      *
@@ -85,15 +98,10 @@ public class MatrixService {
      * @return not null value
      */
     private boolean isHomeServerAcceptedOnTchap(String userHomeServer) {
-        return !getInvalidHomeServers().contains(userHomeServer);
+        return !unauthorizedList.contains(userHomeServer);
     }
 
-    private List<String> getInvalidHomeServers() {
-        String unauthorizedList = Environment.getenv(Constants.TCHAP_UNAUTHORIZED_HOME_SERVER_LIST);
-        return StringUtils.isNotEmpty(unauthorizedList)
-                ? Arrays.asList(unauthorizedList.split(","))
-                : Collections.emptyList();
-    }
+
 
     public RoomService getRoomService() {
         return roomService;

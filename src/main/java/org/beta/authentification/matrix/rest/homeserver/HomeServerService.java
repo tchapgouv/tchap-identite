@@ -4,12 +4,9 @@
  */
 package org.beta.authentification.matrix.rest.homeserver;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import org.apache.commons.lang.StringUtils;
-import org.beta.authentification.keycloak.utils.Constants;
-import org.beta.authentification.keycloak.utils.Environment;
 
 public class HomeServerService {
     private final HomeServerClient homeServerClient;
@@ -17,9 +14,8 @@ public class HomeServerService {
     private static final String HOME_SERVER_URL_PREFIX = "https://matrix";
     private static final String DOMAIN_SEPARATOR = "@";
 
-    public HomeServerService() {
-        homeServerList =
-                Arrays.asList(Environment.getenv(Constants.TCHAP_HOME_SERVER_LIST).split(","));
+    public HomeServerService(List<String> homeServerList) {
+        this.homeServerList = homeServerList;
         homeServerClient = HomeServerClientFactory.build(getRandomHomeServerBaseUrl());
     }
 

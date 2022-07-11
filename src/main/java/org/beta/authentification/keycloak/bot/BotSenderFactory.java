@@ -11,7 +11,7 @@ public class BotSenderFactory {
 
     public static BotSender getInstance() {
         if (instance == null) {
-            instance = new BotSender(MatrixServiceFactory.getInstance());
+            instance = new BotSender(MatrixServiceFactory.getAuthenticatedInstance());
         }
         return instance;
     }

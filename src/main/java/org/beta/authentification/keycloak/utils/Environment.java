@@ -4,6 +4,12 @@
  */
 package org.beta.authentification.keycloak.utils;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
 public class Environment {
 
     public static String getenv(String key) {
@@ -12,5 +18,11 @@ public class Environment {
             return System.getProperty(key);
         }
         return result;
+    }
+
+    public static List<String> strToList(String envVar) {
+        return StringUtils.isNotEmpty(envVar)
+                ? Arrays.asList(envVar.split(","))
+                : Collections.emptyList();
     }
 }
