@@ -21,14 +21,19 @@ public class HomeServerService {
     public HomeServerService(List<String> homeServerList) {
         if(Features.isHomeServerSelectionStrategyEnabled()) {
             this.strategy = new HealthyHomeServerStrategy(homeServerList);
-            LOG.info("HomeServerSelectionStrategy : HealthyHomeServerStrategy (will select healthy home server and retry call if failure)");
+            LOG.debug("HomeServerSelectionStrategy : HealthyHomeServerStrategy (will select healthy home server and retry call if failure)");
         }
         else {
             this.strategy = new DefaultHomeServerStrategy(homeServerList);
-            LOG.info("HomeServerSelectionStrategy : DefaultHomeServerStrategy (will select one home server)");
+            LOG.debug("HomeServerSelectionStrategy : DefaultHomeServerStrategy (will select one home server)");
         }
     }
 
+    /**
+     * Find the corresponding home server from an email address
+     * @param email email address
+     * @return Homeserver name
+     */
     public String findHomeServerByEmail(String email) {
         return strategy.findHomeServerByEmail(email);
     }

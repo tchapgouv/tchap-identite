@@ -14,7 +14,14 @@ import java.util.List;
 import java.util.Random;
 
 import static org.beta.authentification.matrix.rest.homeserver.HomeServerService.buildHomeServerUrl;
-
+/**
+ * HealthyHomeServer strategy
+ *
+ * This strategy will elect a homeserver from a list of homeservers passing by the env : TCHAP_HOME_SERVER_LIST.
+ * This homeserver will be used for API calls with health check and retry mecanism.
+ * It will replace the homeserver in case of failure/
+ *
+ */
 public class HealthyHomeServerStrategy implements HomeServerSelectionStrategy {
     private static final Logger LOG = Logger.getLogger(HealthyHomeServerStrategy.class);
 
@@ -35,7 +42,7 @@ public class HealthyHomeServerStrategy implements HomeServerSelectionStrategy {
             HomeServerClient candidate = HomeServerClientFactory.build(buildHomeServerUrl(randomHomeServerName));
             boolean isHealthy = validate(candidate, randomHomeServerName);
             if (isHealthy){
-                LOG.infof("HomeServer will be used : "+ randomHomeServerName);
+                LOG.debug("HomeServer will be used : "+ randomHomeServerName);
                 return candidate;
             }
             else {
@@ -55,7 +62,10 @@ public class HealthyHomeServerStrategy implements HomeServerSelectionStrategy {
             return true;
         }
         catch (Exception exception){
-            LOG.warnf(exception,"Cannot connect to homeServer : [%s]", homeServer);
+            LOG.warnf("Cannot connect to homeServer : [%s] :", homeServer, exception.getMessage());
+            if ( LOG.isDebugEnabled() ){
+                LOG.debugf(exception,"Cannot connect to homeServer : [%s]", homeServer);
+            }
             return false;
         }
     }
@@ -69,7 +79,10 @@ public class HealthyHomeServerStrategy implements HomeServerSelectionStrategy {
             return homeServerInfoResource.getHs();
         }
         catch (RetryableException exception){
-            LOG.warnf(exception,"Cannot call findHomeServerByEmail(/api/info)");
+            LOG.warnf("Cannot call findHomeServerByEmail(/api/info) : %s", exception.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.debugf(exception,"Cannot call findHomeServerByEmail(/api/info)");
+            }
             homeServerClient = getNewHealthyClient();
             return this.findHomeServerByEmail(email);
         }

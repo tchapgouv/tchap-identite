@@ -11,6 +11,13 @@ import java.util.Random;
 
 import static org.beta.authentification.matrix.rest.homeserver.HomeServerService.buildHomeServerUrl;
 
+/**
+ * DefaultHomeServer strategy
+ *
+ * This strategy will elect a homeserver from a list of homeservers passing by the env : TCHAP_HOME_SERVER_LIST.
+ * This homeserver will be used for API calls but with no health check and no retry mecanism
+ *
+ */
 public class DefaultHomeServerStrategy implements HomeServerSelectionStrategy {
     private static final Logger LOG = Logger.getLogger(DefaultHomeServerStrategy.class);
 
@@ -25,7 +32,7 @@ public class DefaultHomeServerStrategy implements HomeServerSelectionStrategy {
     private HomeServerClient getClient() {
         String randomHomeServerName = getRandomHomeServerName();
         HomeServerClient candidate = HomeServerClientFactory.build(buildHomeServerUrl(randomHomeServerName));
-        LOG.infof("HomeServer will be used : "+ randomHomeServerName);
+        LOG.debug("HomeServer will be used : "+ randomHomeServerName);
         return candidate;
     }
 
