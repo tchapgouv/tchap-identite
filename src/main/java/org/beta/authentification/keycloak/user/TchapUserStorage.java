@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.beta.authentification.keycloak.utils.LoggingUtilsFactory;
+import org.beta.authentification.matrix.rest.MatrixAutorizationInfo;
 import org.beta.authentification.matrix.rest.MatrixService;
 import org.jboss.logging.Logger;
 import org.keycloak.component.ComponentModel;
@@ -16,19 +17,21 @@ import org.keycloak.storage.StorageId;
 import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.adapter.InMemoryUserAdapter;
 import org.keycloak.storage.user.UserLookupProvider;
-
+/**
+ * request scoped object
+ */
 public class TchapUserStorage implements UserStorageProvider, UserLookupProvider {
 
     private static final Logger LOG = Logger.getLogger(TchapUserStorage.class);
     protected KeycloakSession session;
     protected ComponentModel model;
     protected Map<String, UserModel> loadedUsers = new HashMap<>();
-    private MatrixService matrixService;
+    private final MatrixService matrixService;
 
     public static String ATTRIBUTE_HOMESERVER = "homeServer";
 
-    /** Public constructor */
-    public TchapUserStorage(
+    /** package private constructor */
+    TchapUserStorage(
             KeycloakSession session, ComponentModel model, MatrixService matrixService) {
         this.session = session;
         this.model = model;
@@ -56,13 +59,13 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
         }
         UserModel user = loadedUsers.get(username);
         if (user == null) {
-            String homeServer = matrixService.getUserHomeServer(username);
-            if (matrixService.isHomeServerAcceptedOnTchap(homeServer)) {
+            MatrixAutorizationInfo matrixAutorizationInfo = matrixService.isEmailAuthorized(username);
+            if (matrixAutorizationInfo.isAuthorized()) {
                 user = new InMemoryUserAdapter(session, realm, buildId(model, username));
                 user.setEnabled(true);
                 user.setUsername(username);
                 user.setEmail(username);
-                user.setSingleAttribute(ATTRIBUTE_HOMESERVER, homeServer);
+                user.setSingleAttribute(ATTRIBUTE_HOMESERVER, matrixAutorizationInfo.getHomeServer());
                 loadedUsers.put(username, user);
             }
         }

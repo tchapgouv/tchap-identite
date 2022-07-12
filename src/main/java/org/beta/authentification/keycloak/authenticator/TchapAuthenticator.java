@@ -21,7 +21,9 @@ import org.keycloak.models.UserModel;
 import org.keycloak.protocol.oidc.OIDCLoginProtocol;
 import org.keycloak.sessions.AuthenticationSessionModel;
 
-/** Verify that user in login hint is found in users federation (tchap) */
+/** Verify that user in login hint is found in users federation (tchap), 
+ * request scoped object 
+ * */
 public class TchapAuthenticator implements Authenticator {
 
     private static final String FTL_UNAUTHORIZED_USER = "unauthorized-user.ftl";

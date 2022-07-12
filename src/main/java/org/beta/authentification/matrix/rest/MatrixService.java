@@ -6,14 +6,9 @@ package org.beta.authentification.matrix.rest;
 
 import static org.beta.authentification.matrix.rest.homeserver.HomeServerService.buildHomeServerUrl;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.beta.authentification.keycloak.utils.Constants;
-import org.beta.authentification.keycloak.utils.Environment;
 import org.beta.authentification.keycloak.utils.LoggingUtilsFactory;
-import org.beta.authentification.matrix.MatrixUserInfo;
 import org.beta.authentification.matrix.rest.homeserver.HomeServerService;
 import org.beta.authentification.matrix.rest.login.LoginService;
 import org.beta.authentification.matrix.rest.room.RoomClient;
@@ -23,6 +18,9 @@ import org.beta.authentification.matrix.rest.user.UserInfoResource;
 import org.beta.authentification.matrix.rest.user.UserService;
 import org.jboss.logging.Logger;
 
+/**
+ * Scope request object
+ */
 public class MatrixService {
 
     private static final Logger LOG = Logger.getLogger(MatrixService.class);
@@ -30,17 +28,24 @@ public class MatrixService {
     private final HomeServerService homeServerService;
     private final UserService userService;
     private final RoomService roomService;
+    private final List<String> unauthorizedList;
 
-    private final String matrixId;
 
-    protected MatrixService(String accountEmail, String tchapPassword) {
+    protected MatrixService(List<String> homeServerList, List<String> unauthorizedList) {
+        homeServerService = new HomeServerService(homeServerList);
+        roomService = null;
+        userService = null;
+        this.unauthorizedList = unauthorizedList;
+        //todo matrix services should be splitted into two subvervices
+    
+    }
+
+    protected MatrixService(String accountEmail, String tchapPassword, List<String> homeServerList, List<String> unauthorizedList) {
+        this.unauthorizedList = unauthorizedList;
+        homeServerService = new HomeServerService(homeServerList);
+        String homeServer = homeServerService.findHomeServerByEmail(accountEmail);
 
         LoginService loginService = new LoginService();
-        homeServerService = new HomeServerService();
-
-        String homeServer = homeServerService.findHomeServerByEmail(accountEmail);
-        this.matrixId = UserService.emailToUserId(accountEmail, homeServer);
-
         String accountHomeServerUrl = buildHomeServerUrl(homeServer);
         String accessToken =
                 loginService.findAccessToken(accountHomeServerUrl, accountEmail, tchapPassword);
@@ -48,46 +53,40 @@ public class MatrixService {
         userService = new UserService(accountHomeServerUrl, accessToken);
 
         RoomClient roomClient = RoomClientFactory.build(accountHomeServerUrl, accessToken);
-        roomService = new RoomService(roomClient, this.matrixId);
+        String matrixId = UserService.emailToUserId(accountEmail, homeServer);
+        roomService = new RoomService(roomClient, matrixId);
+        //todo matrix services should be splitted into two subvervices
+
     }
 
-    /*
+
+    /**
      *
-     * Check if an email is accepted on Tchap based on an hardcorded domain list
-     * @param email
-     * @return
+     * Check if an email is accepted on Tchap based on a hardcorded domain list
+     * @param email that we try to validate
+     * @return true if email is accepted on Tchap otherwise false
      */
-    public boolean isUserValid(String email) {
+    public MatrixAutorizationInfo isEmailAuthorized(String email) {
         if (LOG.isDebugEnabled()) {
             LOG.debugf(
                     "Check if email is valid in tchap : %s",
                     LoggingUtilsFactory.getInstance().logOrHash(email));
         }
         if (StringUtils.isEmpty(email)) {
-            return false;
+            return new MatrixAutorizationInfo(null,false);
         }
 
         String userHomeServer = homeServerService.findHomeServerByEmail(email);
-        boolean isValid = isEmailAcceptedOnTchap(userHomeServer);
+        boolean isValid = isHomeServerAcceptedOnTchap(userHomeServer);
+        MatrixAutorizationInfo result = new MatrixAutorizationInfo(userHomeServer, isValid);
         if (LOG.isDebugEnabled()) {
             LOG.debugf(
-                    "Email[%s] is valid in tchap : %s",
-                    LoggingUtilsFactory.getInstance().logOrHash(email), isValid);
+                    "Email[%s] - HomeServer[%s] is valid in tchap : %s",
+                    LoggingUtilsFactory.getInstance().logOrHash(email),
+                    userHomeServer,
+                    result.isAuthorized());
         }
-        return isValid;
-    }
-
-    /**
-     * Get the home server of the user
-     *
-     * @param email
-     * @return (nullable) string of the homeserver
-     */
-    public String getUserHomeServer(String email) {
-        if (StringUtils.isEmpty(email)) {
-            return null;
-        }
-        return homeServerService.findHomeServerByEmail(email);
+        return result;
     }
 
     /**
@@ -96,35 +95,11 @@ public class MatrixService {
      * @param userHomeServer
      * @return not null value
      */
-    public boolean isHomeServerAcceptedOnTchap(String userHomeServer) {
-        if (StringUtils.isEmpty(userHomeServer)) {
-            return false;
-        }
-        boolean isValid = isEmailAcceptedOnTchap(userHomeServer);
-        if (LOG.isDebugEnabled()) {
-            LOG.debugf(
-                    "HomeServer [%s] is valid in tchap : %s",
-                    LoggingUtilsFactory.getInstance().logOrHash(userHomeServer), isValid);
-        }
-        return isValid;
+    private boolean isHomeServerAcceptedOnTchap(String userHomeServer) {
+        return !unauthorizedList.contains(userHomeServer);
     }
 
-    /**
-     * Check if an email is accepted on Tchap based on an hardcorded domain list
-     *
-     * @param userHomeServer
-     * @return
-     */
-    private boolean isEmailAcceptedOnTchap(String userHomeServer) {
-        return !getInvalidHomeServers().contains(userHomeServer);
-    }
 
-    private List<String> getInvalidHomeServers() {
-        String unauthorizedList = Environment.getenv(Constants.TCHAP_UNAUTHORIZED_HOME_SERVER_LIST);
-        return StringUtils.isNotEmpty(unauthorizedList)
-                ? Arrays.asList(unauthorizedList.split(","))
-                : Collections.emptyList();
-    }
 
     public RoomService getRoomService() {
         return roomService;
@@ -141,14 +116,5 @@ public class MatrixService {
         }
         boolean isValid = !userInfoByEmail.isDeactivated() && !userInfoByEmail.isExpired();
         return new MatrixUserInfo(userInfoByEmail.getUserId(), isValid);
-    }
-
-    /**
-     * Return the matrixId of the connected user
-     *
-     * @return not null string
-     */
-    public String getMatrixId() {
-        return matrixId;
     }
 }

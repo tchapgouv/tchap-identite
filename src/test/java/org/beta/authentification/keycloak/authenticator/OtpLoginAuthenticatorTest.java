@@ -22,6 +22,8 @@ import org.mockito.MockitoAnnotations;
 
 public class OtpLoginAuthenticatorTest {
 
+    private static final String A_HOME_SERVER = "i.tchap.gouv.fr";
+
     OtpLoginAuthenticator authenticator;
 
     @Mock EmailSender emailSender;
@@ -29,6 +31,7 @@ public class OtpLoginAuthenticatorTest {
     @Mock BotSender botSender;
     int codeTimeout = 0;
     int mailDelay = 0;
+
 
     @BeforeEach
     public void setup() {
@@ -61,6 +64,7 @@ public class OtpLoginAuthenticatorTest {
             verify(context, times(0)).success();
             verify(context, times(0)).challenge(any());
             verify(emailSender, times(0)).sendEmail(any(), any(), any(), anyString(), anyString());
+            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString(), anyString());
         }
 
         @Test
@@ -81,7 +85,7 @@ public class OtpLoginAuthenticatorTest {
             // regular otp form with no specific message
             verify(context, times(1)).challenge(any());
             verify(emailSender, times(0)).sendEmail(any(), any(), any(), anyString(), anyString());
-            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString());
+            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString(), anyString());
         }
 
         @Test
@@ -112,7 +116,7 @@ public class OtpLoginAuthenticatorTest {
             verify(secureCode, times(1)).makeCodeUserFriendly(code);
             verify(emailSender, times(1))
                     .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
-            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString());
+            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString(), anyString());
         }
 
         @Test
@@ -121,6 +125,7 @@ public class OtpLoginAuthenticatorTest {
                     new MockFactory.AuthenticationFlowContextBuilder()
                             .withUser("myUserId")
                             .withTemporarilyDisabled(false)
+                            .withHomeServer(A_HOME_SERVER)
                             .build();
 
             String code = "bbb-aaa";
@@ -143,7 +148,7 @@ public class OtpLoginAuthenticatorTest {
             verify(secureCode, times(1)).makeCodeUserFriendly(code);
             verify(emailSender, times(1))
                     .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
-            verify(botSender, times(1)).sendMessage(anyString(), anyString(), eq(code));
+            verify(botSender, times(1)).sendMessage(eq(A_HOME_SERVER), anyString(), anyString(), eq(code));
         }
     }
 
@@ -170,6 +175,7 @@ public class OtpLoginAuthenticatorTest {
             verify(context, times(0)).success();
             verify(context, times(0)).challenge(any());
             verify(emailSender, times(0)).sendEmail(any(), any(), any(), anyString(), anyString());
+            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString(), anyString());
         }
 
         @Test
@@ -190,7 +196,7 @@ public class OtpLoginAuthenticatorTest {
             // regular otp form with no specific message
             verify(context, times(1)).challenge(any());
             verify(emailSender, times(0)).sendEmail(any(), any(), any(), anyString(), anyString());
-            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString());
+            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString(), anyString());
         }
 
         @Test
@@ -221,7 +227,7 @@ public class OtpLoginAuthenticatorTest {
             verify(secureCode, times(1)).makeCodeUserFriendly(code);
             verify(emailSender, times(1))
                     .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
-            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString());
+            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString(), anyString());
         }
 
         @Test
@@ -252,7 +258,7 @@ public class OtpLoginAuthenticatorTest {
             verify(secureCode, times(1)).makeCodeUserFriendly(code);
             verify(emailSender, times(1))
                     .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
-            verify(botSender, times(0)).sendMessage(anyString(), anyString(), eq(code));
+            verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString(), anyString());
         }
     }
 

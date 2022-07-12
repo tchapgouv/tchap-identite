@@ -29,7 +29,11 @@ import org.keycloak.models.UserModel;
 import org.keycloak.services.managers.BruteForceProtector;
 import org.keycloak.sessions.AuthenticationSessionModel;
 
-/** Send a OTP to the user in session authenticate() and wait for it in action() */
+import static org.beta.authentification.keycloak.user.TchapUserStorage.ATTRIBUTE_HOMESERVER;
+
+/** Send a OTP to the user in session authenticate() and wait for it in action(),
+ *  request scoped object 
+ * */
 public class OtpLoginAuthenticator implements Authenticator {
     private static final Logger LOG = Logger.getLogger(OtpLoginAuthenticator.class);
 
@@ -78,7 +82,7 @@ public class OtpLoginAuthenticator implements Authenticator {
             LOG.debugf(
                     "Authenticate OtpLoginAuthenticator with user %s %s",
                     LoggingUtilsFactory.getInstance().logOrHash(user.getEmail()),
-                    user.getFirstAttribute(TchapUserStorage.ATTRIBUTE_HOMESERVER));
+                    user.getFirstAttribute(ATTRIBUTE_HOMESERVER));
         }
 
         if (isTemporarilyDisabled(context)) {
@@ -251,8 +255,10 @@ public class OtpLoginAuthenticator implements Authenticator {
             // whatever is happening on the bot side, we do not fail the whole process as long the
             // email has been sent
             try{
+                String homeServer = user.getFirstAttribute(ATTRIBUTE_HOMESERVER);
                 botSender.sendMessage(
-                    context.getAuthenticationSession().getClient().getName(),
+                        homeServer,
+                        context.getAuthenticationSession().getClient().getName(),
                     user.getUsername(),
                     friendlyCode);
             }catch(MatrixRuntimeException e){
