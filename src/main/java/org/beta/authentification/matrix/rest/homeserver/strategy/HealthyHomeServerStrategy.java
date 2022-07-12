@@ -62,7 +62,7 @@ public class HealthyHomeServerStrategy implements HomeServerSelectionStrategy {
             return true;
         }
         catch (Exception exception){
-            LOG.warnf("Cannot connect to homeServer : [%s] :", homeServer, exception.getMessage());
+            LOG.warnf("Cannot connect to homeServer[%s] : [%s]", homeServer, exception.getMessage());
             if ( LOG.isDebugEnabled() ){
                 LOG.debugf(exception,"Cannot connect to homeServer : [%s]", homeServer);
             }
