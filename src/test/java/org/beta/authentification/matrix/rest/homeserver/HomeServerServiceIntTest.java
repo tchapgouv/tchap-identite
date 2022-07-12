@@ -29,12 +29,10 @@ class HomeServerServiceIntTest {
     void should_find_success_with_healthy_homeserver_strategy(){
         System.setProperty(Constants.FEATURE_HEALTHY_HOME_SERVER_STRATEGY, "true");
         List<String> homeServerList = Environment.strToList( "test.beta,test2.beta,i.tchap.gouv.fr,test3.beta");
-        String email = "clark.kent@beta.gouv.fr";
 
         assertDoesNotThrow(() ->
                 new HomeServerService(homeServerList)
         );
-
     }
 
 }

@@ -14,8 +14,4 @@ public interface HomeServerClient {
     @RequestLine("GET /api/v1/info")
     @Headers("Content-Type: application/json")
     HomeServerInfoResource findHomeServerByEmail(@QueryMap HomeServerInfoQuery queryMap);
-
-    @RequestLine("GET /v2")
-    @Headers("Content-Type: application/json")
-    void healthCheck();
 }

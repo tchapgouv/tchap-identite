@@ -19,55 +19,28 @@ import static org.beta.authentification.matrix.rest.homeserver.HomeServerService
  *
  * This strategy will elect a homeserver from a list of homeservers passing by the env : TCHAP_HOME_SERVER_LIST.
  * This homeserver will be used for API calls with health check and retry mecanism.
- * It will replace the homeserver in case of failure/
+ * It will replace the homeserver in case of failure
  *
  */
 public class HealthyHomeServerStrategy implements HomeServerSelectionStrategy {
     private static final Logger LOG = Logger.getLogger(HealthyHomeServerStrategy.class);
 
-    private final List<String> homeServerList;
     private final List<String> healthyHomeServerList;
-
+    private String randomHomeServerName;
     private HomeServerClient homeServerClient;
 
     public HealthyHomeServerStrategy(List<String> homeServerList) {
-        this.homeServerList = homeServerList;
-        healthyHomeServerList = new ArrayList<>(this.homeServerList);
-        homeServerClient = getNewHealthyClient();
-    }
-
-    private HomeServerClient getNewHealthyClient() {
-        while ( !healthyHomeServerList.isEmpty() ){
-            String randomHomeServerName = getRandomHomeServerName();
-            HomeServerClient candidate = HomeServerClientFactory.build(buildHomeServerUrl(randomHomeServerName));
-            boolean isHealthy = validate(candidate, randomHomeServerName);
-            if (isHealthy){
-                LOG.debug("HomeServer will be used : "+ randomHomeServerName);
-                return candidate;
-            }
-            else {
-                healthyHomeServerList.remove(randomHomeServerName);
-            }
-        }
-        throw new MatrixRuntimeException("No homeServer are available : " + StringUtils.join(homeServerList, ','));
+        healthyHomeServerList = new ArrayList<>(homeServerList);
+        // Build new client with random homeserver
+        randomHomeServerName = getRandomHomeServerName();
+        homeServerClient = HomeServerClientFactory.build(buildHomeServerUrl(randomHomeServerName));
     }
 
     private String getRandomHomeServerName() {
+        if (healthyHomeServerList.isEmpty()){
+            throw new MatrixRuntimeException("No homeServer are available anymore");
+        }
         return healthyHomeServerList.get(new Random().nextInt(healthyHomeServerList.size()));
-    }
-
-    private boolean validate(HomeServerClient homeServerClient, String homeServer){
-        try {
-            homeServerClient.healthCheck();
-            return true;
-        }
-        catch (Exception exception){
-            LOG.warnf("Cannot connect to homeServer[%s] : [%s]", homeServer, exception.getMessage());
-            if ( LOG.isDebugEnabled() ){
-                LOG.debugf(exception,"Cannot connect to homeServer : [%s]", homeServer);
-            }
-            return false;
-        }
     }
 
     @Override
@@ -83,7 +56,13 @@ public class HealthyHomeServerStrategy implements HomeServerSelectionStrategy {
             if (LOG.isDebugEnabled()) {
                 LOG.debugf(exception,"Cannot call findHomeServerByEmail(/api/info)");
             }
-            homeServerClient = getNewHealthyClient();
+
+            healthyHomeServerList.remove(randomHomeServerName);
+
+            // Re-Build new client with random homeserver
+            randomHomeServerName = getRandomHomeServerName();
+            homeServerClient = HomeServerClientFactory.build(buildHomeServerUrl(randomHomeServerName));
+
             return this.findHomeServerByEmail(email);
         }
     }
