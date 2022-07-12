@@ -4,6 +4,7 @@
  */
 package org.beta.authentification.keycloak.authenticator;
 
+import static org.beta.authentification.keycloak.user.TchapUserStorage.ATTRIBUTE_HOMESERVER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -29,6 +30,7 @@ public class MockFactory {
     public static class AuthenticationFlowContextBuilder {
         String loginHint;
         String username;
+        String homeServer;
         String codeInput;
         boolean temporarilyDisabled;
         List<String> usernames = new ArrayList<>();
@@ -56,6 +58,11 @@ public class MockFactory {
             return this;
         }
 
+        public AuthenticationFlowContextBuilder withHomeServer(String homeServer) {
+            this.homeServer = homeServer;
+            return this;
+        }
+
         public AuthenticationFlowContextBuilder withTemporarilyDisabled(
                 boolean temporarilyDisabled) {
             this.temporarilyDisabled = temporarilyDisabled;
@@ -77,10 +84,10 @@ public class MockFactory {
             KeycloakSession keycloakSession = spy(KeycloakSession.class);
             LoginFormsProvider loginFormsProvider = buildLoginFormsProvider();
             RealmModel realmModel = mock(RealmModel.class);
-            UserProvider userProviderMock = buildUserProvider(usernames);
+            UserProvider userProviderMock = buildUserProvider(usernames, homeServer);
             BruteForceProtector bruteForceProtectorMock =
                     buildBruteForceProtector(temporarilyDisabled);
-            UserModel userModelMock = buildUserModel(username);
+            UserModel userModelMock = buildUserModel(username, homeServer);
             HttpRequest httpRequestMock = buildHttpRequest(codeInput);
 //            context.getAuthenticationSession().getClient().getName()
             // keycloak session
@@ -104,17 +111,18 @@ public class MockFactory {
         }
     }
 
-    static UserModel buildUserModel(String email) {
+    static UserModel buildUserModel(String email, String homeServer) {
         if (email == null) {
             return null;
         }
         UserModel userMock = mock(UserModel.class);
         doReturn(email).when(userMock).getEmail();
         doReturn(email).when(userMock).getUsername();
+        doReturn(homeServer).when(userMock).getFirstAttribute(ATTRIBUTE_HOMESERVER);
         return userMock;
     }
 
-    static UserProvider buildUserProvider(List<String> usernames) {
+    static UserProvider buildUserProvider(List<String> usernames, String homeServer) {
         UserProvider userProviderMock = spy(UserProvider.class);
         // final List<String> validUsernames = Arrays.asList(usernames);
 
@@ -126,7 +134,7 @@ public class MockFactory {
                                     // System.out.printf("Invocation Arguments : %s %s", realm,
                                     // usernameParam);
                                     if (usernames.contains(usernameParam)) {
-                                        return buildUserModel(usernameParam);
+                                        return buildUserModel(usernameParam, homeServer);
                                     }
                                     return null;
                                 })

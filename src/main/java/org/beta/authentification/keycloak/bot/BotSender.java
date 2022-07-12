@@ -5,13 +5,16 @@
 package org.beta.authentification.keycloak.bot;
 
 import org.beta.authentification.keycloak.utils.LoggingUtilsFactory;
-import org.beta.authentification.matrix.MatrixUserInfo;
+import org.beta.authentification.matrix.rest.MatrixUserInfo;
 import org.beta.authentification.matrix.exception.MatrixRuntimeException;
 import org.beta.authentification.matrix.rest.MatrixService;
 import org.beta.authentification.matrix.rest.room.DirectRoomsResource;
 import org.beta.authentification.matrix.rest.room.RoomService;
 import org.jboss.logging.Logger;
 
+/**
+ * Singleton class
+ */
 public class BotSender {
 
     private static final Logger LOG = Logger.getLogger(BotSender.class);
@@ -24,14 +27,15 @@ public class BotSender {
     /**
      * Send a otp code via a tchap bot
      *
+     *
+     * @param homeServer
      * @param serviceName
      * @param username
      * @param friendlyCode
      * @throws MatrixRuntimeException if message is not sent
      */
-    public void sendMessage(String serviceName, String username, String friendlyCode) {
+    public void sendMessage(String homeServer, String serviceName, String username, String friendlyCode) {
         try {
-            String homeServer = matrixService.getUserHomeServer(username);
             MatrixUserInfo matrixUserInfo = matrixService.findMatrixUserInfo(homeServer, username);
             if (!matrixUserInfo.isValid()) {
                 LOG.infof(

@@ -23,6 +23,6 @@ public class HomeServerClientFactory {
                 .decoder(new GsonDecoder(GsonFactory.getInstance()))
                 .logger(new Slf4jLogger(HomeServerClient.class))
                 .logLevel(Logger.Level.FULL)
-                .target(HomeServerClient.class, homeServerBaseUrl + "/_matrix/identity/api/v1");
+                .target(HomeServerClient.class, homeServerBaseUrl + "/_matrix/identity");
     }
 }

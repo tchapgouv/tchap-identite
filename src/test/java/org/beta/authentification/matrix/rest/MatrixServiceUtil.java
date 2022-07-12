@@ -4,11 +4,19 @@
  */
 package org.beta.authentification.matrix.rest;
 
-import org.beta.authentification.matrix.rest.MatrixService;
+import java.util.List;
+
+import org.beta.authentification.keycloak.utils.Constants;
+import org.beta.authentification.keycloak.utils.Environment;
 
 public class MatrixServiceUtil {
 
     public static MatrixService getMatrixService(String accountEmail, String tchapPassword) {
-        return new MatrixService(accountEmail, tchapPassword);
+
+        List<String> homeServerList = Environment.strToList(Environment.getenv(Constants.TCHAP_HOME_SERVER_LIST));
+        List<String>  unauthorizedList = Environment.strToList(Environment.getenv(Constants.TCHAP_UNAUTHORIZED_HOME_SERVER_LIST));
+
+
+        return new MatrixService(accountEmail, tchapPassword, homeServerList, unauthorizedList);
     }
 }

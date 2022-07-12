@@ -15,20 +15,20 @@ import org.beta.authentification.matrix.exception.MatrixRuntimeException;
 import org.beta.authentification.matrix.exception.RoomDoesNotExist;
 import org.beta.authentification.matrix.rest.MatrixService;
 import org.beta.authentification.matrix.rest.MatrixServiceUtil;
+import org.beta.authentification.matrix.rest.user.UserService;
 import org.junit.jupiter.api.*;
 
 class RoomServiceIntTest {
 
+    private static final String TCHAP_BOT_ACCOUNT_HOME_SERVER = "i.tchap.gouv.fr";
     private static RoomService botRoomService;
     private static RoomService userTestRoomService;
 
-    private static MatrixService botMatrixService;
+    private static String accountEmail;
     private static String testAccountMatrixId;
 
     private final List<String> createdTestRooms = new ArrayList<>();
     private static Boolean deleteRoomAfterTests;
-
-    String unknownUserId = "@barbabpapa:localname";
 
     @BeforeAll
     public static void setup() {
@@ -44,10 +44,10 @@ class RoomServiceIntTest {
 
         testAccountMatrixId = Environment.getenv(TestSuiteUtils.TEST_USER2_MATRIXID);
 
-        String accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
+        accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
         String password = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
 
-        botMatrixService = MatrixServiceUtil.getMatrixService(accountEmail, password);
+        MatrixService botMatrixService = MatrixServiceUtil.getMatrixService(accountEmail, password);
         botRoomService = botMatrixService.getRoomService();
 
         String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
@@ -85,7 +85,7 @@ class RoomServiceIntTest {
             UsersListRessource joinedMembers = botRoomService.getJoinedMembers(roomId);
             Assertions.assertEquals(1, joinedMembers.getUsers().size());
             Assertions.assertTrue(
-                    joinedMembers.getUsers().contains(botMatrixService.getMatrixId()));
+                    joinedMembers.getUsers().contains(UserService.emailToUserId(accountEmail, TCHAP_BOT_ACCOUNT_HOME_SERVER)));
         }
 
         @Test
