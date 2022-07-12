@@ -8,30 +8,29 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.beta.authentification.keycloak.utils.Constants;
 import org.beta.authentification.keycloak.utils.Environment;
+import org.beta.authentification.keycloak.utils.Features;
 
 public class MatrixServiceFactory {
-//    private static MatrixService instance;
-//    public static MatrixService getInstance() {
-//        if (instance == null) {
-//            String accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
-//            String password = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
-//            if (StringUtils.isEmpty(accountEmail) || StringUtils.isEmpty(password)) {
-//                throw new IllegalArgumentException(
-//                        "No account or password has been set. Please define the following"
-//                                + " environment variables : "
-//                                + Constants.TCHAP_BOT_ACCOUNT_EMAIL
-//                                + " and "
-//                                + Constants.TCHAP_BOT_PASSWORD);
-//            }
-//            instance = new MatrixService(accountEmail, password);
-//        }
-//        return instance;
-//    }
+    private static MatrixService instance;
 
-    public static MatrixService getInstance() {
+    public static MatrixService getSingletonInstance() {
+        if (instance == null) {
+            instance = getNonSingletonInstance();
+        }
+        return instance;
+    }
+
+    public static MatrixService getNonSingletonInstance() {
         List<String> homeServerList = Environment.strToList(Environment.getenv(Constants.TCHAP_HOME_SERVER_LIST));
         List<String>  unauthorizedList = Environment.strToList(Environment.getenv(Constants.TCHAP_UNAUTHORIZED_HOME_SERVER_LIST));
-            return new MatrixService(homeServerList, unauthorizedList);
+        return new MatrixService(homeServerList, unauthorizedList);
+    }
+
+    public static MatrixService getInstance() {
+        if (Features.isMatrixServiceReuseEnabled()) {
+            return getSingletonInstance();
+        }
+        return getNonSingletonInstance();
     }
 
     public static MatrixService getAuthenticatedInstance() {
@@ -48,10 +47,10 @@ public class MatrixServiceFactory {
                             + " and "
                             + Constants.TCHAP_BOT_PASSWORD);
         }
-        return new MatrixService(accountEmail, password, homeServerList,unauthorizedList);
-        }
+        return new MatrixService(accountEmail, password, homeServerList, unauthorizedList);
+    }
 
-        
+
 
 
 }

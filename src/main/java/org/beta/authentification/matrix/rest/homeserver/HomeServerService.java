@@ -4,38 +4,37 @@
  */
 package org.beta.authentification.matrix.rest.homeserver;
 
+import org.beta.authentification.keycloak.utils.Features;
+import org.beta.authentification.matrix.rest.homeserver.strategy.DefaultHomeServerStrategy;
+import org.beta.authentification.matrix.rest.homeserver.strategy.HealthyHomeServerStrategy;
+import org.beta.authentification.matrix.rest.homeserver.strategy.HomeServerSelectionStrategy;
+import org.jboss.logging.Logger;
+
 import java.util.List;
-import java.util.Random;
-import org.apache.commons.lang.StringUtils;
 
 public class HomeServerService {
-    private final HomeServerClient homeServerClient;
-    private final List<String> homeServerList;
+    private static final Logger LOG = Logger.getLogger(HomeServerService.class);
     private static final String HOME_SERVER_URL_PREFIX = "https://matrix";
-    private static final String DOMAIN_SEPARATOR = "@";
+
+    private final HomeServerSelectionStrategy strategy;
 
     public HomeServerService(List<String> homeServerList) {
-        this.homeServerList = homeServerList;
-        homeServerClient = HomeServerClientFactory.build(getRandomHomeServerBaseUrl());
-    }
-
-    private String getRandomHomeServerBaseUrl() {
-        String homeServerName = homeServerList.get(new Random().nextInt(homeServerList.size()));
-        return buildHomeServerUrl(homeServerName);
+        if(Features.isHomeServerSelectionStrategyEnabled()) {
+            this.strategy = new HealthyHomeServerStrategy(homeServerList);
+            LOG.info("HomeServerSelectionStrategy : HealthyHomeServerStrategy (will select healthy home server and retry call if failure)");
+        }
+        else {
+            this.strategy = new DefaultHomeServerStrategy(homeServerList);
+            LOG.info("HomeServerSelectionStrategy : DefaultHomeServerStrategy (will select one home server)");
+        }
     }
 
     public String findHomeServerByEmail(String email) {
-        String domain = getDomain(email);
-        HomeServerInfoResource homeServerInfoResource =
-                homeServerClient.findHomeServerByEmail(new HomeServerInfoQuery("email", domain));
-        return homeServerInfoResource.getHs();
-    }
-
-    private static String getDomain(String email) {
-        return DOMAIN_SEPARATOR + StringUtils.substringAfter(email, DOMAIN_SEPARATOR);
+        return strategy.findHomeServerByEmail(email);
     }
 
     public static String buildHomeServerUrl(String homeServerName) {
         return HOME_SERVER_URL_PREFIX + "." + homeServerName;
     }
+
 }
