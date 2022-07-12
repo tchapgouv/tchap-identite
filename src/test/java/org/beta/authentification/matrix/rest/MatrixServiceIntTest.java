@@ -5,8 +5,6 @@
 package org.beta.authentification.matrix.rest;
 
 import org.beta.authentification.keycloak.TestSuiteUtils;
-import org.beta.authentification.matrix.MatrixAutorizationInfo;
-import org.beta.authentification.matrix.MatrixUserInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

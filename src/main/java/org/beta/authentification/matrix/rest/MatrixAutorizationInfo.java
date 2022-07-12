@@ -2,7 +2,7 @@
  * Copyright (c) 2022. DINUM
  * This file is licensed under the MIT License, see LICENSE.md
  */
-package org.beta.authentification.matrix;
+package org.beta.authentification.matrix.rest;
 
 public class MatrixAutorizationInfo {
     private final String homeServer;

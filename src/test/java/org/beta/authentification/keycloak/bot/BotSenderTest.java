@@ -1,6 +1,6 @@
 package org.beta.authentification.keycloak.bot;
 
-import org.beta.authentification.matrix.MatrixUserInfo;
+import org.beta.authentification.matrix.rest.MatrixUserInfo;
 import org.beta.authentification.matrix.exception.MatrixRuntimeException;
 import org.beta.authentification.matrix.rest.MatrixService;
 import org.beta.authentification.matrix.rest.room.DirectRoomsResource;

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.beta.authentification.keycloak.utils.LoggingUtilsFactory;
-import org.beta.authentification.matrix.MatrixAutorizationInfo;
+import org.beta.authentification.matrix.rest.MatrixAutorizationInfo;
 import org.beta.authentification.matrix.rest.MatrixService;
 import org.jboss.logging.Logger;
 import org.keycloak.component.ComponentModel;

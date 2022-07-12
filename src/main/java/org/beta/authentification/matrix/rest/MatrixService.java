@@ -9,8 +9,6 @@ import static org.beta.authentification.matrix.rest.homeserver.HomeServerService
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.beta.authentification.keycloak.utils.LoggingUtilsFactory;
-import org.beta.authentification.matrix.MatrixAutorizationInfo;
-import org.beta.authentification.matrix.MatrixUserInfo;
 import org.beta.authentification.matrix.rest.homeserver.HomeServerService;
 import org.beta.authentification.matrix.rest.login.LoginService;
 import org.beta.authentification.matrix.rest.room.RoomClient;
