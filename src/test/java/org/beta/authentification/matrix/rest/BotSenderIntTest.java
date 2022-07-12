@@ -77,7 +77,7 @@ class BotSenderIntTest {
         void shouldSendAnOTPToANewUser() {
             String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
 
-            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123", 0);
             String room = getRoomWithUser(testAccountMatrixId);
             boolean isUserInRoom = isInvitedUserInRoom(testAccountMatrixId, room);
 
@@ -90,7 +90,7 @@ class BotSenderIntTest {
         void shouldNotCreateADMIfADMWithJoinedUserExists() {
             String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
 
-            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123", 0);
             String room1 = getRoomWithUser(testAccountMatrixId);
             TestSuiteUtils
                     .wait2second(); // required, else "too many requests", can it be less? maybe..
@@ -98,7 +98,7 @@ class BotSenderIntTest {
             TestSuiteUtils
                     .wait2second(); // required, else "too many requests", can it be less? maybe..
 
-            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123", 0);
             String room2 = getRoomWithUser(testAccountMatrixId);
 
             boolean isUserInRoom = isInvitedUserInRoom(testAccountMatrixId, room1);
@@ -114,9 +114,9 @@ class BotSenderIntTest {
         void shouldSendAnInviteAndNotCreateANewDMIfARoomExistsAndUserIsNotInRoom() {
             String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
 
-            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123", 0);
             String room = getRoomWithUser(testAccountMatrixId);
-            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123", 0);
 
             // test invitation ?
             boolean isUserInRoom = isInvitedUserInRoom(testAccountMatrixId, room);
@@ -129,7 +129,7 @@ class BotSenderIntTest {
         void shouldSendAnInviteIfUserHasRefusedInvitation() {
             String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
 
-            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123", 0);
             TestSuiteUtils
                     .wait2second(); // required, else "too many requests", can it be less? maybe..
             String room1 = getRoomWithUser(testAccountMatrixId);
@@ -140,7 +140,7 @@ class BotSenderIntTest {
             TestSuiteUtils
                     .wait2second(); // required, else "too many requests", can it be less? maybe..
 
-            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123", 0);
             String room2 = getRoomWithUser(testAccountMatrixId);
 
             boolean isUserInRoom = isInvitedUserInRoom(testAccountMatrixId, room1);
@@ -155,7 +155,7 @@ class BotSenderIntTest {
         void shouldSendAnInviteIfUserHasLeaveTheRoom() {
             String userTestAccountEmail = Environment.getenv(TestSuiteUtils.TEST_USER2_ACCOUNT);
 
-            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123", 0);
             String room1 = getRoomWithUser(testAccountMatrixId);
             userTestRoomService.join(room1);
             TestSuiteUtils
@@ -163,7 +163,7 @@ class BotSenderIntTest {
             userTestRoomService.leaveRoom(room1);
             TestSuiteUtils
                     .wait2second(); // required, else "too many requests", can it be less? maybe..
-            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123");
+            botSender.sendMessage("Lorem Ipsum", userTestAccountEmail, "123", 0);
             String room2 = getRoomWithUser(testAccountMatrixId);
 
             boolean isUserInRoom = isInvitedUserInRoom(testAccountMatrixId, room1);

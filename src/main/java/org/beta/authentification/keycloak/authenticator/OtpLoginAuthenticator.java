@@ -254,7 +254,8 @@ public class OtpLoginAuthenticator implements Authenticator {
                 botSender.sendMessage(
                     context.getAuthenticationSession().getClient().getName(),
                     user.getUsername(),
-                    friendlyCode);
+                    friendlyCode,
+                        codeTimeout);
             }catch(MatrixRuntimeException e){
                 LOG.error(String.format("Sending otp via tchap bot failed for user %s", LoggingUtilsFactory.getInstance().logOrHash(user.getUsername())), e);
             }
