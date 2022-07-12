@@ -1,4 +1,4 @@
-package org.beta.authentification.matrix.rest.homeserver;
+package org.beta.authentification.matrix.rest.homeserver.strategy;
 
 import org.beta.authentification.keycloak.utils.Environment;
 import org.beta.authentification.matrix.exception.MatrixRuntimeException;
