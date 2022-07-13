@@ -6,6 +6,7 @@ package org.beta.authentification.keycloak.user;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.beta.authentification.keycloak.utils.LoggingUtilsFactory;
 import org.beta.authentification.matrix.rest.MatrixAutorizationInfo;
@@ -26,6 +27,8 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
     protected KeycloakSession session;
     protected ComponentModel model;
     protected Map<String, UserModel> loadedUsers = new HashMap<>();
+    protected Map<String, UserModel> loadedUsersById = new HashMap<>();
+
     private final MatrixService matrixService;
 
     public static String ATTRIBUTE_HOMESERVER = "homeServer";
@@ -45,9 +48,10 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
             LOG.debugf(
                     "Checking keycloak id : %s", LoggingUtilsFactory.getInstance().logOrHash(id));
         }
-        StorageId storageId = new StorageId(id);
-        String username = storageId.getExternalId();
-        return getUserByUsername(realm, username);
+        //StorageId storageId = new StorageId(id);
+        //String username = storageId.getExternalId();
+        return loadedUsersById.get(id);
+        //return getUserByUsername(realm, username);
     }
 
     @Override
@@ -61,12 +65,14 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
         if (user == null) {
             MatrixAutorizationInfo matrixAutorizationInfo = matrixService.isEmailAuthorized(username);
             if (matrixAutorizationInfo.isAuthorized()) {
-                user = new InMemoryUserAdapter(session, realm, buildId(model, username));
+                String userId = buildId(model, username);
+                user = new InMemoryUserAdapter(session, realm, userId);
                 user.setEnabled(true);
                 user.setUsername(username);
                 user.setEmail(username);
                 user.setSingleAttribute(ATTRIBUTE_HOMESERVER, matrixAutorizationInfo.getHomeServer());
                 loadedUsers.put(username, user);
+                loadedUsersById.put(userId, user);
             }
         }
 
@@ -83,7 +89,9 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
      * https://www.keycloak.org/docs/latest/server_development/#storage-ids
      */
     private String buildId(ComponentModel model, String username) {
-        return new StorageId(model.getId(), username).getId();
+        //return UUID.randomUUID().toString();
+        
+        return new StorageId(model.getId(), UUID.randomUUID().toString()).getId();
     }
     /*
      * no use
