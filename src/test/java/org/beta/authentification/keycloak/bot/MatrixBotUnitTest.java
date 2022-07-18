@@ -18,6 +18,7 @@ class MatrixBotUnitTest {
     private static FakeRoomClient roomClient;
     private static RoomService roomService;
     private static String testAccountMatrixId;
+    private static final String SERVICE_NAME = "AudioConf";
 
     @BeforeAll
     static void setup() {
@@ -58,7 +59,7 @@ class MatrixBotUnitTest {
     class MembersInRoomTest {
         @Test
         void shouldFetchJoinUsers() {
-            String roomId = roomService.createDM(testAccountMatrixId);
+            String roomId = roomService.createDM(SERVICE_NAME, testAccountMatrixId);
 
             UsersListRessource joinedMembers = roomService.getJoinedMembers(roomId);
             Assertions.assertEquals(0, joinedMembers.getUsers().size());
@@ -77,7 +78,7 @@ class MatrixBotUnitTest {
     class CreateDMTest {
         @Test
         void shouldCreateADMAndAddDMEvent() {
-            String roomId = roomService.createDM(testAccountMatrixId);
+            String roomId = roomService.createDM(SERVICE_NAME, testAccountMatrixId);
 
             DirectRoomsResource dmRooms = roomService.listBotDMRooms();
             Assertions.assertNotNull(roomId);
@@ -88,8 +89,8 @@ class MatrixBotUnitTest {
 
         @Test
         void shouldNotCreateADMIfADMWithUserExists() {
-            String roomId1 = roomService.createDM(testAccountMatrixId);
-            String roomId2 = roomService.createDM(testAccountMatrixId);
+            String roomId1 = roomService.createDM(SERVICE_NAME, testAccountMatrixId);
+            String roomId2 = roomService.createDM(SERVICE_NAME, testAccountMatrixId);
 
             Assertions.assertEquals(roomId1, roomId2);
         }
@@ -99,7 +100,7 @@ class MatrixBotUnitTest {
     class SendingMessagesTest {
         @Test
         void shouldSendAMessageToADMRoom() {
-            String roomId = roomService.createDM(testAccountMatrixId);
+            String roomId = roomService.createDM(SERVICE_NAME, testAccountMatrixId);
             Assertions.assertDoesNotThrow(() -> roomService.sendMessage(roomId, "Hello world"));
             Assertions.assertEquals(roomClient.lastMessage, "Hello world");
         }

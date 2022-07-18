@@ -52,7 +52,7 @@ public class BotSender {
             }
             String roomId = ensureUserIsInRoom(matrixId);
             if (roomId == null) {
-                roomId = matrixService.getRoomService().createDM(matrixId);
+                roomId = matrixService.getRoomService().createDM(serviceName, matrixId);
             }
 
             matrixService

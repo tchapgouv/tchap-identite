@@ -6,10 +6,7 @@ package org.beta.authentification.keycloak.bot;
 
 import java.util.*;
 
-import org.beta.authentification.matrix.rest.room.CreateDMBody;
-import org.beta.authentification.matrix.rest.room.InviteBody;
-import org.beta.authentification.matrix.rest.room.RoomClient;
-import org.beta.authentification.matrix.rest.room.SendMessageBody;
+import org.beta.authentification.matrix.rest.room.*;
 
 class FakeRoomClient implements RoomClient {
     public Map<String, List<String>> rooms;
@@ -48,6 +45,12 @@ class FakeRoomClient implements RoomClient {
         Map<String, String> returnValue = new HashMap<>();
         returnValue.put("room_id", roomId);
         return returnValue;
+    }
+
+    @Override
+    public Map<String, String> createRoom(CreateRoomBody createDMBody) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override

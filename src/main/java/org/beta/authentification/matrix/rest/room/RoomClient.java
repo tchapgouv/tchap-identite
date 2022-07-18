@@ -27,6 +27,10 @@ public interface RoomClient {
     @Headers("Content-Type: application/json")
     Map<String, String> createDM(CreateDMBody createDMBody);
 
+    @RequestLine("POST /createRoom")
+    @Headers("Content-Type: application/json")
+    Map<String, String> createRoom(CreateRoomBody createDMBody);
+
     @RequestLine("POST /rooms/{roomId}/leave")
     @Headers("Content-Type: application/json")
     void leaveRoom(@Param("roomId") String roomId);

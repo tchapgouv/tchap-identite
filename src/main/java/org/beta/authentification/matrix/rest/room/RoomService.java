@@ -82,20 +82,22 @@ public class RoomService {
     /**
      * Create a new direct message room with a user if not exists, an invit is sent
      *
+     *
+     * @param serviceName not nullable string
      * @param destMatrixId not nullable string
      * @return not nullable id of the room
      * @throws UserDoesNotExist user does not exists
      * @throws MatrixRuntimeException room can not be created
      */
-    public String createDM(String destMatrixId) {
+    public String createDM(String serviceName, String destMatrixId) {
         if (destMatrixId == null) {
             throw new IllegalArgumentException(
                     String.format("destMatrixId must be not null - userId:%s", destMatrixId));
         }
         try {
-            CreateDMBody body = new CreateDMBody();
+            CreateRoomBody body = new CreateRoomBody(serviceName);
             body.addInvite(destMatrixId);
-            Map<String, String> response = roomClient.createDM(body);
+            Map<String, String> response = roomClient.createRoom(body);
             String roomId = response.get("room_id");
             this.updateRoomAccounData(destMatrixId, roomId);
             return roomId;

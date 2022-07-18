@@ -21,6 +21,7 @@ import org.junit.jupiter.api.*;
 class RoomServiceIntTest {
 
     private static final String TCHAP_BOT_ACCOUNT_HOME_SERVER = "i.tchap.gouv.fr";
+    private static final String SERVICE_NAME = "AudioConf";
     private static RoomService botRoomService;
     private static RoomService userTestRoomService;
 
@@ -80,7 +81,7 @@ class RoomServiceIntTest {
     class MembersInRoomTest {
         @Test
         void shouldFetchJoinUsers() {
-            String roomId = botRoomService.createDM(testAccountMatrixId);
+            String roomId = botRoomService.createDM(SERVICE_NAME, testAccountMatrixId);
             markForDeletion(roomId);
             UsersListRessource joinedMembers = botRoomService.getJoinedMembers(roomId);
             Assertions.assertEquals(1, joinedMembers.getUsers().size());
@@ -120,7 +121,7 @@ class RoomServiceIntTest {
     class CreateDMTest {
         @Test
         void shouldCreateADMAndAddDMEvent() {
-            String roomId = botRoomService.createDM(testAccountMatrixId);
+            String roomId = botRoomService.createDM(SERVICE_NAME, testAccountMatrixId);
             markForDeletion(roomId);
             DirectRoomsResource dmRooms = botRoomService.listBotDMRooms();
             Assertions.assertNotNull(roomId);
@@ -132,7 +133,7 @@ class RoomServiceIntTest {
         void shouldThrowIAE_whenUserIdIsNull() {
             TestSuiteUtils.waitAbit();
             Assertions.assertThrows(
-                    IllegalArgumentException.class, () -> botRoomService.createDM(null));
+                    IllegalArgumentException.class, () -> botRoomService.createDM(SERVICE_NAME, null));
         }
 
         // todo
@@ -174,14 +175,14 @@ class RoomServiceIntTest {
 
         @Test
         void reinvite_user_in_dm() {
-            String roomId = botRoomService.createDM(testAccountMatrixId);
+            String roomId = botRoomService.createDM(SERVICE_NAME, testAccountMatrixId);
             markForDeletion(roomId);
             Assertions.assertDoesNotThrow(() -> botRoomService.invite(roomId, testAccountMatrixId));
         }
 
         @Test
         void should_throw_if_user_already_in_room() {
-            String roomId = botRoomService.createDM(testAccountMatrixId);
+            String roomId = botRoomService.createDM(SERVICE_NAME, testAccountMatrixId);
             markForDeletion(roomId);
             userTestRoomService.join(roomId);
             Assertions.assertThrows(
@@ -199,7 +200,7 @@ class RoomServiceIntTest {
 
         @Test
         void should_throw_if_userId_does_not_exist() {
-            String roomId = botRoomService.createDM(testAccountMatrixId);
+            String roomId = botRoomService.createDM(SERVICE_NAME, testAccountMatrixId);
             markForDeletion(roomId);
             String unknownUserId = "@barbabpapa:localname";
             Assertions.assertThrows(
@@ -229,14 +230,14 @@ class RoomServiceIntTest {
     class SendingMessagesTest {
         @Test
         void shouldSendAMessageToADMRoom() {
-            String roomId = botRoomService.createDM(testAccountMatrixId);
+            String roomId = botRoomService.createDM(SERVICE_NAME, testAccountMatrixId);
             markForDeletion(roomId);
             botRoomService.sendMessage(roomId, "Hello world");
         }
 
         @Test
         void shouldSendMultipleMessageToADMRoom() {
-            String roomId = botRoomService.createDM(testAccountMatrixId);
+            String roomId = botRoomService.createDM(SERVICE_NAME, testAccountMatrixId);
             botRoomService.sendMessage(roomId, "First message 1/3");
             botRoomService.sendMessage(roomId, "Second message 2/3");
             botRoomService.sendMessage(roomId, "Other message 3/3");
