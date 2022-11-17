@@ -13,6 +13,7 @@ Realm uptime can be found here : https://updown.io/fta9
 
 ## 
 todo: explain how to login to https://ghcr.io
+todo: request access to keycloak-buildpack
 
 ## Run the local environment with docker containers
 
