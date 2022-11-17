@@ -11,6 +11,9 @@ Realm uptime can be found here : https://updown.io/fta9
 - quarkus : 2.7.5
 - java : 11
 
+## 
+todo: explain how to login to https://ghcr.io
+
 ## Run the local environment with docker containers
 
 1. copy env.sample -> env, fill in passwords with (any value you want..)
