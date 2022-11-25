@@ -5,6 +5,15 @@
     <#elseif section = "form">
         <div id="kc-form">
             <div id="kc-form-wrapper">
+                <#if messagesPerField.existsError('username')>
+                        <div id="input-error-username" class="${properties.kcInputErrorMessageClass!}" aria-live="polite">
+                            <div class="fr-callout fr-icon-warning-line">
+                                <p class="fr-callout__title">Erreur du service d'authentification</p>
+                                <p class="fr-callout__text">${kcSanitize(messagesPerField.get('username'))?no_esc}</p>
+                                <a class="fr-btn fr-btn--primary" title="Nous contacter" href="https://audioconf.numerique.gouv.fr/contact">Nous contacter</a>
+                            </div>
+                        </div>
+                </#if>
                 <#if realm.password>
                     <form id="kc-form-login" onsubmit="login.disabled = true; return true;" action="${url.loginAction}"
                           method="post">
@@ -19,11 +28,6 @@
                                        value="${(login.username!'')}"
                                        type="text" autofocus autocomplete="off"/>
 
-                                <#if messagesPerField.existsError('username')>
-                                    <span id="input-error-username" class="${properties.kcInputErrorMessageClass!}" aria-live="polite">
-                                        ${kcSanitize(messagesPerField.get('username'))?no_esc}
-                                    </span>
-                                </#if>
                             </div>
                         </#if>
 
