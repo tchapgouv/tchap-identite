@@ -210,7 +210,6 @@
                 <span class="fr-logo fr-logo__title">république<br>française</span>
             </div>
             <div class="fr-footer__content">
-        <p class="fr-footer__content-desc">Conférences téléphoniques pour les agents de l'État</p>
         <p class="fr-footer__content-desc">
           Le code source est ouvert et les contributions sont bienvenues.
           <a title="Voir le code source" href="https://github.com/betagouv/tchap-identite" target="_blank" rel="noopener">Voir le code source</a>
