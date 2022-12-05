@@ -63,7 +63,7 @@ public class OtpLoginAuthenticatorTest {
             verify(context, times(0)).failureChallenge(any(), any());
             verify(context, times(0)).success();
             verify(context, times(0)).challenge(any());
-            verify(emailSender, times(0)).sendEmail(any(), any(), any(), anyString(), anyString());
+            verify(emailSender, times(0)).sendEmail(any(), any(), any(), any(), anyString(), anyString());
             verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString(), anyString());
         }
 
@@ -84,7 +84,7 @@ public class OtpLoginAuthenticatorTest {
             verify(context, times(0)).success();
             // regular otp form with no specific message
             verify(context, times(1)).challenge(any());
-            verify(emailSender, times(0)).sendEmail(any(), any(), any(), anyString(), anyString());
+            verify(emailSender, times(0)).sendEmail(any(), any(), any(), any(), anyString(), anyString());
             verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString(), anyString());
         }
 
@@ -101,7 +101,7 @@ public class OtpLoginAuthenticatorTest {
             doReturn(code).when(secureCode).makeCodeUserFriendly(code);
             doReturn(false)
                     .when(emailSender)
-                    .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
+                    .sendEmail(any(), any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
 
             authenticator.authenticate(context);
 
@@ -115,7 +115,7 @@ public class OtpLoginAuthenticatorTest {
             verify(secureCode, times(1)).generateCode(anyInt());
             verify(secureCode, times(1)).makeCodeUserFriendly(code);
             verify(emailSender, times(1))
-                    .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
+                    .sendEmail(any(), any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
             verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString(), anyString());
         }
 
@@ -133,7 +133,7 @@ public class OtpLoginAuthenticatorTest {
             doReturn(code).when(secureCode).makeCodeUserFriendly(code);
             doReturn(true)
                     .when(emailSender)
-                    .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
+                    .sendEmail(any(), any(), any(),any(), eq(code), eq(String.valueOf(codeTimeout)));
 
             authenticator.authenticate(context);
 
@@ -147,7 +147,7 @@ public class OtpLoginAuthenticatorTest {
             verify(secureCode, times(1)).generateCode(anyInt());
             verify(secureCode, times(1)).makeCodeUserFriendly(code);
             verify(emailSender, times(1))
-                    .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
+                    .sendEmail(any(), any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
             verify(botSender, times(1)).sendMessage(eq(A_HOME_SERVER), anyString(), anyString(), eq(code));
         }
     }
@@ -174,7 +174,7 @@ public class OtpLoginAuthenticatorTest {
             verify(context, times(0)).failureChallenge(any(), any());
             verify(context, times(0)).success();
             verify(context, times(0)).challenge(any());
-            verify(emailSender, times(0)).sendEmail(any(), any(), any(), anyString(), anyString());
+            verify(emailSender, times(0)).sendEmail(any(), any(), any(), any(), anyString(), anyString());
             verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString(), anyString());
         }
 
@@ -195,7 +195,7 @@ public class OtpLoginAuthenticatorTest {
             verify(context, times(0)).success();
             // regular otp form with no specific message
             verify(context, times(1)).challenge(any());
-            verify(emailSender, times(0)).sendEmail(any(), any(), any(), anyString(), anyString());
+            verify(emailSender, times(0)).sendEmail(any(), any(), any(), any(), anyString(), anyString());
             verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString(), anyString());
         }
 
@@ -212,7 +212,7 @@ public class OtpLoginAuthenticatorTest {
             doReturn(code).when(secureCode).makeCodeUserFriendly(code);
             doReturn(false)
                     .when(emailSender)
-                    .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
+                    .sendEmail(any(), any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
 
             authenticator.authenticate(context);
 
@@ -226,7 +226,7 @@ public class OtpLoginAuthenticatorTest {
             verify(secureCode, times(1)).generateCode(anyInt());
             verify(secureCode, times(1)).makeCodeUserFriendly(code);
             verify(emailSender, times(1))
-                    .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
+                    .sendEmail(any(), any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
             verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString(), anyString());
         }
 
@@ -243,7 +243,7 @@ public class OtpLoginAuthenticatorTest {
             doReturn(code).when(secureCode).makeCodeUserFriendly(code);
             doReturn(true)
                     .when(emailSender)
-                    .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
+                    .sendEmail(any(), any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
 
             authenticator.authenticate(context);
 
@@ -257,7 +257,7 @@ public class OtpLoginAuthenticatorTest {
             verify(secureCode, times(1)).generateCode(anyInt());
             verify(secureCode, times(1)).makeCodeUserFriendly(code);
             verify(emailSender, times(1))
-                    .sendEmail(any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
+                    .sendEmail(any(), any(), any(), any(), eq(code), eq(String.valueOf(codeTimeout)));
             verify(botSender, times(0)).sendMessage(anyString(), anyString(), anyString(), anyString());
         }
     }

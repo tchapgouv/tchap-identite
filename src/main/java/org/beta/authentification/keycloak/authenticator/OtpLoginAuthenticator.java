@@ -246,6 +246,7 @@ public class OtpLoginAuthenticator implements Authenticator {
                 context.getSession(),
                 context.getRealm(),
                 context.getUser(),
+                context.getAuthenticationSession().getClient(),
                 friendlyCode,
                 String.valueOf(codeTimeout))) {
             return false;

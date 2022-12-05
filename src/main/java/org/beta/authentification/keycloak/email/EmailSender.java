@@ -14,6 +14,7 @@ import org.keycloak.email.EmailTemplateProvider;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.models.ClientModel;
 import org.keycloak.services.ServicesLogger;
 /*
  * Singleton class
@@ -32,6 +33,7 @@ public class EmailSender {
             KeycloakSession session,
             RealmModel realm,
             UserModel user,
+            ClientModel client,
             String code,
             String codeTimeout) {
         EmailTemplateProvider emailSender = session.getProvider(EmailTemplateProvider.class);
@@ -48,7 +50,7 @@ public class EmailSender {
             emailSender.send(
                     "login.code.email.title",
                     "loginCodeEmail.html",
-                    createCodeLoginAttributes(code, codeTimeout));
+                    createCodeLoginAttributes(code, codeTimeout, client));
         } catch (EmailException e) {
             ServicesLogger.LOGGER.failedToSendEmail(e);
             result = false;
@@ -56,10 +58,11 @@ public class EmailSender {
         return result;
     }
 
-    private Map<String, Object> createCodeLoginAttributes(String loginCode, String codeTimeout) {
+    private Map<String, Object> createCodeLoginAttributes(String loginCode, String codeTimeout, ClientModel client) {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("loginCode", loginCode);
         attributes.put("codeTimeout", codeTimeout);
+        attributes.put("clientName", client.getName());
         return attributes;
     }
 }
