@@ -4,8 +4,7 @@
  */
 package org.beta.authentification.keycloak.email;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.beta.authentification.keycloak.utils.LoggingUtilsFactory;
 import org.jboss.logging.Logger;
@@ -47,8 +46,11 @@ public class EmailSender {
                         LoggingUtilsFactory.getInstance().logOrHash(user.getUsername()));
             }
             emailSender.setUser(user);
+
+            //use subject attributes to customize the subject of the email
             emailSender.send(
                     "login.code.email.title",
+                    Collections.singletonList(client.getName()),
                     "loginCodeEmail.html",
                     createCodeLoginAttributes(code, codeTimeout, client));
         } catch (EmailException e) {
