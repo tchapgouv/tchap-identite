@@ -9,9 +9,9 @@ import org.beta.authentification.matrix.rest.MatrixServiceFactory;
 public class BotSenderFactory {
     private static BotSender instance;
 
-    public static BotSender getInstance() {
+    public static BotSender getInstance(String email, String password) {
         if (instance == null) {
-            instance = new BotSender(MatrixServiceFactory.getAuthenticatedInstance());
+            instance = new BotSender(MatrixServiceFactory.getAuthenticatedInstance(email, password));
         }
         return instance;
     }

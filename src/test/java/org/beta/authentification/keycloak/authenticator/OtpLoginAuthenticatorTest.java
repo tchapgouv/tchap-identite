@@ -10,7 +10,6 @@ import static org.mockito.Mockito.*;
 
 import org.beta.authentification.keycloak.bot.BotSender;
 import org.beta.authentification.keycloak.email.EmailSender;
-import org.beta.authentification.keycloak.utils.Constants;
 import org.beta.authentification.keycloak.utils.SecureCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -42,18 +41,14 @@ public class OtpLoginAuthenticatorTest {
     }
 
     /** Send a otp to the user in session and present a form */
+    /** Run all tests of AuthenticateFlowTest with FEATURE_TCHAP_BOT_OTP=true */
     @Nested
     class AuthenticateFlowTest {
-
-        @BeforeEach
-        public void setup() {
-            System.setProperty(Constants.FEATURE_TCHAP_BOT_OTP,"true");
-        }
 
         @Test
         public void authenticate_should_fail_with_unknown_user_flow_error() {
             AuthenticationFlowContext context =
-                    new MockFactory.AuthenticationFlowContextBuilder().build();
+                    new MockFactory.AuthenticationFlowContextBuilder().withTchapEnabled("true").build();
 
             authenticator.authenticate(context);
 
@@ -73,6 +68,7 @@ public class OtpLoginAuthenticatorTest {
                     new MockFactory.AuthenticationFlowContextBuilder()
                             .withUser("myUserId")
                             .withTemporarilyDisabled(true)
+                            .withTchapEnabled("true")
                             .build();
 
             authenticator.authenticate(context);
@@ -94,6 +90,7 @@ public class OtpLoginAuthenticatorTest {
                     new MockFactory.AuthenticationFlowContextBuilder()
                             .withUser("myUserId")
                             .withTemporarilyDisabled(false)
+                            .withTchapEnabled("true")
                             .build();
 
             String code = "bbb-aaa";
@@ -126,9 +123,12 @@ public class OtpLoginAuthenticatorTest {
                             .withUser("myUserId")
                             .withTemporarilyDisabled(false)
                             .withHomeServer(A_HOME_SERVER)
+                            .withTchapEnabled("true")
                             .build();
-
+                        
             String code = "bbb-aaa";
+            
+            
             doReturn(code).when(secureCode).generateCode(anyInt());
             doReturn(code).when(secureCode).makeCodeUserFriendly(code);
             doReturn(true)
@@ -155,17 +155,11 @@ public class OtpLoginAuthenticatorTest {
     /** Run all tests of AuthenticateFlowTest with FEATURE_TCHAP_BOT_OTP=false */
     @Nested
     class AuthenticateFlowDisableBotTest {
-
-        @BeforeEach
-        public void setup() {
-            System.setProperty(Constants.FEATURE_TCHAP_BOT_OTP,"false");
-        }
-
+        
         @Test
         public void authenticate_should_fail_with_unknown_user_flow_error() {
             AuthenticationFlowContext context =
                     new MockFactory.AuthenticationFlowContextBuilder().build();
-
             authenticator.authenticate(context);
 
             verify(context, times(1)).failure(AuthenticationFlowError.UNKNOWN_USER);
@@ -185,7 +179,6 @@ public class OtpLoginAuthenticatorTest {
                             .withUser("myUserId")
                             .withTemporarilyDisabled(true)
                             .build();
-
             authenticator.authenticate(context);
 
             verify(context, times(0)).failure(any());
@@ -206,7 +199,7 @@ public class OtpLoginAuthenticatorTest {
                             .withUser("myUserId")
                             .withTemporarilyDisabled(false)
                             .build();
-
+                        
             String code = "bbb-aaa";
             doReturn(code).when(secureCode).generateCode(anyInt());
             doReturn(code).when(secureCode).makeCodeUserFriendly(code);
@@ -237,7 +230,7 @@ public class OtpLoginAuthenticatorTest {
                             .withUser("myUserId")
                             .withTemporarilyDisabled(false)
                             .build();
-
+                          
             String code = "bbb-aaa";
             doReturn(code).when(secureCode).generateCode(anyInt());
             doReturn(code).when(secureCode).makeCodeUserFriendly(code);
@@ -273,7 +266,7 @@ public class OtpLoginAuthenticatorTest {
                             .withUser("myUserId")
                             .withTemporarilyDisabled(true)
                             .build();
-
+                        
             authenticator.action(context);
 
             verify(context, times(0)).failure(any());
@@ -296,7 +289,7 @@ public class OtpLoginAuthenticatorTest {
                             .withTemporarilyDisabled(false)
                             .withCodeInput("")
                             .build();
-
+                        
             authenticator.action(context);
 
             verify(context, times(0)).failure(any());
@@ -319,7 +312,7 @@ public class OtpLoginAuthenticatorTest {
                             .withTemporarilyDisabled(false)
                             .withCodeInput(codeInput)
                             .build();
-
+                        
             authenticator.action(context);
 
             verify(context, times(0)).failure(any());
@@ -353,7 +346,7 @@ public class OtpLoginAuthenticatorTest {
                             anyString(),
                             eq(codeTimeout),
                             anyInt());
-
+                        
             authenticator.action(context);
 
             verify(context, times(0)).failure(any());
@@ -386,7 +379,6 @@ public class OtpLoginAuthenticatorTest {
             doReturn(true)
                     .when(secureCode)
                     .isValid(eq(codeInput), eq(codeInput), any(), eq(codeTimeout), anyInt());
-
             authenticator.action(context);
 
             verify(context, times(0)).failure(any());

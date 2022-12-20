@@ -34,23 +34,21 @@ public class MatrixServiceFactory {
         return new MatrixService(homeServerList, unauthorizedList);
     }
 
-    public static MatrixService getAuthenticatedInstance() {
+    public static MatrixService getAuthenticatedInstance(String accountEmail, String password) {
         if (Features.isMatrixServiceReuseEnabled()) {
-            return getSingletonAuthenticatedInstance();
+            return getSingletonAuthenticatedInstance(accountEmail, password);
         }
-        return getNonSingletonAuthenticatedInstance();
+        return getNonSingletonAuthenticatedInstance(accountEmail, password);
     }
 
-    private static MatrixService getSingletonAuthenticatedInstance() {
+    private static MatrixService getSingletonAuthenticatedInstance(String accountEmail, String password) {
         if (authenticatedInstance == null) {
-            authenticatedInstance = getNonSingletonAuthenticatedInstance();
+            authenticatedInstance = getNonSingletonAuthenticatedInstance(accountEmail, password);
         }
         return authenticatedInstance;
     }
 
-    private static MatrixService getNonSingletonAuthenticatedInstance() {
-        String accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
-        String password = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
+    private static MatrixService getNonSingletonAuthenticatedInstance(String accountEmail, String password) {
         List<String> homeServerList = Environment.strToList(Environment.getenv(Constants.TCHAP_HOME_SERVER_LIST));
         List<String>  unauthorizedList = Environment.strToList(Environment.getenv(Constants.TCHAP_UNAUTHORIZED_HOME_SERVER_LIST));
 
