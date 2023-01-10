@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response;
 
 import org.beta.authentification.keycloak.bot.BotSender;
 import org.beta.authentification.keycloak.email.EmailSender;
-import org.beta.authentification.keycloak.user.TchapUserStorage;
 import org.beta.authentification.keycloak.utils.Features;
 import org.beta.authentification.keycloak.utils.LoggingUtilsFactory;
 import org.beta.authentification.keycloak.utils.SecureCode;

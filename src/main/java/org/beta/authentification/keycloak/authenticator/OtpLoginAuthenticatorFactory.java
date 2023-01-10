@@ -39,8 +39,15 @@ public class OtpLoginAuthenticatorFactory implements AuthenticatorFactory {
 
     @Override
     public Authenticator create(KeycloakSession session) {
-        String tchapEmail = session.getContext().getAuthenticationSession().getClient().getAttribute(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
-        String tchapPassword = session.getContext().getAuthenticationSession().getClient().getAttribute(Constants.TCHAP_BOT_PASSWORD);
+        String tchapEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
+        if(session.getContext().getAuthenticationSession().getClient().getAttribute(Constants.TCHAP_BOT_ACCOUNT_EMAIL) != ""){
+            tchapEmail = session.getContext().getAuthenticationSession().getClient().getAttribute(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
+        }
+
+        String tchapPassword = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
+        if(session.getContext().getAuthenticationSession().getClient().getAttribute(Constants.TCHAP_BOT_PASSWORD) != ""){
+            tchapPassword = session.getContext().getAuthenticationSession().getClient().getAttribute(Constants.TCHAP_BOT_PASSWORD);
+        }
         
         return new OtpLoginAuthenticator(
                 SecureCodeFactory.getInstance(),
