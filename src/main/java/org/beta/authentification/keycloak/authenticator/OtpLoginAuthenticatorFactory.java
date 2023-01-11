@@ -7,6 +7,7 @@ package org.beta.authentification.keycloak.authenticator;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.beta.authentification.keycloak.bot.BotSenderFactory;
 import org.beta.authentification.keycloak.email.EmailSenderFactory;
 import org.beta.authentification.keycloak.utils.Constants;
@@ -40,13 +41,15 @@ public class OtpLoginAuthenticatorFactory implements AuthenticatorFactory {
     @Override
     public Authenticator create(KeycloakSession session) {
         String tchapEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
-        if(session.getContext().getAuthenticationSession().getClient().getAttribute(Constants.TCHAP_BOT_ACCOUNT_EMAIL) != ""){
-            tchapEmail = session.getContext().getAuthenticationSession().getClient().getAttribute(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
+        String tchapEmailAttribute = session.getContext().getAuthenticationSession().getClient().getAttribute(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
+        if(!StringUtils.isEmpty(tchapEmailAttribute)){
+            tchapEmail = tchapEmailAttribute;
         }
 
         String tchapPassword = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
-        if(session.getContext().getAuthenticationSession().getClient().getAttribute(Constants.TCHAP_BOT_PASSWORD) != ""){
-            tchapPassword = session.getContext().getAuthenticationSession().getClient().getAttribute(Constants.TCHAP_BOT_PASSWORD);
+        String tchapPasswordAttribute = session.getContext().getAuthenticationSession().getClient().getAttribute(Constants.TCHAP_BOT_PASSWORD);
+        if(!StringUtils.isEmpty(tchapPasswordAttribute)){
+            tchapPassword = tchapPasswordAttribute;
         }
         
         return new OtpLoginAuthenticator(
