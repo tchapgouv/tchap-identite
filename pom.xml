@@ -20,7 +20,7 @@
   <properties>
     <revision>0.0.1</revision>
     <changelist>-SNAPSHOT</changelist>
-    <keycloak.version>18.0.0</keycloak.version>
+    <keycloak.version>20.0.3</keycloak.version>
     <feign.version>11.8</feign.version>
 <!--
     <keycloak.version>16.1.1</keycloak.version>
