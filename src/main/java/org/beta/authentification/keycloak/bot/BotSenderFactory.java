@@ -10,9 +10,10 @@ public class BotSenderFactory {
     private static BotSender instance;
 
     public static BotSender getInstance(String email, String password) {
-        if (instance == null) {
+        /*if (instance == null) {
             instance = new BotSender(MatrixServiceFactory.getAuthenticatedInstance(email, password));
         }
-        return instance;
+        return instance;*/
+        return new BotSender(MatrixServiceFactory.getAuthenticatedInstance(email, password));
     }
 }
