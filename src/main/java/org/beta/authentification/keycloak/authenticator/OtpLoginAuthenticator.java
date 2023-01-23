@@ -72,6 +72,7 @@ public class OtpLoginAuthenticator implements Authenticator {
         // user should have been set in the context before
         UserModel user = context.getUser();
 
+        //if user is not found in the TchapUserStorage, throw error
         if (user == null) {
             context.failure(AuthenticationFlowError.UNKNOWN_USER);
             return;

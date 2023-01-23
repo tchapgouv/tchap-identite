@@ -11,6 +11,12 @@ import org.beta.authentification.keycloak.utils.Environment;
 
 public class MatrixServiceUtil {
 
+    /**
+     * This method should be used only for tests, in all other cases use the Factory {@link MatrixServiceFactory}
+     * @param accountEmail
+     * @param tchapPassword
+     * @return
+     */
     public static MatrixService getMatrixService(String accountEmail, String tchapPassword) {
 
         List<String> homeServerList = Environment.strToList(Environment.getenv(Constants.TCHAP_HOME_SERVER_LIST));

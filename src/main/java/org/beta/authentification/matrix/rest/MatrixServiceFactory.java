@@ -10,6 +10,10 @@ import org.beta.authentification.keycloak.utils.Constants;
 import org.beta.authentification.keycloak.utils.Environment;
 import org.beta.authentification.keycloak.utils.Features;
 
+/**
+ * This factory should not be used as the use of singleton and statefull instances of MatrixService are being dropped
+ */
+@Deprecated
 public class MatrixServiceFactory {
     private static MatrixService instance;
     private static MatrixService authenticatedInstance;
@@ -34,21 +38,23 @@ public class MatrixServiceFactory {
         return new MatrixService(homeServerList, unauthorizedList);
     }
 
-    public static MatrixService getAuthenticatedInstance(String accountEmail, String password) {
+    public static MatrixService getAuthenticatedInstance() {
         if (Features.isMatrixServiceReuseEnabled()) {
-            return getSingletonAuthenticatedInstance(accountEmail, password);
+            return getSingletonAuthenticatedInstance();
         }
-        return getNonSingletonAuthenticatedInstance(accountEmail, password);
+        return getNonSingletonAuthenticatedInstance();
     }
 
-    private static MatrixService getSingletonAuthenticatedInstance(String accountEmail, String password) {
+    private static MatrixService getSingletonAuthenticatedInstance() {
         if (authenticatedInstance == null) {
-            authenticatedInstance = getNonSingletonAuthenticatedInstance(accountEmail, password);
+            authenticatedInstance = getNonSingletonAuthenticatedInstance();
         }
         return authenticatedInstance;
     }
 
-    private static MatrixService getNonSingletonAuthenticatedInstance(String accountEmail, String password) {
+    private static MatrixService getNonSingletonAuthenticatedInstance() {
+        String accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
+        String password = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
         List<String> homeServerList = Environment.strToList(Environment.getenv(Constants.TCHAP_HOME_SERVER_LIST));
         List<String>  unauthorizedList = Environment.strToList(Environment.getenv(Constants.TCHAP_UNAUTHORIZED_HOME_SERVER_LIST));
 

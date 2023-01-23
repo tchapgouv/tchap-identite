@@ -13,10 +13,14 @@ import org.beta.authentification.keycloak.email.EmailSenderFactory;
 import org.beta.authentification.keycloak.utils.Constants;
 import org.beta.authentification.keycloak.utils.Environment;
 import org.beta.authentification.keycloak.utils.SecureCodeFactory;
+import org.beta.authentification.matrix.rest.MatrixService;
+import org.beta.authentification.matrix.rest.MatrixServiceFactory;
+import org.beta.authentification.matrix.rest.MatrixServiceStatelessFactory;
 import org.keycloak.Config;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.authentication.AuthenticatorFactory;
 import org.keycloak.models.AuthenticationExecutionModel;
+import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.provider.ProviderConfigProperty;
@@ -40,25 +44,31 @@ public class OtpLoginAuthenticatorFactory implements AuthenticatorFactory {
 
     @Override
     public Authenticator create(KeycloakSession session) {
-        String tchapEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
-        String tchapEmailAttribute = session.getContext().getAuthenticationSession().getClient().getAttribute(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
-        if(!StringUtils.isEmpty(tchapEmailAttribute)){
-            tchapEmail = tchapEmailAttribute;
-        }
 
-        String tchapPassword = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
-        String tchapPasswordAttribute = session.getContext().getAuthenticationSession().getClient().getAttribute(Constants.TCHAP_BOT_PASSWORD);
-        if(!StringUtils.isEmpty(tchapPasswordAttribute)){
-            tchapPassword = tchapPasswordAttribute;
-        }
-        
+        ClientModel clientModel = session.getContext().getAuthenticationSession().getClient();
+
         return new OtpLoginAuthenticator(
                 SecureCodeFactory.getInstance(),
                 EmailSenderFactory.getInstance(),
                 codeTimeout,
                 mailDelay,
-                BotSenderFactory.getInstance(tchapEmail, tchapPassword));
+                BotSenderFactory.getInstance(getMatrixService(clientModel)));
     }
+
+    /*
+     Internal method, (package-private for tests)
+     */
+    MatrixService getMatrixService(ClientModel client){
+        String tchapEmailAttribute = client.getAttribute(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
+        String tchapPasswordAttribute = client.getAttribute(Constants.TCHAP_BOT_PASSWORD);
+        if(!StringUtils.isEmpty(tchapEmailAttribute) && !StringUtils.isEmpty(tchapPasswordAttribute)){
+            //use the "stateless" implementation of matrix service
+            return MatrixServiceStatelessFactory.getInstanceWithPassword(tchapEmailAttribute, tchapPasswordAttribute);
+        }
+        //use the default credential set in environment variable.
+        return MatrixServiceFactory.getAuthenticatedInstance();
+    }
+
 
     @Override
     public String getId() {
