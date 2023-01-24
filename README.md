@@ -14,19 +14,12 @@ Realm uptime can be found here : https://updown.io/fta9
 ## Run the local environment with docker containers
 
 1. copy env.sample -> env, fill in passwords with (any value you want..)
-- POSTGRES_PASSWORD=password
-- KEYCLOAK_ADMIN_PASSWORD=password
-- KC_DB_PASSWORD=password
-- TCHAP_BOT_ACCOUNT_EMAIL=service account for Tchap Identity created on Tchap Server side
-- TCHAP_BOT_PASSWORD=password for the service account
-- TCHAP_HOME_SERVER_LIST=list of home servers that tchap-identity can connect to
-- TCHAP_SKIP_CERTIFICATE_VALIDATION=false
-- TCHAP_UNAUTHORIZED_HOME_SERVER_LIST=list of unauthorized home servers -- use to check if a user is valid
-- TCHAP_OTP_MAIL_DELAY_IN_MINUTES= (optionnal) delay to wait to send another otp to users. default 0
-- TCHAP_CODE_TIMEOUT_IN_MINUTES= (optionnal) validity of a otp code. default 60
-- TCHAP_LOG_SENSITIVE_DATA = (optionnal) log sensitive data like username. default false
-- TCHAP_HOME_REDIRECT_URL=url to redirect the user when it hits the welcome page (/admin by default)
-1. build extension with maven goal. A jar is produced with the custom providers and the custom view.
+
+```
+cp .env.samble .env
+````
+
+2. build extension with maven goal. A jar is produced with the custom providers and the custom view.
 
 `mvn clean package`
 
