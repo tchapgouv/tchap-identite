@@ -58,21 +58,22 @@ L'erreur suivante peut se produire lors de l'exécution de la commande `mvn clea
 
 > DefaultHomeServerStrategyTest.should_get_healthy_client_success_with_one_home_server:16 » Retryable PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target executing GET https://matrix.i.tchap.gouv.fr/_matrix/identity/api/v1/info?address=%40beta.gouv.fr&medium=email
 
-sudo keytool -import -alias tchap -keystore "/Library/Java/JavaVirtualMachines/jdk-19.jdk/Contents/Home/lib/security/cacerts" -file www.beta-sir.tchap.gouv.fr.cer
 
 Il faut ajouter à Java le certificat de l'URL incriminée.
 
-Importer le certificat avec Chrome (Firefox et Safari n'ont pas de bouton "exporter")
+D'abord, [ouvrez l'URL avec Google Chrome](https://matrix.i.tchap.gouv.fr/_matrix/identity/api/v1/info?address=%40beta.gouv.fr&medium=email) et exportez le certificat (Firefox et Safari n'ont pas de bouton "exporter"). Vous obtenez un fichier `.cer` dont vous aurez besoin plus loin.
 
-Pour savoir quelle JDK utilise Maven :
+Lancez la commande suivante pour savoir quelle JDK utilise Maven :
+```
 mvn -version
+```
+Il vous donne un "runtime" qui se termine par `Contents/Home`. Reprenez ce chemin runtime et ajoutez-y `/lib/security/cacerts`.
 
-Il vous donne un "runtime" qui se termine par `Contents/Home`
-Reprenez ce chemin runtime et ajoutez `/lib/security/cacerts`
+Lancez la commande suivante pour ajouter le certificat à Java (remplacez "votre runtime java" par celui obtenu à l'exemple précédent). Dans l'exemple, le fichier certificat s'appelle `www.beta-sir.tchap.gouv.fr.cer` :
 
-Lancez la commande :
-
-keytool -import -alias tchap -keystore "/opt/homebrew/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/security/cacerts" -file www.beta-sir.tchap.gouv.fr.cer -storepass changeit
+```
+keytool -import -alias tchap -keystore "<votre runtime java>/lib/security/cacerts" -file www.beta-sir.tchap.gouv.fr.cer -storepass changeit
+```
 
 ### Error response from daemon
 
