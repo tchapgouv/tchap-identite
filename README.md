@@ -6,41 +6,43 @@ Le projet Authentification otp publie un service d'authentification qui se base 
 Realm uptime can be found here : https://updown.io/fta9
 
 ## Stack Technology
+
 - maven : 3.8.2
 - keycloak : 18.0
 - quarkus : 2.7.5
 - java : 11
 
-## Run the local environment with docker containers
+## Exécution du projet en local avec des conteneurs docker
 
-1. copy env.sample -> env, fill in passwords with (any value you want..)
+1. Créez le fichier `.env` à partir du fichier .env.sample
 
 ```
-cp .env.samble .env
+cp .env.sample .env
 ````
 
-2. build extension with maven goal. A jar is produced with the custom providers and the custom view.
+2. Construisez l'extension à l'aide de Maven. Un fichier `.jar` est créé dans `/dev/providers`.
 
-`mvn clean package`
+```
+mvn clean package
+```
 
-to specify a version run :
+Pour préciser la version lors du run :
 `mvn clean install -Drevision=X.Y.Z`
 
-For local development, the jar is copied to `/dev/providers`
 
-3. launch containers
+3. Lancez les conteneurs docker
 
-`docker compose up`
+```
+docker compose up
+```
 
-4. Connect to
-- keycloak admin http://localhost:8080 with admin/password
-- in realm Tchap-identite, go to Clients>tchap-identite-client-sample>credentials> "Regenerate Secret"
-- copy this secret in your open id client (see -4-)
-- email client : http://localhost:1080
+4. L'admin keycloak est disponible à l'adresse http://localhost:8080 (admin/password), le client email est dispo à http://localhost:1080
 
-5. install a openId client sample
+5. Utilisation d'un client openID : 
 
-https://github.com/tchapgouv/oidc-client-example
+- installez un client d'exemple openID (p. ex https://github.com/tchapgouv/oidc-client-example)
+- dans l'admin keycloak, depuis le realm Tchap-identite, suivez Clients -> tchap-identite-client-sample -> credentials -> "Regenerate Secret"
+- copiez ce secret dans votre client openID
 
 
 ## Code formatting
