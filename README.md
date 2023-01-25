@@ -94,3 +94,27 @@ docker login ghcr.io --username <votre-login-github>
 Lorsqu'un mot de passe vous est demandé, entrez le token qui a été généré ci-dessus.
 
 Ensuite, le `docker compose up` fonctionne.
+
+### duplicate key value violates unique constraint "uk_cli_scope"
+
+Dans les logs docker compose, vous pouvez voir "tchap-identite-keycloak-1 exited with code 1" ce qui signifie qu'il y a eu un problème.
+
+    tchap-identite-keycloak-1  | 2023-01-25 09:49:58,552 ERROR [org.keycloak.quarkus.runtime.cli.ExecutionExceptionHandler] (main) ERROR: could not execute statement
+    tchap-identite-keycloak-1  | 2023-01-25 09:49:58,552 ERROR [org.keycloak.quarkus.runtime.cli.ExecutionExceptionHandler] (main) ERROR: ERROR: duplicate key value violates unique constraint "uk_cli_scope"
+    tchap-identite-keycloak-1  |   Detail: Key (realm_id, name)=(c82a6531-6dd5-424e-ac9e-844ebd5e8f91, role_list) already exists.
+
+Cela peut être dû à un problème lors de l'initialisation du conteneur. Une solution est de supprimer tous les conteneurs du projet, puis le volume de la base de données.
+
+Pour lister les conteneurs docker :
+
+```
+docker ps --all
+```
+
+Pour les supprimer : `docker rm xxx yyy zzzz` où xxx, yyy et zzz sont les "container ID".
+
+Pour supprimer le volume de la base de données :
+
+```
+docker volume rm tchap-identite_db_volume
+```
