@@ -1,6 +1,16 @@
 version: '3.8'
 
 services:
+    postgres:
+        image: postgres
+        networks:
+            - keycloak_network
+        env_file: .env
+        restart: 'always'
+        volumes:
+            - db_volume:/var/lib/postgresql/data
+            - ./postgresql/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh:ro
+
     maildev:
         container_name: maildev
         image: djfarrelly/maildev:1.0.0
@@ -21,7 +31,6 @@ services:
             - ./theme/tchap-otp-login:/app/keycloak/themes/tchap-otp-login:ro
             - ./dev/quarkus-extensions/:/app/keycloak/providers/
             - ./dev/providers/tchap-identite-0.0.1.jar:/app/keycloak/providers/tchap-identite-0.0.1.jar:ro #can it be cleaner?
-            - db_volume:/app/keycloak/data/h2/
             #- .:/buildpack
             #- cache:/cache
             #- build:/build
@@ -34,12 +43,19 @@ services:
             - |
                  /app/keycloak/bin/kc.sh start-dev --import-realm --spi-theme-static-max-age=-1 --spi-theme-cache-themes=false --spi-theme-cache-templates=false --log-level=INFO,org.beta:info --debug
 
+
         ports:
             - 8080:8080
             - 8443:8443
             - 8787:8787
+        depends_on:
+            - postgres
 volumes:
-    db_volume:
+    db_volume: #not used?
+    cache: #not used?
+    build: #not used?
+    env: #not used?
+    app: #not used?
 networks:
     keycloak_network:
         driver: bridge
