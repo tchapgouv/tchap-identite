@@ -120,6 +120,10 @@
       "description": "Password of the Tchap Bot Account",
       "value": ""
     },
+    "TCHAP_BOT_TOKEN": {
+      "description": "Token of the Tchap Bot Account",
+      "value": ""
+    },
     "TCHAP_HOME_SERVER_LIST": {
       "description": "list of home servers that tchap-identity can connect to",
       "value": "i.tchap.gouv.fr,e.tchap.gouv.fr"

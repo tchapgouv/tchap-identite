@@ -46,32 +46,6 @@ public class MatrixService {
     }
 
     /**
-     * This constructor connects this object to the Matrix backend via a /login method. It stores the access token in the UserService service.
-     * @param accountEmail
-     * @param tchapPassword
-     * @param homeServerList
-     * @param unauthorizedList
-     */
-    protected MatrixService(String accountEmail, String tchapPassword, List<String> homeServerList, List<String> unauthorizedList) {
-        this.unauthorizedList = unauthorizedList;
-        homeServerService = new HomeServerService(homeServerList);
-        String homeServer = homeServerService.findHomeServerByEmail(accountEmail);
-
-        LoginService loginService = new LoginService();
-        String accountHomeServerUrl = buildHomeServerUrl(homeServer);
-        String accessToken =
-                loginService.findAccessToken(accountHomeServerUrl, accountEmail, tchapPassword);
-
-        userService = new UserService(accountHomeServerUrl, accessToken);
-
-        RoomClient roomClient = RoomClientFactory.build(accountHomeServerUrl, accessToken);
-        String matrixId = UserService.emailToUserId(accountEmail, homeServer);
-        roomService = new RoomService(roomClient, matrixId);
-        //todo matrix services should be splitted into two subvervices
-
-    }
-
-    /**
      * This constructor expects an access token. It does not call /login
      * @param accountEmail
      * @param homeServerList

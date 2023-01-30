@@ -7,7 +7,7 @@ package org.beta.authentification.keycloak.utils;
 public interface Constants {
 
     String TCHAP_BOT_ACCOUNT_EMAIL = "TCHAP_BOT_ACCOUNT_EMAIL";
-    String TCHAP_BOT_PASSWORD = "TCHAP_BOT_PASSWORD";
+    String TCHAP_BOT_TOKEN = "TCHAP_BOT_TOKEN";
 
     String TCHAP_HOME_SERVER_LIST = "TCHAP_HOME_SERVER_LIST";
     String TCHAP_SKIP_CERTIFICATE_VALIDATION = "TCHAP_SKIP_CERTIFICATE_VALIDATION";

@@ -84,9 +84,9 @@ class MatrixServiceIntTest {
 
     @Test
     void shouldFindMatrixUserInfoNotBeValidWithStatelessFactory() {
-        matrixService = MatrixServiceStatelessFactory.getInstanceWithPassword(
+        matrixService = MatrixServiceStatelessFactory.getStatelessInstanceWithToken(
                 Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL),
-                Environment.getenv(Constants.TCHAP_BOT_PASSWORD));
+                Environment.getenv(Constants.TCHAP_BOT_TOKEN));
         MatrixUserInfo accountValidOnTchap =
                 matrixService.findMatrixUserInfo("i.tchap.gouv.fr", "clark.kent@beta.gouv.fr");
         Assertions.assertFalse(accountValidOnTchap.isValid());

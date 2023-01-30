@@ -60,10 +60,10 @@ public class OtpLoginAuthenticatorFactory implements AuthenticatorFactory {
      */
     MatrixService getMatrixService(ClientModel client){
         String tchapEmailAttribute = client.getAttribute(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
-        String tchapPasswordAttribute = client.getAttribute(Constants.TCHAP_BOT_PASSWORD);
-        if(!StringUtils.isEmpty(tchapEmailAttribute) && !StringUtils.isEmpty(tchapPasswordAttribute)){
+        String tchapTokenAttribute = client.getAttribute(Constants.TCHAP_BOT_TOKEN);
+        if(!StringUtils.isEmpty(tchapEmailAttribute) && !StringUtils.isEmpty(tchapTokenAttribute)){
             //use the "stateless" implementation of matrix service
-            return MatrixServiceStatelessFactory.getInstanceWithPassword(tchapEmailAttribute, tchapPasswordAttribute);
+            return MatrixServiceStatelessFactory.getStatelessInstanceWithToken(tchapEmailAttribute, tchapTokenAttribute);
         }
         //use the default credential set in environment variable.
         return MatrixServiceFactory.getAuthenticatedInstance();
