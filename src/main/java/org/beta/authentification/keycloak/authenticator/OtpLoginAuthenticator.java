@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response;
 
 import org.beta.authentification.keycloak.bot.BotSender;
 import org.beta.authentification.keycloak.email.EmailSender;
-import org.beta.authentification.keycloak.user.TchapUserStorage;
 import org.beta.authentification.keycloak.utils.Features;
 import org.beta.authentification.keycloak.utils.LoggingUtilsFactory;
 import org.beta.authentification.keycloak.utils.SecureCode;
@@ -73,6 +72,7 @@ public class OtpLoginAuthenticator implements Authenticator {
         // user should have been set in the context before
         UserModel user = context.getUser();
 
+        //if user is not found in the TchapUserStorage, throw error
         if (user == null) {
             context.failure(AuthenticationFlowError.UNKNOWN_USER);
             return;
@@ -104,7 +104,7 @@ public class OtpLoginAuthenticator implements Authenticator {
             context.challenge(
                     context.form()
                             .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, user.getUsername())
-                            .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled())
+                            .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled(context.getAuthenticationSession().getClient()))
                             .setInfo("info.code.already.sent.wait", mailDelay)
                             .createForm(FTL_ENTER_CODE));
             return;
@@ -197,7 +197,7 @@ public class OtpLoginAuthenticator implements Authenticator {
         LoginFormsProvider form =
                 context.form()
                         .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail)
-                        .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled());
+                        .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled(context.getAuthenticationSession().getClient()));
 
         if (info != null && !info.isEmpty()) {
             form.setInfo(info);
@@ -219,7 +219,7 @@ public class OtpLoginAuthenticator implements Authenticator {
         return context.form()
                 .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail)
                 .setAttribute(FORM_ATTRIBUTE_ERROR_TYPE, error)
-                .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled())
+                .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled(context.getAuthenticationSession().getClient()))
                 .setError(error)
                 .createForm(FTL_ENTER_CODE);
     }
@@ -252,7 +252,7 @@ public class OtpLoginAuthenticator implements Authenticator {
             return false;
         }
 
-        if (Features.isTchapBotEnabled()) {
+        if (Features.isTchapBotEnabled(context.getAuthenticationSession().getClient())) {
             // whatever is happening on the bot side, we do not fail the whole process as long the
             // email has been sent
             try{
