@@ -48,6 +48,9 @@ For local development, the jar is copied to /dev/providers
 
 https://github.com/tchapgouv/oidc-client-example
 
+6. After a modification in the java adapters, you need to compile the jar and restart keycloak. Indeed quarkus docker image does not support hot reload as of Keycloak 18 
+```mvn clean package && docker compose restart keycloak```
+
 
 ## Code formatting
 

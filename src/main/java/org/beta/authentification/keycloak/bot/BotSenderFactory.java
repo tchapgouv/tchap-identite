@@ -4,15 +4,11 @@
  */
 package org.beta.authentification.keycloak.bot;
 
-import org.beta.authentification.matrix.rest.MatrixServiceFactory;
+import org.beta.authentification.matrix.rest.MatrixService;
 
 public class BotSenderFactory {
-    private static BotSender instance;
 
-    public static BotSender getInstance() {
-        if (instance == null) {
-            instance = new BotSender(MatrixServiceFactory.getAuthenticatedInstance());
-        }
-        return instance;
+    public static BotSender getInstance(MatrixService matrixService) {
+        return new BotSender(matrixService);
     }
 }

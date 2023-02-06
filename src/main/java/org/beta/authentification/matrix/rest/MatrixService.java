@@ -31,6 +31,11 @@ public class MatrixService {
     private final List<String> unauthorizedList;
 
 
+    /**
+     * This constructor is stateless. It does nothing else than building the service.
+     * @param homeServerList
+     * @param unauthorizedList
+     */
     protected MatrixService(List<String> homeServerList, List<String> unauthorizedList) {
         homeServerService = new HomeServerService(homeServerList);
         roomService = null;
@@ -40,15 +45,19 @@ public class MatrixService {
     
     }
 
-    protected MatrixService(String accountEmail, String tchapPassword, List<String> homeServerList, List<String> unauthorizedList) {
+    /**
+     * This constructor expects an access token. It does not call /login
+     * @param accountEmail
+     * @param homeServerList
+     * @param unauthorizedList
+     * @param accessToken
+     */
+    protected MatrixService( String accountEmail, List<String> homeServerList, List<String> unauthorizedList, String accessToken) {
         this.unauthorizedList = unauthorizedList;
         homeServerService = new HomeServerService(homeServerList);
         String homeServer = homeServerService.findHomeServerByEmail(accountEmail);
 
-        LoginService loginService = new LoginService();
         String accountHomeServerUrl = buildHomeServerUrl(homeServer);
-        String accessToken =
-                loginService.findAccessToken(accountHomeServerUrl, accountEmail, tchapPassword);
 
         userService = new UserService(accountHomeServerUrl, accessToken);
 

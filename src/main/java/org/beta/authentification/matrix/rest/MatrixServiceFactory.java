@@ -10,6 +10,10 @@ import org.beta.authentification.keycloak.utils.Constants;
 import org.beta.authentification.keycloak.utils.Environment;
 import org.beta.authentification.keycloak.utils.Features;
 
+/**
+ * This factory should not be used as the use of singleton and statefull instances of MatrixService are being dropped
+ */
+@Deprecated
 public class MatrixServiceFactory {
     private static MatrixService instance;
     private static MatrixService authenticatedInstance;
@@ -50,18 +54,18 @@ public class MatrixServiceFactory {
 
     private static MatrixService getNonSingletonAuthenticatedInstance() {
         String accountEmail = Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL);
-        String password = Environment.getenv(Constants.TCHAP_BOT_PASSWORD);
+        String token = Environment.getenv(Constants.TCHAP_BOT_TOKEN);
         List<String> homeServerList = Environment.strToList(Environment.getenv(Constants.TCHAP_HOME_SERVER_LIST));
         List<String>  unauthorizedList = Environment.strToList(Environment.getenv(Constants.TCHAP_UNAUTHORIZED_HOME_SERVER_LIST));
 
-        if (StringUtils.isEmpty(accountEmail) || StringUtils.isEmpty(password)) {
+        if (StringUtils.isEmpty(accountEmail) || StringUtils.isEmpty(token)) {
             throw new IllegalArgumentException(
-                    "No account or password has been set. Please define the following"
+                    "No account or token has been set. Please define the following"
                             + " environment variables : "
                             + Constants.TCHAP_BOT_ACCOUNT_EMAIL
                             + " and "
-                            + Constants.TCHAP_BOT_PASSWORD);
+                            + Constants.TCHAP_BOT_TOKEN);
         }
-        return new MatrixService(accountEmail, password, homeServerList, unauthorizedList);
+        return new MatrixService(accountEmail, homeServerList, unauthorizedList, token);
     }
 }
