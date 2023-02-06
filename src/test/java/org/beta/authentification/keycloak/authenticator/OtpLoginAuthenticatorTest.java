@@ -10,6 +10,7 @@ import static org.mockito.Mockito.*;
 
 import org.beta.authentification.keycloak.bot.BotSender;
 import org.beta.authentification.keycloak.email.EmailSender;
+import org.beta.authentification.keycloak.utils.Constants;
 import org.beta.authentification.keycloak.utils.SecureCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -45,10 +46,15 @@ public class OtpLoginAuthenticatorTest {
     @Nested
     class AuthenticateFlowTest {
 
+        @BeforeEach
+        public void setup() {
+            System.setProperty(Constants.FEATURE_TCHAP_BOT_OTP,"true");
+        }
+
         @Test
         public void authenticate_should_fail_with_unknown_user_flow_error() {
             AuthenticationFlowContext context =
-                    new MockFactory.AuthenticationFlowContextBuilder().withTchapEnabled("true").build();
+                    new MockFactory.AuthenticationFlowContextBuilder().build();
 
             authenticator.authenticate(context);
 
@@ -68,7 +74,6 @@ public class OtpLoginAuthenticatorTest {
                     new MockFactory.AuthenticationFlowContextBuilder()
                             .withUser("myUserId")
                             .withTemporarilyDisabled(true)
-                            .withTchapEnabled("true")
                             .build();
 
             authenticator.authenticate(context);
@@ -90,7 +95,6 @@ public class OtpLoginAuthenticatorTest {
                     new MockFactory.AuthenticationFlowContextBuilder()
                             .withUser("myUserId")
                             .withTemporarilyDisabled(false)
-                            .withTchapEnabled("true")
                             .build();
 
             String code = "bbb-aaa";
@@ -123,7 +127,6 @@ public class OtpLoginAuthenticatorTest {
                             .withUser("myUserId")
                             .withTemporarilyDisabled(false)
                             .withHomeServer(A_HOME_SERVER)
-                            .withTchapEnabled("true")
                             .build();
                         
             String code = "bbb-aaa";
@@ -156,6 +159,11 @@ public class OtpLoginAuthenticatorTest {
     @Nested
     class AuthenticateFlowDisableBotTest {
         
+        @BeforeEach
+        public void setup() {
+            System.setProperty(Constants.FEATURE_TCHAP_BOT_OTP,"false");
+        }
+
         @Test
         public void authenticate_should_fail_with_unknown_user_flow_error() {
             AuthenticationFlowContext context =

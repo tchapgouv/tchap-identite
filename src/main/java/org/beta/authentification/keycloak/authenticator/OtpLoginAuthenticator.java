@@ -104,7 +104,7 @@ public class OtpLoginAuthenticator implements Authenticator {
             context.challenge(
                     context.form()
                             .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, user.getUsername())
-                            .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled(context.getAuthenticationSession().getClient()))
+                            .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled())
                             .setInfo("info.code.already.sent.wait", mailDelay)
                             .createForm(FTL_ENTER_CODE));
             return;
@@ -197,7 +197,7 @@ public class OtpLoginAuthenticator implements Authenticator {
         LoginFormsProvider form =
                 context.form()
                         .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail)
-                        .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled(context.getAuthenticationSession().getClient()));
+                        .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled());
 
         if (info != null && !info.isEmpty()) {
             form.setInfo(info);
@@ -219,7 +219,7 @@ public class OtpLoginAuthenticator implements Authenticator {
         return context.form()
                 .setAttribute(FORM_ATTRIBUTE_USER_EMAIL, userEmail)
                 .setAttribute(FORM_ATTRIBUTE_ERROR_TYPE, error)
-                .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled(context.getAuthenticationSession().getClient()))
+                .setAttribute("feature_tchap_bot", Features.isTchapBotEnabled())
                 .setError(error)
                 .createForm(FTL_ENTER_CODE);
     }
@@ -252,7 +252,7 @@ public class OtpLoginAuthenticator implements Authenticator {
             return false;
         }
 
-        if (Features.isTchapBotEnabled(context.getAuthenticationSession().getClient())) {
+        if (Features.isTchapBotEnabled()) {
             // whatever is happening on the bot side, we do not fail the whole process as long the
             // email has been sent
             try{

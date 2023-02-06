@@ -8,12 +8,9 @@ import org.apache.commons.lang.StringUtils;
 import org.keycloak.models.ClientModel;
 
 public class Features {
-    public static boolean isTchapBotEnabled(ClientModel clientModel) {
+    public static boolean isTchapBotEnabled() {
         String tchapFeature = Environment.getenv(Constants.FEATURE_TCHAP_BOT_OTP);
-        String tchapFeatureAttribute = clientModel.getAttribute(Constants.FEATURE_TCHAP_BOT_OTP);
-        if(!StringUtils.isEmpty(tchapFeatureAttribute)){
-            tchapFeature = tchapFeatureAttribute;
-        }
+    
         return Boolean.parseBoolean(tchapFeature);
     }
 

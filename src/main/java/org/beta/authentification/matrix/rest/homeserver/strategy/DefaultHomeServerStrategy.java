@@ -26,6 +26,7 @@ public class DefaultHomeServerStrategy implements HomeServerSelectionStrategy {
 
     public DefaultHomeServerStrategy(List<String> homeServerList) {
         this.homeServerList = homeServerList;
+        
         homeServerClient = getClient();
     }
 

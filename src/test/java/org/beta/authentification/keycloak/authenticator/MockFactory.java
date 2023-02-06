@@ -60,11 +60,6 @@ public class MockFactory {
             return this;
         }
 
-        public AuthenticationFlowContextBuilder withTchapEnabled(String tchapEnabled) {
-            this.tchapEnabled = tchapEnabled;
-            return this;
-        }
-
         public AuthenticationFlowContextBuilder withHomeServer(String homeServer) {
             this.homeServer = homeServer;
             return this;
@@ -197,7 +192,6 @@ public class MockFactory {
 
         ClientModel client = mock(ClientModel.class);
         doReturn("Audioconf").when(client).getName();
-        doReturn(tchapEnabled).when(client).getAttribute(Constants.FEATURE_TCHAP_BOT_OTP);
         doReturn(client).when(sessionMock).getClient();
 
         return sessionMock;
