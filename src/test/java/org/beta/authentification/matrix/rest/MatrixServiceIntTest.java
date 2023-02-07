@@ -5,9 +5,11 @@
 package org.beta.authentification.matrix.rest;
 
 import org.beta.authentification.keycloak.TestSuiteUtils;
+import org.beta.authentification.keycloak.utils.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.beta.authentification.keycloak.utils.Environment;
 
 class MatrixServiceIntTest {
 
@@ -74,6 +76,17 @@ class MatrixServiceIntTest {
     @Test
     void shouldFindMatrixUserInfoNotBeValid() {
         matrixService = MatrixServiceFactory.getAuthenticatedInstance();
+        MatrixUserInfo accountValidOnTchap =
+                matrixService.findMatrixUserInfo("i.tchap.gouv.fr", "clark.kent@beta.gouv.fr");
+        Assertions.assertFalse(accountValidOnTchap.isValid());
+        Assertions.assertEquals(null, accountValidOnTchap.getMatrixId());
+    }
+
+    @Test
+    void shouldFindMatrixUserInfoNotBeValidWithStatelessFactory() {
+        matrixService = MatrixServiceStatelessFactory.getStatelessInstanceWithToken(
+                Environment.getenv(Constants.TCHAP_BOT_ACCOUNT_EMAIL),
+                Environment.getenv(Constants.TCHAP_BOT_TOKEN));
         MatrixUserInfo accountValidOnTchap =
                 matrixService.findMatrixUserInfo("i.tchap.gouv.fr", "clark.kent@beta.gouv.fr");
         Assertions.assertFalse(accountValidOnTchap.isValid());

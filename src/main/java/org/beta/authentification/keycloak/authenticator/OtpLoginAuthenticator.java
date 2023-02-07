@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response;
 
 import org.beta.authentification.keycloak.bot.BotSender;
 import org.beta.authentification.keycloak.email.EmailSender;
-import org.beta.authentification.keycloak.user.TchapUserStorage;
 import org.beta.authentification.keycloak.utils.Features;
 import org.beta.authentification.keycloak.utils.LoggingUtilsFactory;
 import org.beta.authentification.keycloak.utils.SecureCode;
@@ -73,6 +72,7 @@ public class OtpLoginAuthenticator implements Authenticator {
         // user should have been set in the context before
         UserModel user = context.getUser();
 
+        //if user is not found in the TchapUserStorage, throw error
         if (user == null) {
             context.failure(AuthenticationFlowError.UNKNOWN_USER);
             return;
@@ -246,6 +246,7 @@ public class OtpLoginAuthenticator implements Authenticator {
                 context.getSession(),
                 context.getRealm(),
                 context.getUser(),
+                context.getAuthenticationSession().getClient(),
                 friendlyCode,
                 String.valueOf(codeTimeout))) {
             return false;

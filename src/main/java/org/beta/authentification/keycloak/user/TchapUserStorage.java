@@ -59,6 +59,7 @@ public class TchapUserStorage implements UserStorageProvider, UserLookupProvider
         }
         UserModel user = loadedUsers.get(username);
         if (user == null) {
+            //We check of the domain of the email is authorized on Tchap
             MatrixAutorizationInfo matrixAutorizationInfo = matrixService.isEmailAuthorized(username);
             if (matrixAutorizationInfo.isAuthorized()) {
                 user = new InMemoryUserAdapter(session, realm, buildId(model, username));

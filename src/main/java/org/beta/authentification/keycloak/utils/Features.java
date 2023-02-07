@@ -4,9 +4,14 @@
  */
 package org.beta.authentification.keycloak.utils;
 
+import org.apache.commons.lang.StringUtils;
+import org.keycloak.models.ClientModel;
+
 public class Features {
     public static boolean isTchapBotEnabled() {
-        return Boolean.parseBoolean(Environment.getenv(Constants.FEATURE_TCHAP_BOT_OTP));
+        String tchapFeature = Environment.getenv(Constants.FEATURE_TCHAP_BOT_OTP);
+    
+        return Boolean.parseBoolean(tchapFeature);
     }
 
     public static boolean isHomeServerSelectionStrategyEnabled() {

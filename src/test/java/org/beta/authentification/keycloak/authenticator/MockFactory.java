@@ -24,12 +24,14 @@ import org.keycloak.services.managers.BruteForceProtector;
 import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.sessions.RootAuthenticationSessionModel;
 import org.mockito.stubbing.Answer;
+import org.beta.authentification.keycloak.utils.Constants;
 
 public class MockFactory {
 
     public static class AuthenticationFlowContextBuilder {
         String loginHint;
         String username;
+        String tchapEnabled = "false";
         String homeServer;
         String codeInput;
         boolean temporarilyDisabled;
@@ -78,7 +80,7 @@ public class MockFactory {
         public AuthenticationFlowContext build() {
             AuthenticationFlowContext contextMock = spy(AuthenticationFlowContext.class);
             AuthenticationSessionModel sessionMock =
-                    buildAuthenticationSessionModel(loginHint, authNoteMap);
+                    buildAuthenticationSessionModel(loginHint, authNoteMap, tchapEnabled);
             RootAuthenticationSessionModel rootSessionMock =
                     spy(RootAuthenticationSessionModel.class);
             KeycloakSession keycloakSession = spy(KeycloakSession.class);
@@ -171,7 +173,7 @@ public class MockFactory {
     }
 
     static AuthenticationSessionModel buildAuthenticationSessionModel(
-            String loginHint, Map<String, String> authNoteMap) {
+            String loginHint, Map<String, String> authNoteMap,String tchapEnabled) {
         AuthenticationSessionModel sessionMock = spy(AuthenticationSessionModel.class);
 
         if (loginHint != null) {

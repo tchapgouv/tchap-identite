@@ -40,8 +40,14 @@ public class TchapAuthenticator implements Authenticator {
     public void authenticate(AuthenticationFlowContext context) {
         AuthenticationSessionModel session = context.getAuthenticationSession();
 
-        // retrieve login hint from a standard note injected by oidc
-        String loginHint = session.getClientNote(OIDCLoginProtocol.LOGIN_HINT_PARAM);
+        // retrieve login hint via the context user
+        // or from a standard note injected by oidc
+        String loginHint = null;
+        if (context.getUser() != null && context.getUser().getUsername() != null) {
+            loginHint = context.getUser().getUsername();
+        } else {
+            loginHint = session.getClientNote(OIDCLoginProtocol.LOGIN_HINT_PARAM);
+        }
 
         if (loginHint == null) {
             context.failure(

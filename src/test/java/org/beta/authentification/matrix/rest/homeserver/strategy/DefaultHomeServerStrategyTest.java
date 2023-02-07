@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DefaultHomeServerStrategyTest {
 
-    @Test
+   @Test
     void should_get_healthy_client_success_with_one_home_server(){
         String homeServerList = "i.tchap.gouv.fr";
         DefaultHomeServerStrategy healthyHomeServerStrategy = new DefaultHomeServerStrategy(Environment.strToList(homeServerList));
